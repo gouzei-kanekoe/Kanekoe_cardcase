@@ -1,0 +1,2092 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>名片盒</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ── Reset ── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+
+/* ── Tokens ── */
+:root {
+  --bg:     #ffffff;
+  --ink:    #000000;
+  --muted:  #a5a5a5;
+  --accent: #464e66;
+  --line:   rgba(0,0,0,0.14);
+  --font:   'Noto Serif TC', 'Songti TC', 'SimSun', serif;
+  --ease-spring: cubic-bezier(0.22, 1, 0.36, 1);
+  --card-w: clamp(360px, 37vw, 590px);
+  --card-h: calc(var(--card-w) * 50 / 94);
+  --card-half-h: calc(var(--card-h) * 0.5);
+  --selected-card-top: clamp(8px, 2.2vh, 26px);
+  --mobile-drawer-tab-h: 58px;
+  --mobile-title-h: clamp(40px, 11vw, 56px);
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+  --drawer-bottom-pad: max(10px, var(--safe-bottom));
+  --grid-w: min(100%, clamp(340px, 30vw, 500px));
+}
+
+body {
+  font-family: var(--font);
+  font-weight: 600;
+  background: var(--bg);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  overscroll-behavior: none;
+}
+
+body.is-intro-running {
+  overflow: hidden;
+}
+
+body:not(.is-intro-ready) .layout {
+  opacity: 0;
+  transform: translateY(12px);
+  animation: none;
+}
+
+/* ── Opening card fan intro ── */
+.intro-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  background: var(--bg);
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition: opacity 0.56s ease, visibility 0s linear 0.56s;
+}
+
+body.is-intro-ready .intro-overlay {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.intro-stage {
+  position: relative;
+  width: clamp(180px, 22vw, 320px);
+  height: clamp(126px, 15vw, 210px);
+  perspective: 900px;
+  transform-style: preserve-3d;
+}
+
+.intro-deck {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  animation: introDeckSettle 1.8s var(--ease-spring) both;
+}
+
+.intro-card {
+  --intro-card-x: 0px;
+  --intro-card-y: 0px;
+  --intro-card-r: 0deg;
+  --intro-tint: #fbfbfb;
+  left: 50%;
+  top: 46%;
+  width: 66%;
+  aspect-ratio: 94 / 50;
+  position: absolute;
+  border: 1px solid rgba(0,0,0,0.16);
+  background:
+    linear-gradient(90deg, rgba(255,255,255,0.72), rgba(255,255,255,0.1)),
+    var(--intro-tint);
+  box-shadow: 0 18px 38px rgba(0,0,0,0.08);
+  opacity: 0;
+  transform: translate(-50%, -50%) translateY(18px) scale(0.74) rotateZ(0deg);
+  transform-origin: 50% 68%;
+  animation: introCardFan 1.76s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.intro-card::before {
+  content: "";
+  position: absolute;
+  left: 12%;
+  top: 28%;
+  width: 16%;
+  aspect-ratio: 1;
+  border: 1px solid rgba(0,0,0,0.12);
+  background: rgba(255,255,255,0.55);
+}
+
+.intro-card::after {
+  content: "";
+  position: absolute;
+  left: 36%;
+  right: 12%;
+  top: 34%;
+  height: 1px;
+  background: rgba(0,0,0,0.16);
+  box-shadow: 0 9px 0 rgba(0,0,0,0.09);
+}
+
+.intro-card-a {
+  --intro-card-x: -58px;
+  --intro-card-y: 14px;
+  --intro-card-r: -14deg;
+  --intro-tint: #f6f6f6;
+  z-index: 1;
+}
+
+.intro-card-b {
+  --intro-card-x: -30px;
+  --intro-card-y: -4px;
+  --intro-card-r: -7deg;
+  --intro-tint: #fafafa;
+  z-index: 2;
+}
+
+.intro-card-c {
+  --intro-card-x: 0px;
+  --intro-card-y: -12px;
+  --intro-card-r: 0deg;
+  --intro-tint: #ffffff;
+  z-index: 3;
+}
+
+.intro-card-d {
+  --intro-card-x: 30px;
+  --intro-card-y: -4px;
+  --intro-card-r: 7deg;
+  --intro-tint: #f8f8f8;
+  z-index: 4;
+}
+
+.intro-card-e {
+  --intro-card-x: 58px;
+  --intro-card-y: 14px;
+  --intro-card-r: 14deg;
+  --intro-tint: #f5f5f5;
+  z-index: 5;
+}
+
+.intro-mark {
+  position: absolute;
+  left: 50%;
+  bottom: -0.4em;
+  transform: translateX(-50%);
+  font-size: clamp(9px, 0.8vw, 12px);
+  letter-spacing: 0.28em;
+  color: rgba(0,0,0,0.28);
+  white-space: nowrap;
+  animation: introMarkFade 1.2s 0.45s ease both;
+}
+
+@keyframes introDeckSettle {
+  0%   { opacity: 0; transform: translateY(18px) rotateX(10deg) scale(0.94); }
+  18%  { opacity: 1; }
+  72%  { transform: translateY(0) rotateX(0deg) scale(1); }
+  100% { opacity: 1; transform: translateY(-4px) rotateX(0deg) scale(1.02); }
+}
+
+@keyframes introCardFan {
+  0%   { opacity: 0; transform: translate(-50%, -50%) translateY(18px) scale(0.74) rotateZ(0deg); }
+  16%  { opacity: 1; transform: translate(-50%, -50%) translateY(0) scale(0.78) rotateZ(0deg); }
+  44%  { opacity: 1; transform: translate(-50%, -50%) translateY(0) scale(0.78) rotateZ(0deg); }
+  74%  { opacity: 1; transform: translate(-50%, -50%) translate(var(--intro-card-x), var(--intro-card-y)) scale(1) rotateZ(var(--intro-card-r)); }
+  100% { opacity: 1; transform: translate(-50%, -50%) translate(var(--intro-card-x), calc(var(--intro-card-y) - 4px)) scale(1.02) rotateZ(var(--intro-card-r)); }
+}
+
+@keyframes introMarkFade {
+  from { opacity: 0; transform: translateX(-50%) translateY(4px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+/* ── Layout ── */
+.layout {
+  display: grid;
+  grid-template-columns: 45fr 55fr;
+  min-height: 100svh;
+  animation: fadeUp 0.7s var(--ease-spring) both;
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.mobile-page-title {
+  display: none;
+}
+
+/* ─────────────── LEFT PANEL ─────────────── */
+.panel-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(40px, 5vh, 80px) clamp(32px, 4vw, 60px);
+  gap: 0;
+  min-height: 100svh;
+  position: relative;
+}
+
+.card-showcase {
+  position: relative;
+  --selected-lift: clamp(42px, 8vh, 86px);
+  width: min(100%, calc(var(--card-w) + clamp(80px, 9vw, 150px)));
+  min-height: min(760px, calc(100svh - clamp(84px, 11vh, 150px)));
+}
+
+.idle-quote,
+.quote-line,
+.selected-copy,
+.card-showcase .card-scene,
+.card-showcase .flip-hint {
+  transition: opacity 0.36s ease, transform 0.36s var(--ease-spring);
+}
+
+.card-showcase:not(.is-selected) .selected-only {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.card-showcase.is-selected .selected-only {
+  opacity: 1;
+  visibility: visible;
+}
+
+.card-showcase.is-selected .idle-quote {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translate(-50%, -50%) scale(0.96);
+}
+
+.idle-quote {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(70svh, calc(var(--card-w) + 76px), 440px);
+  aspect-ratio: 1;
+  border: 1px solid var(--line);
+  overflow: hidden;
+  padding: clamp(14px, 2vmin, 28px);
+  touch-action: none;
+}
+
+.paint-grid {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.paint-grid .char {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #f7f7f7;
+  line-height: 1;
+  font-weight: 700;
+  transition: color 0.2s ease;
+}
+
+.idle-quote .char {
+  font-size: clamp(28px, 5.8vmin, 72px);
+}
+
+.selected-copy {
+  position: absolute;
+  left: clamp(0px, 1vw, 12px);
+  right: clamp(0px, 1vw, 12px);
+  top: calc(var(--selected-card-top) + var(--card-h) + clamp(82px, 9.6vh, 112px));
+  width: auto;
+  height: clamp(320px, 40vh, 500px);
+  transform: none;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) clamp(64px, 6vw, 90px);
+  justify-content: stretch;
+  align-items: flex-start;
+  column-gap: clamp(20px, 2.2vw, 36px);
+  padding-inline: clamp(10px, 1.6vw, 22px);
+}
+
+.selected-heading {
+  display: none;
+}
+
+.selected-copy .quote-line {
+  position: relative;
+  width: auto;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  display: block;
+  padding: 0;
+  border: 0;
+  touch-action: none;
+}
+
+.selected-copy .type-line {
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: end;
+  width: clamp(64px, 6vw, 90px);
+  overflow: visible;
+}
+
+.selected-copy .intro-line {
+  grid-column: 1;
+  grid-row: 1;
+  justify-self: stretch;
+  width: 100%;
+  min-width: 0;
+}
+
+.selected-copy .quote-line .paint-grid {
+  display: block;
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: max-content;
+  height: 100%;
+  white-space: normal;
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  line-height: 1.38;
+  transform-origin: top right;
+  will-change: transform;
+}
+
+.selected-copy .intro-line .paint-grid {
+  line-height: 2.08;
+}
+
+.selected-copy .intro-line .paint-grid.is-intro-grid {
+  left: 0;
+  right: 0;
+  width: min(100%, clamp(380px, 36vw, 560px));
+  margin-inline: auto;
+  display: grid;
+  writing-mode: horizontal-tb;
+  text-orientation: mixed;
+  align-content: start;
+  justify-content: center;
+  justify-items: center;
+  align-items: center;
+  row-gap: 0.34em;
+  column-gap: clamp(28px, 3.2vw, 48px);
+}
+
+.selected-copy .type-line .paint-grid {
+  line-height: 1.18;
+}
+
+.selected-copy .quote-line .char {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1em;
+  min-height: 1em;
+  font-size: clamp(22px, 2.85vw, 40px);
+  letter-spacing: 0.08em;
+  vertical-align: top;
+}
+
+.selected-copy .intro-line.is-copy-tier-1 .char {
+  font-size: clamp(22px, 2.85vw, 40px);
+  letter-spacing: 0.08em;
+}
+
+.selected-copy .intro-line.is-copy-tier-2 .char {
+  font-size: clamp(18px, 2.35vw, 34px);
+  letter-spacing: 0.07em;
+}
+
+.selected-copy .intro-line.is-copy-tier-3 .char {
+  font-size: clamp(15px, 1.95vw, 28px);
+  letter-spacing: 0.06em;
+}
+
+.selected-copy .intro-line.is-copy-tier-4 .char {
+  font-size: clamp(13px, 1.65vw, 24px);
+  letter-spacing: 0.05em;
+}
+
+.selected-copy .type-line .char {
+  font-size: clamp(24px, 3vw, 42px);
+  letter-spacing: 0.08em;
+}
+
+.flip-hint {
+  font-size: clamp(9px, 0.72vw, 11px);
+  letter-spacing: 0.22em;
+  color: var(--muted);
+  opacity: 0.5;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.card-showcase .flip-hint {
+  position: absolute;
+  left: 50%;
+  top: calc(var(--selected-card-top) + var(--card-h) + clamp(28px, 3.6vh, 40px));
+  transform: translateX(-50%);
+  text-align: center;
+}
+
+/* ── 3D card scene ── */
+.card-scene {
+  width: var(--card-w);
+  height: var(--card-h);
+  perspective: 1200px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.card-showcase .card-scene {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.card-showcase.is-selected .card-scene {
+  top: var(--selected-card-top);
+  transform: translateX(-50%);
+}
+
+/*
+ * Single element handles BOTH tilt (mouse) AND flip (click).
+ * JS sets: rotateX(tiltX) rotateY(baseY + tiltY)
+ * where baseY = 0 (front) or 180 (back).
+ * One preserve-3d context = backface-visibility works reliably.
+ */
+.card-3d {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  will-change: transform;
+  transform: rotateX(0deg) rotateY(0deg);
+}
+
+/* card faces */
+.card-face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border: 1px solid var(--line);
+  overflow: hidden;
+}
+.card-face.front { background: var(--bg); }
+.card-face.back  { background: #fafafa; transform: rotateY(180deg); }
+
+/* ── Front face ── */
+.face-front {
+  width: 100%; height: 100%;
+  padding: clamp(18px, 2.6vw, 36px);
+  display: grid;
+  grid-template-rows: 1fr auto;
+  gap: 8px;
+}
+.front-main {
+  display: flex;
+  align-items: flex-start;
+  gap: clamp(14px, 1.8vw, 28px);
+}
+
+.card-avatar {
+  width: clamp(36px, 5vw, 80px);
+  height: clamp(36px, 5vw, 80px);
+  border: 1px solid var(--line);
+  flex-shrink: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f3f3f3;
+  font-size: clamp(13px, 1.9vw, 26px);
+  font-weight: 700;
+  color: var(--muted);
+}
+.card-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.card-info { flex: 1; min-width: 0; }
+.card-name {
+  font-size: clamp(13px, 1.65vw, 24px);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--ink);
+  line-height: 1.2;
+}
+.card-role {
+  font-size: clamp(8px, 0.82vw, 12px);
+  letter-spacing: 0.22em;
+  color: var(--muted);
+  margin-top: clamp(3px, 0.4vh, 6px);
+  font-weight: 600;
+}
+.card-intro {
+  font-size: clamp(8px, 0.82vw, 12px);
+  letter-spacing: 0.08em;
+  color: rgba(0,0,0,0.45);
+  margin-top: clamp(5px, 0.7vh, 9px);
+  line-height: 1.65;
+  font-weight: 400;
+  white-space: pre-wrap;
+}
+.front-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+.hint-text {
+  font-size: clamp(7px, 0.64vw, 9px);
+  letter-spacing: 0.18em;
+  color: var(--muted);
+  opacity: 0.5;
+  user-select: none;
+}
+
+/* ── Back face ── */
+.face-back {
+  width: 100%; height: 100%;
+  padding: clamp(18px, 2.6vw, 36px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(6px, 0.9vh, 10px);
+  position: relative;
+}
+.back-image {
+  position: absolute;
+  top: clamp(18px, 2.6vw, 36px);
+  right: clamp(18px, 2.6vw, 36px);
+  bottom: clamp(18px, 2.6vw, 36px);
+  width: 52%;
+  object-fit: cover;
+  opacity: 1;
+  pointer-events: none;
+  z-index: 0;
+}
+.back-label,
+#cardLinks {
+  position: relative;
+  z-index: 1;
+}
+.back-label {
+  font-size: clamp(7px, 0.66vw, 9px);
+  letter-spacing: 0.3em;
+  color: var(--muted);
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+.card-link {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-size: clamp(8px, 0.8vw, 11px);
+  letter-spacing: 0.08em;
+  color: var(--ink);
+  text-decoration: none;
+  border-left: 1px solid var(--line);
+  padding: 3px 0 3px 10px;
+  transition: color 0.24s ease, border-color 0.24s ease, transform 0.24s ease;
+  font-weight: 600;
+}
+.card-link:hover { color: var(--accent); border-color: var(--accent); transform: translateX(2px); }
+.link-label {
+  color: var(--muted);
+  min-width: clamp(36px, 4.5vw, 56px);
+  font-size: 0.88em;
+  letter-spacing: 0.12em;
+  flex-shrink: 0;
+}
+.no-links {
+  font-size: clamp(8px, 0.78vw, 10px);
+  letter-spacing: 0.16em;
+  color: rgba(0,0,0,0.28);
+  font-weight: 400;
+}
+
+/* ─────────────── RIGHT PANEL ─────────────── */
+.panel-right {
+  border-left: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(40px, 5.8vh, 64px) clamp(36px, 4.8vw, 72px);
+  gap: clamp(24px, 3.6vh, 42px);
+  overflow: hidden;
+  min-height: 100svh;
+}
+
+.mobile-drawer-toggle {
+  display: none;
+}
+
+.mobile-drawer-status {
+  color: var(--muted);
+  font-size: 0.82em;
+  letter-spacing: 0.12em;
+}
+
+.mobile-drawer-chevron {
+  width: 0.62em;
+  height: 0.62em;
+  border-right: 1px solid currentColor;
+  border-bottom: 1px solid currentColor;
+  transform: rotate(225deg);
+  transition: transform 0.24s var(--ease-spring);
+}
+.panel-title {
+  font-size: clamp(13px, 1.08vw, 17px);
+  letter-spacing: 0.6em;
+  color: var(--muted);
+  font-weight: 600;
+  text-align: center;
+  flex-shrink: 0;
+  width: var(--grid-w);
+}
+
+/* ── 5×5 Grid ── */
+.grid-wrap {
+  --grid-edge-fade: clamp(16px, 2.8vh, 28px);
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 0;
+  max-height: min(64svh, 520px);
+  overflow-y: auto;
+  padding: var(--grid-edge-fade) 1px;
+  scrollbar-width: thin;
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0,
+    #000 var(--grid-edge-fade),
+    #000 calc(100% - var(--grid-edge-fade)),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0,
+    #000 var(--grid-edge-fade),
+    #000 calc(100% - var(--grid-edge-fade)),
+    transparent 100%
+  );
+}
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: clamp(4px, 0.6vw, 8px);
+  width: var(--grid-w);
+}
+.grid-cell {
+  aspect-ratio: 1;
+  border: 1px solid var(--line);
+  cursor: pointer;
+  position: relative;
+  transition: transform 0.2s var(--ease-spring), box-shadow 0.2s ease, border-color 0.2s ease;
+  background: #f7f7f7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.grid-cell.is-self { background: var(--bg); }
+.grid-cell:hover {
+  transform: scale(1.10);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.10);
+  border-color: rgba(0,0,0,0.26);
+  z-index: 2;
+}
+.grid-cell.is-active { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.grid-cell.is-active:hover { box-shadow: 0 6px 20px rgba(70,78,102,0.18), 0 0 0 1px var(--accent); }
+
+.cell-img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.cell-name,
+.cell-initial {
+  max-width: 100%;
+  padding: clamp(5px, 0.8vw, 9px);
+  font-size: clamp(9px, 1.05vw, 15px);
+  font-weight: 700;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+  line-height: 1.25;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+.is-self .cell-name,
+.is-self .cell-initial { color: var(--accent); }
+
+.grid-caption {
+  font-size: clamp(10px, 0.78vw, 12px);
+  letter-spacing: 0.22em;
+  color: var(--muted);
+  text-align: right;
+  font-weight: 600;
+  flex-shrink: 0;
+  min-height: 1.2em;
+  width: var(--grid-w);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .layout,
+  .intro-deck,
+  .intro-card,
+  .intro-mark {
+    animation: none;
+  }
+
+  .intro-overlay {
+    transition: opacity 0.2s ease, visibility 0s linear 0.2s;
+  }
+}
+
+/* ─────────────── MOBILE ─────────────── */
+@media (max-width: 768px) {
+  .layout {
+    display: flex;
+    flex-direction: column;
+    min-height: 100svh;
+    padding-top: calc(var(--safe-top) + var(--mobile-title-h));
+    padding-bottom: calc(var(--mobile-drawer-tab-h) + var(--drawer-bottom-pad));
+    animation: none;
+    transform: none !important;
+  }
+  :root { --card-w: min(320px, 84vw); }
+  .mobile-page-title {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 16;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: calc(var(--safe-top) + var(--mobile-title-h));
+    padding: var(--safe-top) max(18px, var(--safe-right)) 0 max(18px, var(--safe-left));
+    background: rgba(255,255,255,0.96);
+    color: var(--muted);
+    font-size: clamp(12px, 3.4vw, 15px);
+    font-weight: 700;
+    letter-spacing: 0.42em;
+    line-height: 1.2;
+    text-align: center;
+  }
+  .panel-left {
+    padding: clamp(22px, 6vw, 42px) max(clamp(24px, 6vw, 44px), var(--safe-right)) clamp(20px, 4vw, 36px) max(clamp(24px, 6vw, 44px), var(--safe-left));
+    border-bottom: 1px solid var(--line);
+    flex-direction: column-reverse;
+    gap: 14px;
+    min-height: clamp(420px, 58svh, 620px);
+  }
+  .card-showcase {
+    --selected-lift: clamp(34px, 7svh, 68px);
+    width: 100%;
+    min-height: clamp(360px, 58svh, 500px);
+  }
+  .idle-quote { width: min(76vw, 340px); }
+  .idle-quote .char { font-size: clamp(20px, 7vmin, 48px); }
+  .card-showcase.is-selected .card-scene {
+    top: calc(50% - var(--selected-lift));
+    transform: translate(-50%, -50%);
+  }
+  .selected-copy {
+    position: static;
+    width: auto;
+    height: auto;
+    transform: none;
+    display: block;
+  }
+  .selected-copy .quote-line {
+    position: absolute;
+    left: 50%;
+    width: min(76vw, calc(var(--card-w) - 18px));
+    min-height: 26px;
+    height: auto;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 clamp(8px, 3vw, 14px);
+    border-block: 1px solid rgba(0,0,0,0.10);
+    touch-action: none;
+    flex: none;
+  }
+  .selected-copy .type-line {
+    top: calc(50% - var(--selected-lift) + var(--card-half-h) + 14px);
+    transform: translateX(-50%);
+  }
+  .selected-copy .intro-line {
+    top: calc(50% - var(--selected-lift) + var(--card-half-h) + 42px);
+    transform: translateX(-50%);
+  }
+  .selected-copy .quote-line .paint-grid {
+    position: static;
+    top: auto;
+    right: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.18em;
+    height: auto;
+    width: max-content;
+    max-width: none;
+    white-space: nowrap;
+    writing-mode: horizontal-tb;
+    text-orientation: mixed;
+    line-height: 1;
+    transform-origin: center;
+  }
+  .selected-copy .intro-line .paint-grid.is-intro-grid {
+    display: flex;
+    width: max-content;
+    justify-content: center;
+    align-content: center;
+    row-gap: 0;
+    column-gap: 0.18em;
+  }
+  .selected-copy .quote-line .char {
+    flex: 0 0 auto;
+    min-width: 0;
+    min-height: 0;
+    display: flex;
+    font-size: clamp(8px, 2.55vw, 11px);
+    letter-spacing: 0.06em;
+  }
+  .selected-copy .intro-line.is-copy-tier-1 .char,
+  .selected-copy .intro-line.is-copy-tier-2 .char,
+  .selected-copy .intro-line.is-copy-tier-3 .char,
+  .selected-copy .intro-line.is-copy-tier-4 .char {
+    font-size: clamp(8px, 2.55vw, 11px);
+    letter-spacing: 0.06em;
+  }
+  .selected-copy .type-line .char {
+    font-size: clamp(7px, 2.2vw, 9px);
+    letter-spacing: 0.2em;
+  }
+  .face-front {
+    padding: clamp(14px, 2.2vw, 24px);
+  }
+  .front-main {
+    gap: clamp(10px, 1.4vw, 18px);
+  }
+  .card-avatar {
+    width: clamp(36px, 4.5vw, 54px);
+    height: clamp(36px, 4.5vw, 54px);
+    font-size: clamp(13px, 1.6vw, 20px);
+  }
+  .card-name {
+    font-size: clamp(13px, 1.5vw, 19px);
+  }
+  .card-role {
+    font-size: clamp(8px, 0.78vw, 11px);
+  }
+  .card-intro {
+    font-size: clamp(8px, 0.75vw, 10px);
+  }
+  .face-back {
+    padding: clamp(14px, 2.2vw, 24px);
+  }
+  .quote-line {
+    padding-inline: clamp(8px, 3vw, 14px);
+  }
+  .type-line { top: calc(50% - var(--selected-lift) + var(--card-half-h) + 14px); }
+  .intro-line { top: calc(50% - var(--selected-lift) + var(--card-half-h) + 42px); }
+  .card-showcase .flip-hint { top: calc(50% - var(--selected-lift) + var(--card-half-h) + 72px); }
+  .quote-line .char { font-size: clamp(8px, 2.55vw, 11px); }
+  .type-line .char { font-size: clamp(7px, 2.2vw, 9px); }
+  .panel-right {
+    border-left: none;
+    align-items: stretch;
+    justify-content: flex-start;
+    padding: clamp(20px, 5vw, 36px);
+    min-height: auto;
+    overflow: visible;
+    flex: 1;
+  }
+  .panel-title {
+    text-align: right;
+    width: auto;
+  }
+  .grid-wrap {
+    flex: 1;
+    width: auto;
+  }
+  .card-grid { gap: clamp(4px, 1.4vw, 8px); width: 100%; }
+  .grid-caption { width: auto; }
+  .cell-initial { font-size: clamp(10px, 3.8vw, 16px); }
+  .cell-name {
+    font-size: clamp(9px, 3.1vw, 13px);
+    padding: clamp(5px, 1.6vw, 8px);
+  }
+  .panel-left {
+    border-bottom: 0;
+    justify-content: center;
+    min-height: calc(100svh - var(--safe-top) - var(--mobile-title-h) - var(--mobile-drawer-tab-h) - var(--drawer-bottom-pad));
+  }
+
+  .card-showcase {
+    min-height: calc(100svh - var(--safe-top) - var(--mobile-title-h) - var(--mobile-drawer-tab-h) - var(--drawer-bottom-pad) - clamp(42px, 10vw, 72px));
+  }
+
+  .card-showcase.is-selected {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0;
+  }
+
+  .card-showcase.is-selected .card-scene {
+    position: relative;
+    left: auto;
+    top: auto;
+    transform: none;
+    margin-top: clamp(10px, 4svh, 34px);
+    order: 1;
+  }
+
+  .card-showcase.is-selected .selected-copy {
+    position: relative;
+    left: auto;
+    right: auto;
+    top: auto;
+    width: min(100%, 520px);
+    height: auto;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) clamp(42px, 11vw, 60px);
+    grid-template-rows: auto minmax(clamp(138px, 24svh, 220px), auto);
+    align-items: stretch;
+    column-gap: clamp(10px, 3vw, 18px);
+    row-gap: clamp(8px, 2.4vw, 14px);
+    margin-top: clamp(34px, 6svh, 58px);
+    padding-inline: clamp(2px, 1vw, 8px);
+    order: 2;
+  }
+
+  .card-showcase.is-selected .selected-copy::after {
+    content: "";
+    position: absolute;
+    left: clamp(2px, 1vw, 8px);
+    right: clamp(2px, 1vw, 8px);
+    bottom: 0;
+    border-bottom: 1px solid rgba(0,0,0,0.10);
+    pointer-events: none;
+  }
+
+  .selected-heading {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    justify-self: stretch;
+    align-self: center;
+    writing-mode: horizontal-tb;
+    text-orientation: mixed;
+    text-align: center;
+    font-size: clamp(13px, 3.7vw, 17px);
+    letter-spacing: 0.22em;
+    color: var(--muted);
+    font-weight: 700;
+    line-height: 1.25;
+    min-height: 32px;
+    padding: 7px clamp(8px, 3vw, 14px);
+    text-indent: 0.22em;
+  }
+
+  .card-showcase.is-selected .selected-copy .quote-line {
+    position: relative;
+    left: auto;
+    top: auto;
+    transform: none;
+    width: 100%;
+    min-height: 0;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-block: 1px solid rgba(0,0,0,0.10);
+    touch-action: none;
+    flex: none;
+  }
+
+  .card-showcase.is-selected .selected-copy .type-line {
+    grid-column: 2;
+    grid-row: 2;
+    align-self: start;
+    align-items: flex-start;
+    justify-content: center;
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    padding: clamp(12px, 3vw, 18px) 0 0 clamp(8px, 2.6vw, 14px);
+    border-block: 0;
+  }
+
+  .card-showcase.is-selected .selected-copy .intro-line {
+    grid-column: 1;
+    grid-row: 2;
+    justify-content: flex-end;
+    min-height: 100%;
+    padding: clamp(12px, 3vw, 18px);
+    border-top: 0;
+    border-bottom: 0;
+  }
+
+  .card-showcase.is-selected .selected-copy .quote-line .paint-grid {
+    position: static;
+    top: auto;
+    right: auto;
+    height: auto;
+    width: max-content;
+    max-width: none;
+    writing-mode: horizontal-tb;
+    text-orientation: mixed;
+    line-height: 1;
+    transform-origin: center;
+  }
+
+  .card-showcase.is-selected .selected-copy .type-line .paint-grid {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.12em;
+    writing-mode: horizontal-tb;
+    text-orientation: mixed;
+    white-space: nowrap;
+    line-height: 1.28;
+    transform-origin: center;
+  }
+
+  .card-showcase.is-selected .selected-copy .intro-line .paint-grid.is-intro-grid {
+    display: grid;
+    width: max-content;
+    max-width: none;
+    margin: 0 0 0 auto;
+    align-content: center;
+    justify-content: end;
+    justify-items: center;
+    align-items: center;
+    row-gap: 0.26em;
+    column-gap: clamp(12px, 4vw, 24px);
+  }
+
+  .card-showcase.is-selected .selected-copy .intro-line .char {
+    font-size: clamp(13px, 4.2vw, 22px);
+    letter-spacing: 0.04em;
+  }
+
+  .card-showcase.is-selected .selected-copy .intro-line.is-copy-tier-2 .char {
+    font-size: clamp(12px, 3.8vw, 20px);
+  }
+
+  .card-showcase.is-selected .selected-copy .intro-line.is-copy-tier-3 .char {
+    font-size: clamp(11px, 3.4vw, 18px);
+  }
+
+  .card-showcase.is-selected .selected-copy .intro-line.is-copy-tier-4 .char {
+    font-size: clamp(10px, 3.1vw, 16px);
+  }
+
+  .card-showcase.is-selected .selected-copy .type-line .char {
+    display: flex;
+    flex: 0 0 auto;
+    font-size: clamp(15px, 4.5vw, 22px);
+    letter-spacing: 0;
+  }
+
+  .card-showcase.is-selected .flip-hint {
+    position: relative;
+    left: auto;
+    top: auto;
+    transform: none;
+    margin-top: clamp(10px, 2.5svh, 18px);
+    order: 3;
+  }
+
+  .panel-right {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 18;
+    height: calc(var(--mobile-drawer-tab-h) + var(--drawer-bottom-pad));
+    min-height: 0;
+    max-height: none;
+    padding: 0 max(clamp(16px, 5vw, 28px), var(--safe-right)) var(--drawer-bottom-pad) max(clamp(16px, 5vw, 28px), var(--safe-left));
+    border-left: 0;
+    border-top: 1px solid var(--line);
+    background: rgba(255,255,255,0.98);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 0;
+    overflow: hidden;
+    transform: none;
+    transition: height 0.34s var(--ease-spring), box-shadow 0.34s ease;
+  }
+
+  .panel-right.is-open {
+    height: min(76svh, 560px);
+    box-shadow: 0 -14px 34px rgba(0,0,0,0.10);
+  }
+
+  .mobile-drawer-toggle {
+    appearance: none;
+    border: 0;
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+    background: transparent;
+    color: var(--ink);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    width: 100%;
+    height: var(--mobile-drawer-tab-h);
+    font: inherit;
+    font-size: clamp(12px, 3.4vw, 15px);
+    letter-spacing: 0.22em;
+    padding: 0 2px 0 calc(0.22em + 2px);
+    text-align: left;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .panel-right.is-open .mobile-drawer-status {
+    color: var(--ink);
+  }
+
+  .panel-right.is-open .mobile-drawer-chevron {
+    transform: rotate(45deg);
+  }
+
+  .panel-right .panel-title {
+    display: none;
+    margin-top: clamp(14px, 3.8vw, 22px);
+    text-align: center;
+    width: 100%;
+    font-size: clamp(11px, 2.9vw, 14px);
+    letter-spacing: 0.42em;
+    padding-left: 0.42em;
+  }
+
+  .panel-right .grid-wrap {
+    --grid-edge-fade: clamp(18px, 5vw, 30px);
+    flex: 1 1 auto;
+    width: 100%;
+    max-height: calc(min(76svh, 560px) - var(--mobile-drawer-tab-h) - 88px);
+    overflow-y: auto;
+    align-items: flex-start;
+    justify-content: center;
+    padding: var(--grid-edge-fade) 1px;
+  }
+
+  .panel-right .card-grid {
+    grid-template-columns: repeat(auto-fill, minmax(clamp(54px, 17vw, 78px), 1fr));
+    gap: clamp(7px, 2.2vw, 11px);
+    width: 100%;
+  }
+
+  .panel-right .grid-caption {
+    text-align: center;
+    width: 100%;
+    margin-top: clamp(10px, 3vw, 16px);
+    min-height: 1.4em;
+  }
+
+  .panel-right:not(.is-open) .panel-title,
+  .panel-right:not(.is-open) .grid-wrap,
+  .panel-right:not(.is-open) .grid-caption {
+    display: none;
+    pointer-events: none;
+  }
+}
+</style>
+</head>
+<body class="is-intro-running">
+
+<div class="intro-overlay" id="introOverlay" aria-hidden="true">
+  <div class="intro-stage">
+    <div class="intro-deck">
+      <span class="intro-card intro-card-a"></span>
+      <span class="intro-card intro-card-b"></span>
+      <span class="intro-card intro-card-c"></span>
+      <span class="intro-card intro-card-d"></span>
+      <span class="intro-card intro-card-e"></span>
+    </div>
+    <div class="intro-mark" id="introMark">名片盒</div>
+  </div>
+</div>
+
+<div class="mobile-page-title" id="mobilePageTitle" aria-hidden="true">鐘　聲　的　名　片　盒</div>
+
+<div class="layout">
+
+  <!-- ═══ LEFT: Quote + 3D Card ═══ -->
+  <div class="panel-left">
+    <div class="card-showcase" id="cardShowcase">
+      <div class="idle-quote" id="idleQuote" aria-label="未選取名片的台詞"></div>
+      <div class="selected-copy selected-only" id="selectedCopy">
+        <div class="selected-heading" id="selectedHeading">名片</div>
+        <div class="quote-line type-line" id="cardTypeLine" aria-label="名片類型"></div>
+        <div class="quote-line intro-line" id="cardIntroLine" aria-label="一句話自我介紹"></div>
+      </div>
+
+      <div class="card-scene selected-only" id="cardScene">
+        <div class="card-3d" id="card3d">
+
+          <!-- FRONT -->
+          <div class="card-face front">
+            <div class="face-front">
+              <div class="front-main">
+                <div class="card-avatar" id="cardAvatar">
+                  <span id="cardInitial">鐘</span>
+                </div>
+                <div class="card-info">
+                  <div class="card-name" id="cardName">鐘　聲</div>
+                  <div class="card-role" id="cardRole">文字創作者</div>
+                  <div class="card-intro" id="cardIntro">塵世中的文字創作者，性別認同是小海豹。</div>
+                </div>
+              </div>
+              <div class="front-footer">
+                <span class="hint-text" id="frontHintText">點擊翻面</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- BACK -->
+          <div class="card-face back">
+            <div class="face-back">
+              <img class="back-image" id="cardBackImage" alt="" aria-hidden="true">
+              <div class="back-label">LINKS</div>
+              <div id="cardLinks"></div>
+            </div>
+          </div>
+
+        </div><!-- card-3d -->
+      </div><!-- card-scene -->
+
+      <div class="flip-hint selected-only" id="flipHintText">點擊名片可翻面</div>
+    </div>
+  </div>
+
+  <!-- ═══ RIGHT: Grid ═══ -->
+  <div class="panel-right" id="cardDrawer">
+    <button class="mobile-drawer-toggle" id="mobileDrawerToggle" type="button" aria-expanded="false" aria-controls="cardGrid">
+      <span id="mobileDrawerLabel">名片選單</span>
+      <span class="mobile-drawer-status" id="mobileDrawerStatus">展開</span>
+      <span class="mobile-drawer-chevron" aria-hidden="true"></span>
+    </button>
+    <div class="panel-title" id="panelTitle">鐘　聲　的　名　片　盒</div>
+    <div class="grid-wrap">
+      <div class="card-grid" id="cardGrid"></div>
+    </div>
+    <div class="grid-caption" id="gridCaption">請點擊頭像</div>
+  </div>
+
+</div>
+
+<script>
+/* ── Data ── */
+const CARD_DATA_URL = 'cardcase-cards.json';
+const DEFAULT_IDLE_QUOTE = '這就是我的名片盒：翻閱名片來認識鐘聲，還有其推薦作家。';
+const DEFAULT_META = {
+  ownerName: '鐘　聲',
+  boxTitle: '鐘　聲　的　名　片　盒',
+  introMark: '名片盒',
+  idleQuote: DEFAULT_IDLE_QUOTE,
+  emptyCaption: '請點擊頭像',
+  dataLoadFailedCaption: '名片資料載入失敗',
+  flipHint: '點擊名片可翻面',
+  frontHint: '點擊翻面',
+  drawerLabel: '名片選單',
+  drawerOpenText: '收合',
+  drawerCountSuffix: '張',
+  noLinksText: '（尚無連結）',
+};
+const FALLBACK_CARD = {
+  id: 'kanekoe',
+  slot: 1,
+  isSelf: true,
+  image: null,
+  imageAlt: '鐘',
+  name: '鐘　聲',
+  role: '文字創作者',
+  intro: '塵世中的文字創作者\n性別認同是小海豹。',
+  backImage: null,
+  backImageOpacity: 1,
+  links: [
+    { type: 'Penana',  text: '@Kanekoe', url: 'https://www.penana.com/user/Kanekoe/' },
+    { type: 'CXC',     text: '@Kanekoe', url: 'https://cxc.today/zh/@Kanekoe' },
+    { type: 'Discord', text: '見字寫文', url: '#' },
+  ]
+};
+const FALLBACK_INITIALS = '友朋知情義善仁禮智信誠勇謙恆毅達道德才器'.split('');
+const FALLBACK_SAMPLE_CARDS = [
+  {
+    id: 'test-18',
+    imageAlt: '18',
+    name: '十八字測試',
+    role: '18字介紹',
+    intro: '十八字測試介紹文字剛好落在第一級呈現',
+  },
+  {
+    id: 'test-30',
+    imageAlt: '30',
+    name: '三十字測試',
+    role: '30字介紹',
+    intro: '三十字測試介紹文字用來觀察第二級字體縮放與灰階變化效果很清楚',
+  },
+  {
+    id: 'test-42',
+    imageAlt: '42',
+    name: '四十二字測試',
+    role: '42字介紹',
+    intro: '四十二字測試介紹文字用來觀察第三級字體縮放行距與灰階變化是否依然清楚安穩呈現是否穩定',
+  },
+  {
+    id: 'test-57',
+    imageAlt: '57',
+    name: '五十七字測試',
+    role: '57字介紹',
+    intro: '五十七字測試介紹文字用來觀察第四級字體縮放行距欄距灰階變化以及長句在畫面中的可讀性是否仍然清楚穩定適合閱讀比較舒服',
+  },
+];
+const FALLBACK_CARDS = [
+  FALLBACK_CARD,
+  ...Array.from({ length: 24 }, (_, i) => {
+    const sample = FALLBACK_SAMPLE_CARDS[i];
+    return {
+      id: sample?.id || `friend-${String(i + 1).padStart(2, '0')}`,
+      slot: i + 1,
+      isSelf: false,
+      image: null,
+      imageAlt: sample?.imageAlt || FALLBACK_INITIALS[i] || '？',
+      name: sample?.name || `友人 ${String(i + 1).padStart(2, '0')}`,
+      role: sample?.role || '——',
+      intro: sample?.intro || '（尚未填寫資料）',
+      backImage: null,
+      backImageOpacity: 1,
+      links: [],
+    };
+  }),
+];
+
+let ALL_CARDS = [];
+let UI_META = { ...DEFAULT_META };
+
+/* ── State ── */
+let activeId = null;
+let flipped  = false;
+let tiltRaf  = null;
+let isTilting = false;
+let dataLoadFailed = false;
+
+// Current actual rotation values (used for combined transform)
+let tiltX = 0, tiltY = 0;
+let targetTX = 0, targetTY = 0;
+
+/* ── DOM ── */
+const introOverlay = document.getElementById('introOverlay');
+const introMarkEl = document.getElementById('introMark');
+const mobilePageTitleEl = document.getElementById('mobilePageTitle');
+const showcaseEl = document.getElementById('cardShowcase');
+const idleQuoteEl = document.getElementById('idleQuote');
+const selectedHeadingEl = document.getElementById('selectedHeading');
+const typeLineEl = document.getElementById('cardTypeLine');
+const introLineEl = document.getElementById('cardIntroLine');
+const scene     = document.getElementById('cardScene');
+const card3d    = document.getElementById('card3d');
+const avatarEl  = document.getElementById('cardAvatar');
+const nameEl    = document.getElementById('cardName');
+const roleEl    = document.getElementById('cardRole');
+const introTextEl = document.getElementById('cardIntro');
+const backImageEl = document.getElementById('cardBackImage');
+const linksEl   = document.getElementById('cardLinks');
+const frontHintTextEl = document.getElementById('frontHintText');
+const flipHintTextEl = document.getElementById('flipHintText');
+const drawerEl  = document.getElementById('cardDrawer');
+const drawerToggleEl = document.getElementById('mobileDrawerToggle');
+const mobileDrawerLabelEl = document.getElementById('mobileDrawerLabel');
+const drawerStatusEl = document.getElementById('mobileDrawerStatus');
+const panelTitleEl = document.getElementById('panelTitle');
+const gridEl    = document.getElementById('cardGrid');
+const captionEl = document.getElementById('gridCaption');
+
+/* ── Quote paint effect ── */
+const QUOTE_BASE_RGB  = [247, 247, 247];
+const QUOTE_HOVER_RGB = [196, 196, 196];
+const QUOTE_AUTO_RGBS = [
+  [247, 247, 247],
+  [232, 232, 232],
+  [214, 214, 214],
+  [238, 238, 238],
+];
+const INTRO_COPY_LIMITS = {
+  tier1: 18,
+  tier2: 32,
+  tier3: 48,
+  max: 64,
+};
+const INTRO_COPY_TIER_CLASSES = [
+  'is-copy-tier-1',
+  'is-copy-tier-2',
+  'is-copy-tier-3',
+  'is-copy-tier-4',
+];
+const INTRO_GRID_ROWS_BY_TIER = {
+  1: 5,
+  2: 6,
+  3: 7,
+  4: 9,
+};
+
+function getIntroCopyTier(visibleLength) {
+  if (visibleLength <= INTRO_COPY_LIMITS.tier1) return 1;
+  if (visibleLength <= INTRO_COPY_LIMITS.tier2) return 2;
+  if (visibleLength <= INTRO_COPY_LIMITS.tier3) return 3;
+  return 4;
+}
+
+function getIntroGridRows(tier, charCount) {
+  return Math.max(1, Math.min(charCount || 1, INTRO_GRID_ROWS_BY_TIER[tier] || 8));
+}
+
+function limitIntroCopy(text) {
+  const output = [];
+  let visibleLength = 0;
+  let truncated = false;
+
+  for (const ch of Array.from(text || '')) {
+    if (ch.trim()) visibleLength += 1;
+    if (visibleLength > INTRO_COPY_LIMITS.max) {
+      truncated = true;
+      break;
+    }
+    output.push(ch);
+  }
+
+  if (truncated) {
+    while (output.length && !output[output.length - 1].trim()) output.pop();
+    output.push('…');
+  }
+
+  return {
+    chars: output,
+    visibleLength: truncated ? INTRO_COPY_LIMITS.max : visibleLength,
+  };
+}
+
+function makePaintText(host, mode) {
+  let charEls = [];
+  let cachedRects = [];
+  let autoPaintRaf = null;
+  let isInteracting = false;
+
+  function canAutoPaint() {
+    return mode === 'line' && host.classList.contains('intro-line');
+  }
+
+  function cacheRects() {
+    cachedRects = charEls.map(el => ({
+      el,
+      rect: el.getBoundingClientRect()
+    }));
+  }
+
+  function stopAutoPaint() {
+    if (autoPaintRaf) {
+      cancelAnimationFrame(autoPaintRaf);
+      autoPaintRaf = null;
+    }
+  }
+
+  function paintBaseColor() {
+    const [r, g, b] = QUOTE_BASE_RGB;
+    charEls.forEach(el => { el.style.color = `rgb(${r},${g},${b})`; });
+  }
+
+  function paintAutoFrame(now) {
+    if (!canAutoPaint() || isInteracting || !charEls.length) {
+      autoPaintRaf = null;
+      return;
+    }
+
+    charEls.forEach((el, index) => {
+      const wave = (Math.sin(now * 0.0011 + index * 0.42) + 1) / 2;
+      const paletteWave = (Math.sin(now * 0.00038 + index * 0.18) + 1) / 2;
+      const targetIndex = Math.min(
+        QUOTE_AUTO_RGBS.length - 1,
+        1 + Math.floor(paletteWave * (QUOTE_AUTO_RGBS.length - 1))
+      );
+      const target = QUOTE_AUTO_RGBS[targetIndex];
+      const strength = 0.2 + wave * 0.46;
+      const rgb = QUOTE_BASE_RGB.map((base, i) =>
+        Math.round(base + (target[i] - base) * strength)
+      );
+      el.style.color = `rgb(${rgb[0]},${rgb[1]},${rgb[2]})`;
+    });
+
+    autoPaintRaf = requestAnimationFrame(paintAutoFrame);
+  }
+
+  function startAutoPaint() {
+    if (!canAutoPaint() || isInteracting || autoPaintRaf) return;
+    autoPaintRaf = requestAnimationFrame(paintAutoFrame);
+  }
+
+  function clearPaint() {
+    if (canAutoPaint() && !isInteracting) {
+      startAutoPaint();
+      return;
+    }
+    paintBaseColor();
+  }
+
+  function fitLine() {
+    if (mode !== 'line') return;
+    const grid = host.firstElementChild;
+    if (!grid) return;
+    grid.style.transform = '';
+    if (host.closest('.selected-copy') && window.matchMedia('(min-width: 769px)').matches) {
+      const naturalWidth = grid.scrollWidth;
+      const naturalHeight = grid.scrollHeight;
+      const availableWidth = host.clientWidth;
+      const availableHeight = host.clientHeight;
+      const scale = Math.min(
+        1,
+        availableWidth / Math.max(naturalWidth, 1),
+        availableHeight / Math.max(naturalHeight, 1)
+      );
+      if (scale < 1) grid.style.transform = `scale(${scale})`;
+      return;
+    }
+    const naturalWidth = grid.scrollWidth;
+    const availableWidth = host.clientWidth - 2;
+    const scale = Math.max(0.68, Math.min(1, availableWidth / Math.max(naturalWidth, 1)));
+    if (scale < 1) grid.style.transform = `scaleX(${scale})`;
+  }
+
+  function paintFromPoint(x, y) {
+    if (!cachedRects.length) cacheRects();
+    stopAutoPaint();
+    const [br, bg, bb] = QUOTE_BASE_RGB;
+    cachedRects.forEach(({ el, rect }) => {
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      const dist = Math.sqrt((x - cx) ** 2 + (y - cy) ** 2);
+      const range = Math.max(rect.width, rect.height) * 2.2;
+      const t = Math.max(0, 1 - dist / range);
+      const smooth = t * t * (3 - 2 * t);
+      const r = Math.round(br + smooth * (QUOTE_HOVER_RGB[0] - br));
+      const g = Math.round(bg + smooth * (QUOTE_HOVER_RGB[1] - bg));
+      const b = Math.round(bb + smooth * (QUOTE_HOVER_RGB[2] - bb));
+      el.style.color = `rgb(${r},${g},${b})`;
+    });
+  }
+
+  function appendChar(grid, ch, index, rows, cols, shouldPlace = mode === 'block') {
+    const span = document.createElement('span');
+    span.className = 'char';
+    span.textContent = ch === ' ' ? '\u00a0' : ch;
+
+    if (shouldPlace) {
+      const colIndex = Math.floor(index / rows);
+      const rowIndex = index % rows;
+      span.style.gridColumn = (cols - colIndex);
+      span.style.gridRow = (rowIndex + 1);
+    }
+
+    grid.appendChild(span);
+  }
+
+  function render(text) {
+    const isIntroCopy = canAutoPaint();
+    let chars = Array.from(text || '');
+    let visibleLength = chars.filter(ch => ch.trim()).length;
+    let introTier = null;
+    const grid = document.createElement('div');
+    grid.className = `paint-grid is-${mode}`;
+    stopAutoPaint();
+    isInteracting = false;
+    host.classList.remove('is-long-copy', 'is-very-long-copy', ...INTRO_COPY_TIER_CLASSES);
+
+    if (isIntroCopy) {
+      const limited = limitIntroCopy(text);
+      chars = limited.chars;
+      visibleLength = limited.visibleLength;
+      introTier = getIntroCopyTier(visibleLength);
+      host.classList.add(`is-copy-tier-${introTier}`);
+      grid.classList.add('is-intro-grid');
+    }
+
+    if (isIntroCopy) {
+      const rows = getIntroGridRows(introTier, chars.length);
+      const cols = Math.max(1, Math.ceil(chars.length / rows));
+      grid.style.gridTemplateColumns = `repeat(${cols}, minmax(1em, max-content))`;
+      grid.style.gridTemplateRows = `repeat(${rows}, minmax(1em, max-content))`;
+      chars.forEach((ch, i) => appendChar(grid, ch, i, rows, cols, true));
+    } else if (mode === 'block') {
+      const n = chars.length;
+      const cols = Math.max(2, Math.floor(Math.sqrt(n)));
+      const rows = Math.ceil(n / cols);
+      grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+      grid.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+      chars.forEach((ch, i) => appendChar(grid, ch, i, rows, cols));
+    } else {
+      chars.forEach((ch, i) => appendChar(grid, ch, i, 1, chars.length));
+    }
+
+    host.innerHTML = '';
+    host.appendChild(grid);
+    charEls = Array.from(grid.querySelectorAll('.char'));
+    cachedRects = [];
+    clearPaint();
+    requestAnimationFrame(() => {
+      fitLine();
+      cacheRects();
+    });
+  }
+
+  host.addEventListener('pointerenter', () => {
+    isInteracting = true;
+    stopAutoPaint();
+    cacheRects();
+  });
+  host.addEventListener('pointermove', e => {
+    isInteracting = true;
+    paintFromPoint(e.clientX, e.clientY);
+  });
+  host.addEventListener('pointerleave', () => {
+    isInteracting = false;
+    clearPaint();
+  });
+  host.addEventListener('touchstart', e => {
+    const t = e.touches[0]; if (!t) return;
+    isInteracting = true;
+    stopAutoPaint();
+    cacheRects(); paintFromPoint(t.clientX, t.clientY);
+  }, { passive: true });
+  host.addEventListener('touchmove', e => {
+    const t = e.touches[0]; if (!t) return;
+    isInteracting = true;
+    paintFromPoint(t.clientX, t.clientY);
+  }, { passive: true });
+  host.addEventListener('touchend', () => {
+    isInteracting = false;
+    clearPaint();
+  }, { passive: true });
+  host.addEventListener('touchcancel', () => {
+    isInteracting = false;
+    clearPaint();
+  }, { passive: true });
+
+  return { render, cacheRects, clearPaint, fitLine };
+}
+
+const idlePaint = makePaintText(idleQuoteEl, 'block');
+const typePaint = makePaintText(typeLineEl, 'line');
+const introPaint = makePaintText(introLineEl, 'line');
+
+function textOr(value, fallback) {
+  return value == null || value === '' ? fallback : String(value);
+}
+
+function normalizeOpacity(value, fallback = 1) {
+  if (value == null || value === '') return fallback;
+  const raw = Number(value);
+  if (!Number.isFinite(raw)) return fallback;
+  const normalized = raw > 1 ? raw / 100 : raw;
+  return Math.min(1, Math.max(0, normalized));
+}
+
+function hasLinkContent(link) {
+  if (!link || typeof link !== 'object') return false;
+  return [link.type, link.label, link.text, link.url].some(value => value != null && String(value).trim() !== '');
+}
+
+function normalizeMeta(data) {
+  const root = data && typeof data === 'object' ? data : {};
+  const source = root.meta && typeof root.meta === 'object' ? root.meta : {};
+  return {
+    ownerName: textOr(source.ownerName ?? root.ownerName, DEFAULT_META.ownerName),
+    boxTitle: textOr(source.boxTitle ?? root.boxTitle, DEFAULT_META.boxTitle),
+    introMark: textOr(source.introMark ?? root.introMark, DEFAULT_META.introMark),
+    idleQuote: textOr(source.idleQuote ?? root.idleQuote, DEFAULT_META.idleQuote),
+    emptyCaption: textOr(source.emptyCaption ?? root.emptyCaption, DEFAULT_META.emptyCaption),
+    dataLoadFailedCaption: textOr(source.dataLoadFailedCaption ?? root.dataLoadFailedCaption, DEFAULT_META.dataLoadFailedCaption),
+    flipHint: textOr(source.flipHint ?? root.flipHint, DEFAULT_META.flipHint),
+    frontHint: textOr(source.frontHint ?? root.frontHint, DEFAULT_META.frontHint),
+    drawerLabel: textOr(source.drawerLabel ?? root.drawerLabel, DEFAULT_META.drawerLabel),
+    drawerOpenText: textOr(source.drawerOpenText ?? root.drawerOpenText, DEFAULT_META.drawerOpenText),
+    drawerCountSuffix: textOr(source.drawerCountSuffix ?? root.drawerCountSuffix, DEFAULT_META.drawerCountSuffix),
+    noLinksText: textOr(source.noLinksText ?? root.noLinksText, DEFAULT_META.noLinksText),
+  };
+}
+
+function applyMeta(meta) {
+  UI_META = { ...DEFAULT_META, ...meta };
+  document.title = UI_META.boxTitle;
+  if (introMarkEl) introMarkEl.textContent = UI_META.introMark;
+  if (mobilePageTitleEl) mobilePageTitleEl.textContent = UI_META.boxTitle;
+  if (panelTitleEl) panelTitleEl.textContent = UI_META.boxTitle;
+  if (frontHintTextEl) frontHintTextEl.textContent = UI_META.frontHint;
+  if (flipHintTextEl) flipHintTextEl.textContent = UI_META.flipHint;
+  if (mobileDrawerLabelEl) mobileDrawerLabelEl.textContent = UI_META.drawerLabel;
+}
+
+function normalizeCard(raw, index) {
+  const source = raw && typeof raw === 'object' ? raw : {};
+  const fallbackName = `名片 ${String(index + 1).padStart(2, '0')}`;
+  const name = String(source.name || fallbackName);
+  const image = source.image || source.avatar || source.gridImage || source.thumbnail || null;
+  const imageAlt = textOr(source.imageAlt ?? source.nameShort, Array.from(name.trim())[0] || '？');
+  const intro = textOr(source.intro ?? source.tagline, '（尚未填寫資料）');
+  const backImage = source.backImage || source.back_image || image || null;
+  const backImageOpacity = normalizeOpacity(source.backImageOpacity ?? source.backImageAlpha, 1);
+  const rawLinks = Array.isArray(source.links) ? source.links : [];
+
+  return {
+    id: String(source.id ?? `card-${index + 1}`),
+    slot: Number.isFinite(Number(source.slot)) ? Number(source.slot) : index + 1,
+    isSelf: Boolean(source.isSelf),
+    image,
+    imageAlt,
+    name,
+    role: String(source.role || '——'),
+    intro,
+    backImage,
+    backImageOpacity,
+    links: rawLinks
+      .filter(hasLinkContent)
+      .slice(0, 4)
+      .map(lk => ({
+        type: String(lk.type || lk.label || ''),
+        text: String(lk.text || lk.url || ''),
+        url: String(lk.url || '#'),
+      }))
+  };
+}
+
+async function loadCardData() {
+  try {
+    const response = await fetch(CARD_DATA_URL, { cache: 'no-cache' });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const data = await response.json();
+    const cards = Array.isArray(data.cards) ? data.cards.map(normalizeCard) : [];
+    if (!cards.length) throw new Error('No cards found');
+    return {
+      meta: normalizeMeta(data),
+      cards,
+      failed: false,
+    };
+  } catch (error) {
+    console.warn('Cardcase data fallback:', error);
+    return {
+      meta: { ...DEFAULT_META },
+      cards: FALLBACK_CARDS.map(normalizeCard),
+      failed: true,
+    };
+  }
+}
+
+function oneLineIntro(card) {
+  return (card.intro || '（尚未填寫一句話自我介紹）')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function updateQuoteLines(card) {
+  const role = card.role && card.role !== '——' ? card.role : '未分類';
+  typePaint.render(role);
+  introPaint.render(oneLineIntro(card));
+}
+
+/* ── Combined transform ── */
+function applyTransform(withTransition) {
+  const baseY = flipped ? 180 : 0;
+  if (withTransition) {
+    card3d.style.transition = 'transform 0.75s cubic-bezier(0.22,1,0.36,1)';
+  } else {
+    card3d.style.transition = 'none';
+  }
+  card3d.style.transform =
+    `rotateX(${tiltX.toFixed(3)}deg) rotateY(${(baseY + tiltY).toFixed(3)}deg)`;
+}
+
+/* ── Tilt animation loop ── */
+function tiltLoop() {
+  tiltX += (targetTX - tiltX) * 0.12;
+  tiltY += (targetTY - tiltY) * 0.12;
+  applyTransform(false);
+  if (Math.abs(targetTX - tiltX) > 0.01 || Math.abs(targetTY - tiltY) > 0.01) {
+    tiltRaf = requestAnimationFrame(tiltLoop);
+  } else {
+    tiltRaf = null;
+  }
+}
+
+/* ── Card flip ── */
+scene.addEventListener('click', () => {
+  flipped = !flipped;
+  // Stop tilt loop so transition runs cleanly
+  if (tiltRaf) { cancelAnimationFrame(tiltRaf); tiltRaf = null; }
+  tiltX = 0; tiltY = 0; targetTX = 0; targetTY = 0;
+  applyTransform(true);
+});
+
+/* ── Mouse tilt ── */
+scene.addEventListener('mouseenter', () => { isTilting = true; card3d.style.transition = 'none'; });
+
+scene.addEventListener('mousemove', e => {
+  if (!isTilting) return;
+  const r = scene.getBoundingClientRect();
+  targetTX = -((e.clientY - r.top)  / r.height - 0.5) * 10;
+  targetTY =  ((e.clientX - r.left) / r.width  - 0.5) * 14;
+  if (!tiltRaf) tiltRaf = requestAnimationFrame(tiltLoop);
+});
+
+scene.addEventListener('mouseleave', () => {
+  isTilting = false;
+  targetTX = 0; targetTY = 0;
+  if (tiltRaf) { cancelAnimationFrame(tiltRaf); tiltRaf = null; }
+  tiltX = 0; tiltY = 0;
+  applyTransform(true);
+});
+
+/* ── Touch flip ── */
+let touchStartX = 0;
+scene.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
+scene.addEventListener('touchend', e => {
+  if (Math.abs(e.changedTouches[0].clientX - touchStartX) < 8) {
+    flipped = !flipped;
+    applyTransform(true);
+  }
+}, { passive: true });
+
+function isMobileView() {
+  return window.matchMedia('(max-width: 768px)').matches;
+}
+
+function updateDrawerStatus(isOpen) {
+  if (!drawerStatusEl) return;
+  drawerStatusEl.textContent = isOpen ? UI_META.drawerOpenText : `${ALL_CARDS.length} ${UI_META.drawerCountSuffix}`;
+}
+
+function setDrawerOpen(isOpen) {
+  if (!drawerEl || !drawerToggleEl) return;
+  drawerEl.classList.toggle('is-open', isOpen);
+  drawerToggleEl.setAttribute('aria-expanded', String(isOpen));
+  updateDrawerStatus(isOpen);
+}
+
+function closeDrawerOnMobile() {
+  if (isMobileView()) setDrawerOpen(false);
+}
+
+if (drawerToggleEl) {
+  drawerToggleEl.addEventListener('click', () => {
+    setDrawerOpen(!drawerEl.classList.contains('is-open'));
+  });
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') setDrawerOpen(false);
+});
+
+function getActiveCard() {
+  return ALL_CARDS.find(card => card.id === activeId) || null;
+}
+
+function getRestingCaption() {
+  const activeCard = getActiveCard();
+  if (activeCard) return activeCard.name;
+  return dataLoadFailed ? UI_META.dataLoadFailedCaption : UI_META.emptyCaption;
+}
+
+function showPreviewCaption(card) {
+  if (!captionEl || !card) return;
+  captionEl.textContent = card.name;
+}
+
+function restoreCaption() {
+  if (!captionEl) return;
+  captionEl.textContent = getRestingCaption();
+}
+
+/* ── Build grid ── */
+function buildGrid() {
+  gridEl.innerHTML = '';
+  ALL_CARDS.forEach(card => {
+    const cell = document.createElement('div');
+    cell.className = ['grid-cell', card.isSelf ? 'is-self' : '', card.id === activeId ? 'is-active' : ''].filter(Boolean).join(' ');
+    cell.dataset.id = card.id;
+    cell.setAttribute('role', 'button');
+    cell.setAttribute('tabindex', '0');
+    cell.setAttribute('aria-label', card.name);
+    if (card.image) {
+      const img = document.createElement('img');
+      img.className = 'cell-img'; img.src = card.image; img.alt = card.name;
+      cell.appendChild(img);
+    } else {
+      const sp = document.createElement('span');
+      sp.className = 'cell-name'; sp.textContent = card.name;
+      cell.appendChild(sp);
+    }
+    cell.addEventListener('pointerenter', () => showPreviewCaption(card));
+    cell.addEventListener('focus', () => showPreviewCaption(card));
+    cell.addEventListener('pointerleave', restoreCaption);
+    cell.addEventListener('blur', restoreCaption);
+    cell.addEventListener('click', () => selectCard(card.id));
+    cell.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        selectCard(card.id);
+      }
+    });
+    gridEl.appendChild(cell);
+  });
+  updateDrawerStatus(drawerEl?.classList.contains('is-open'));
+}
+
+/* ── Select card ── */
+function selectCard(id) {
+  const card = ALL_CARDS.find(c => c.id === String(id));
+  if (!card) return;
+
+  if (activeId === card.id) {
+    clearSelection();
+    closeDrawerOnMobile();
+    return;
+  }
+
+  activeId = card.id;
+  flipped = false;
+  tiltX = 0; tiltY = 0;
+  applyTransform(true);
+  loadCardContent(card);
+  updateQuoteLines(card);
+  showcaseEl.classList.add('is-selected');
+  requestAnimationFrame(() => {
+    typePaint.cacheRects();
+    introPaint.cacheRects();
+  });
+  document.querySelectorAll('.grid-cell').forEach(el =>
+    el.classList.toggle('is-active', el.dataset.id === card.id));
+  captionEl.textContent = card.name;
+  closeDrawerOnMobile();
+}
+
+function clearSelection() {
+  activeId = null;
+  flipped = false;
+  tiltX = 0; tiltY = 0; targetTX = 0; targetTY = 0;
+  applyTransform(true);
+  showcaseEl.classList.remove('is-selected');
+  document.querySelectorAll('.grid-cell').forEach(el => el.classList.remove('is-active'));
+  restoreCaption();
+}
+
+function loadCardContent(card) {
+  selectedHeadingEl.textContent = card.name.replace(/\s+/g, '');
+  nameEl.textContent    = card.name;
+  roleEl.textContent    = card.role;
+  introTextEl.textContent = card.intro;
+
+  avatarEl.innerHTML = '';
+  if (card.image) {
+    const img = document.createElement('img');
+    img.src = card.image; img.alt = card.name;
+    avatarEl.appendChild(img);
+  } else {
+    const sp = document.createElement('span');
+    sp.textContent = card.imageAlt;
+    avatarEl.appendChild(sp);
+  }
+
+  if (backImageEl) {
+    if (card.backImage) {
+      backImageEl.src = card.backImage;
+      backImageEl.alt = card.name;
+      backImageEl.style.opacity = String(card.backImageOpacity);
+      backImageEl.style.display = 'block';
+    } else {
+      backImageEl.removeAttribute('src');
+      backImageEl.alt = '';
+      backImageEl.style.display = 'none';
+    }
+  }
+
+  linksEl.innerHTML = '';
+  const links = Array.isArray(card.links) ? card.links : [];
+  if (!links.length) {
+    const d = document.createElement('div');
+    d.className = 'no-links'; d.textContent = UI_META.noLinksText;
+    linksEl.appendChild(d);
+  } else {
+    links.forEach(lk => {
+      const a = document.createElement('a');
+      a.className = 'card-link';
+      a.href = lk.url || '#';
+      if (lk.url && lk.url !== '#') { a.target = '_blank'; a.rel = 'noopener noreferrer'; }
+      const label = document.createElement('span');
+      label.className = 'link-label';
+      label.textContent = lk.type;
+      const text = document.createElement('span');
+      text.textContent = lk.text;
+      a.append(label, text);
+      linksEl.appendChild(a);
+    });
+  }
+}
+
+function finishIntro() {
+  document.body.classList.remove('is-intro-running');
+  document.body.classList.add('is-intro-ready');
+  if (introOverlay) introOverlay.setAttribute('aria-hidden', 'true');
+}
+
+function runIntro() {
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  window.setTimeout(finishIntro, reducedMotion ? 220 : 2100);
+}
+
+/* ── Init ── */
+async function initCardcase() {
+  const data = await loadCardData();
+  dataLoadFailed = data.failed;
+  applyMeta(data.meta);
+  ALL_CARDS = data.cards;
+  idlePaint.render(UI_META.idleQuote);
+  buildGrid();
+  loadCardContent(ALL_CARDS[0] || FALLBACK_CARD);
+  restoreCaption();
+  setDrawerOpen(false);
+  runIntro();
+}
+
+initCardcase();
+window.addEventListener('resize', () => {
+  typePaint.fitLine();
+  introPaint.fitLine();
+  idlePaint.cacheRects();
+  typePaint.cacheRects();
+  introPaint.cacheRects();
+});
+</script>
+</body>
+</html>
