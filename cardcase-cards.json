@@ -1,0 +1,248 @@
+{
+  "version": 1,
+  "meta": {
+    "ownerName": "鐘　聲",
+    "boxTitle": "鐘　聲　的　名　片　盒",
+    "introMark": "名片盒",
+    "idleQuote": "這就是我的名片盒：翻閱名片來認識鐘聲，還有其推薦作家。",
+    "emptyCaption": "請點擊頭像",
+    "dataLoadFailedCaption": "名片資料載入失敗",
+    "flipHint": "點擊名片可翻面",
+    "frontHint": "點擊翻面",
+    "drawerLabel": "名片選單",
+    "drawerOpenText": "收合",
+    "drawerCountSuffix": "張",
+    "noLinksText": "（尚無連結）"
+  },
+  "cards": [
+    {
+      "id": "kanekoe",
+      "slot": 1,
+      "isSelf": true,
+      "image": "Avatar/Kanekoe.png",
+      "imageAlt": "鐘聲",
+      "name": "鐘　聲",
+      "role": "文字創作者",
+      "intro": "塵世中寫百合文的小海豹；望為讀者帶來愛的多面向，還有共鳴。",
+      "backImage": "Avatar/Kanekoe_ill.png",
+      "backImageOpacity": 0.5,
+      "links": [
+        {
+          "type": "HP",
+          "text": "鐘聲 個人主頁",
+          "url": "https://gouzei-kanekoe.github.io/Kanekoe_works"
+        },
+        {
+          "type": "Penana",
+          "text": "作者頁面",
+          "url": "https://www.penana.com/user/177564/%E9%90%98%E8%81%B2"
+        },
+        {
+          "type": "CXC",
+          "text": "【天國管理局文學部】",
+          "url": "https://cxc.today/zh/@Kanekoe"
+        },
+        {
+          "type": "THREADS",
+          "text": "@gouzei_kanekoe",
+          "url": "https://www.threads.com/@gouzei_kanekoe"
+        }
+      ]
+    },
+    {
+      "id": "card-moaaitzvq86",
+      "slot": 2,
+      "isSelf": false,
+      "image": null,
+      "imageAlt": "新",
+      "name": "新名片",
+      "role": "——",
+      "intro": "",
+      "backImage": null,
+      "backImageOpacity": 1,
+      "links": []
+    },
+    {
+      "id": "card-moaaiv6dcyj",
+      "slot": 3,
+      "isSelf": false,
+      "image": null,
+      "imageAlt": "新",
+      "name": "新名片",
+      "role": "——",
+      "intro": "",
+      "backImage": null,
+      "backImageOpacity": 1,
+      "links": []
+    },
+    {
+      "id": "card-moaaivpq7pc",
+      "slot": 4,
+      "isSelf": false,
+      "image": null,
+      "imageAlt": "新",
+      "name": "新名片",
+      "role": "——",
+      "intro": "",
+      "backImage": null,
+      "backImageOpacity": 1,
+      "links": []
+    },
+    {
+      "id": "card-moaaiw1fovf",
+      "slot": 5,
+      "isSelf": false,
+      "image": null,
+      "imageAlt": "新",
+      "name": "新名片",
+      "role": "——",
+      "intro": "",
+      "backImage": null,
+      "backImageOpacity": 1,
+      "links": []
+    },
+    {
+      "id": "card-moaaiwak13a",
+      "slot": 6,
+      "isSelf": false,
+      "image": null,
+      "imageAlt": "新",
+      "name": "新名片",
+      "role": "——",
+      "intro": "",
+      "backImage": null,
+      "backImageOpacity": 1,
+      "links": []
+    },
+    {
+      "id": "card-moaaiwm8hhj",
+      "slot": 7,
+      "isSelf": false,
+      "image": null,
+      "imageAlt": "新",
+      "name": "新名片",
+      "role": "——",
+      "intro": "",
+      "backImage": null,
+      "backImageOpacity": 1,
+      "links": []
+    },
+    {
+      "id": "card-moaaiws3x1u",
+      "slot": 8,
+      "isSelf": false,
+      "image": null,
+      "imageAlt": "新",
+      "name": "新名片",
+      "role": "——",
+      "intro": "",
+      "backImage": null,
+      "backImageOpacity": 1,
+      "links": []
+    },
+    {
+      "id": "card-moaaiwwoblc",
+      "slot": 9,
+      "isSelf": false,
+      "image": null,
+      "imageAlt": "新",
+      "name": "新名片",
+      "role": "——",
+      "intro": "",
+      "backImage": null,
+      "backImageOpacity": 1,
+      "links": []
+    },
+    {
+      "id": "card-moaaix22v0n",
+      "slot": 10,
+      "isSelf": false,
+      "image": null,
+      "imageAlt": "新",
+      "name": "新名片",
+      "role": "——",
+      "intro": "",
+      "backImage": null,
+      "backImageOpacity": 1,
+      "links": []
+    },
+    {
+      "id": "card-moaaix738g6",
+      "slot": 11,
+      "isSelf": false,
+      "image": null,
+      "imageAlt": "新",
+      "name": "新名片",
+      "role": "——",
+      "intro": "",
+      "backImage": null,
+      "backImageOpacity": 1,
+      "links": []
+    },
+    {
+      "id": "card-moaaixcaqyk",
+      "slot": 12,
+      "isSelf": false,
+      "image": null,
+      "imageAlt": "新",
+      "name": "新名片",
+      "role": "——",
+      "intro": "",
+      "backImage": null,
+      "backImageOpacity": 1,
+      "links": []
+    },
+    {
+      "id": "card-moaaixhaz51",
+      "slot": 13,
+      "isSelf": false,
+      "image": null,
+      "imageAlt": "新",
+      "name": "新名片",
+      "role": "——",
+      "intro": "",
+      "backImage": null,
+      "backImageOpacity": 1,
+      "links": []
+    },
+    {
+      "id": "card-moaaixsbt5d",
+      "slot": 14,
+      "isSelf": false,
+      "image": null,
+      "imageAlt": "新",
+      "name": "新名片",
+      "role": "——",
+      "intro": "",
+      "backImage": null,
+      "backImageOpacity": 1,
+      "links": []
+    },
+    {
+      "id": "card-moaaixztk7z",
+      "slot": 15,
+      "isSelf": false,
+      "image": null,
+      "imageAlt": "新",
+      "name": "新名片",
+      "role": "——",
+      "intro": "",
+      "backImage": null,
+      "backImageOpacity": 1,
+      "links": []
+    },
+    {
+      "id": "card-moaaiybph95",
+      "slot": 16,
+      "isSelf": false,
+      "image": null,
+      "imageAlt": "新",
+      "name": "新名片",
+      "role": "——",
+      "intro": "",
+      "backImage": null,
+      "backImageOpacity": 1,
+      "links": []
+    }
+  ]
+}
