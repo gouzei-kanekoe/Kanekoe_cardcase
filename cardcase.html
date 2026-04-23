@@ -190,6 +190,26 @@ body.is-intro-ready .intro-overlay {
   animation: introMarkFade 1.2s 0.45s ease both;
 }
 
+.intro-hint {
+  position: absolute;
+  left: 50%;
+  top: calc(100% + clamp(18px, 3vh, 30px));
+  width: min(82vw, 560px);
+  transform: translateX(-50%) translateY(4px);
+  color: rgba(0,0,0,0.48);
+  font-size: clamp(11px, 0.92vw, 14px);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  line-height: 1.8;
+  text-align: center;
+  white-space: normal;
+  animation: introHintFade 1.05s 0.58s ease both;
+}
+
+.intro-hint-mobile {
+  display: none;
+}
+
 @keyframes introDeckSettle {
   0%   { opacity: 0; transform: translateY(18px) rotateX(10deg) scale(0.94); }
   18%  { opacity: 1; }
@@ -206,6 +226,11 @@ body.is-intro-ready .intro-overlay {
 }
 
 @keyframes introMarkFade {
+  from { opacity: 0; transform: translateX(-50%) translateY(4px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+@keyframes introHintFade {
   from { opacity: 0; transform: translateX(-50%) translateY(4px); }
   to   { opacity: 1; transform: translateX(-50%) translateY(0); }
 }
@@ -780,8 +805,14 @@ body.is-intro-ready .intro-overlay {
   .layout,
   .intro-deck,
   .intro-card,
-  .intro-mark {
+  .intro-mark,
+  .intro-hint {
     animation: none;
+  }
+
+  .intro-hint {
+    opacity: 1;
+    transform: translateX(-50%);
   }
 
   .intro-overlay {
@@ -791,6 +822,23 @@ body.is-intro-ready .intro-overlay {
 
 /* ─────────────── MOBILE ─────────────── */
 @media (max-width: 768px) {
+  .intro-stage {
+    width: clamp(176px, 52vw, 260px);
+    height: clamp(122px, 38vw, 176px);
+  }
+  .intro-hint {
+    top: calc(100% + clamp(18px, 5svh, 32px));
+    width: min(78vw, 340px);
+    font-size: clamp(11px, 3.2vw, 13px);
+    letter-spacing: 0.05em;
+    line-height: 1.75;
+  }
+  .intro-hint-desktop {
+    display: none;
+  }
+  .intro-hint-mobile {
+    display: block;
+  }
   .layout {
     display: flex;
     flex-direction: column;
@@ -1293,6 +1341,8 @@ body.is-intro-ready .intro-overlay {
       <span class="intro-card intro-card-e"></span>
     </div>
     <div class="intro-mark" id="introMark">名片盒</div>
+    <div class="intro-hint intro-hint-desktop">滑鼠點擊名片翻頁，移動名片有 3D 效果</div>
+    <div class="intro-hint intro-hint-mobile">手指左右滑動名片翻頁，點擊名片四角有 3D 效果</div>
   </div>
 </div>
 
@@ -1945,6 +1995,7 @@ function tiltLoop() {
 /* ── Card flip ── */
 function flipCard(withTransition = true) {
   flipped = !flipped;
+  clearMobileTiltTimer();
   if (tiltRaf) { cancelAnimationFrame(tiltRaf); tiltRaf = null; }
   tiltX = 0; tiltY = 0; targetTX = 0; targetTY = 0;
   applyTransform(withTransition);
@@ -1977,19 +2028,56 @@ scene.addEventListener('mouseleave', () => {
 /* ── Touch flip ── */
 let touchStartX = 0;
 let touchStartY = 0;
+let mobileTiltTimer = null;
+
+function clearMobileTiltTimer() {
+  if (!mobileTiltTimer) return;
+  window.clearTimeout(mobileTiltTimer);
+  mobileTiltTimer = null;
+}
+
+function resetMobileCornerTilt() {
+  clearMobileTiltTimer();
+  targetTX = 0;
+  targetTY = 0;
+  if (!tiltRaf) tiltRaf = requestAnimationFrame(tiltLoop);
+}
+
+function startMobileCornerTilt(x, y) {
+  if (!isMobileView()) return;
+  const r = scene.getBoundingClientRect();
+  const xRatio = (x - r.left) / Math.max(r.width, 1);
+  const yRatio = (y - r.top) / Math.max(r.height, 1);
+  const isCorner =
+    (xRatio <= 0.42 || xRatio >= 0.58) &&
+    (yRatio <= 0.42 || yRatio >= 0.58);
+
+  if (!isCorner) return;
+  clearMobileTiltTimer();
+  targetTX = -(yRatio - 0.5) * 12;
+  targetTY =  (xRatio - 0.5) * 16;
+  if (!tiltRaf) tiltRaf = requestAnimationFrame(tiltLoop);
+  mobileTiltTimer = window.setTimeout(resetMobileCornerTilt, 680);
+}
+
 scene.addEventListener('touchstart', e => {
   const t = e.touches[0];
   if (!t) return;
   touchStartX = t.clientX;
   touchStartY = t.clientY;
+  if (!e.target.closest('a')) startMobileCornerTilt(t.clientX, t.clientY);
 }, { passive: true });
 scene.addEventListener('touchend', e => {
   const t = e.changedTouches[0];
   if (!t || !isMobileView()) return;
   const dx = t.clientX - touchStartX;
   const dy = t.clientY - touchStartY;
-  if (Math.abs(dx) >= 36 && Math.abs(dx) > Math.abs(dy) * 1.2) flipCard(true);
+  if (Math.abs(dx) >= 36 && Math.abs(dx) > Math.abs(dy) * 1.2) {
+    clearMobileTiltTimer();
+    flipCard(true);
+  }
 }, { passive: true });
+scene.addEventListener('touchcancel', resetMobileCornerTilt, { passive: true });
 
 function isMobileView() {
   return window.matchMedia('(max-width: 768px)').matches;
@@ -2089,7 +2177,8 @@ function selectCard(id) {
 
   activeId = card.id;
   flipped = false;
-  tiltX = 0; tiltY = 0;
+  clearMobileTiltTimer();
+  tiltX = 0; tiltY = 0; targetTX = 0; targetTY = 0;
   applyTransform(true);
   loadCardContent(card);
   updateQuoteLines(card);
@@ -2107,6 +2196,7 @@ function selectCard(id) {
 function clearSelection() {
   activeId = null;
   flipped = false;
+  clearMobileTiltTimer();
   tiltX = 0; tiltY = 0; targetTX = 0; targetTY = 0;
   applyTransform(true);
   showcaseEl.classList.remove('is-selected');
@@ -2186,7 +2276,7 @@ function finishIntro() {
 
 function runIntro() {
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  window.setTimeout(finishIntro, reducedMotion ? 220 : 2100);
+  window.setTimeout(finishIntro, reducedMotion ? 1800 : 3000);
 }
 
 /* ── Init ── */
