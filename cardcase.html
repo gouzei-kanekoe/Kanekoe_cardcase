@@ -40,6 +40,14 @@ body {
   color: var(--ink);
   -webkit-font-smoothing: antialiased;
   overscroll-behavior: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+img {
+  -webkit-user-drag: none;
+  user-drag: none;
 }
 
 body.is-intro-running {
@@ -444,6 +452,7 @@ body.is-intro-ready .intro-overlay {
   perspective: 1200px;
   cursor: pointer;
   flex-shrink: 0;
+  touch-action: pan-y;
 }
 
 .card-showcase .card-scene {
@@ -488,20 +497,24 @@ body.is-intro-ready .intro-overlay {
 /* ── Front face ── */
 .face-front {
   width: 100%; height: 100%;
-  padding: clamp(18px, 2.6vw, 36px);
-  display: grid;
-  grid-template-rows: 1fr auto;
-  gap: 8px;
+  padding: clamp(24px, 4.1vw, 52px) clamp(28px, 4.8vw, 66px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .front-main {
   display: flex;
-  align-items: flex-start;
-  gap: clamp(14px, 1.8vw, 28px);
+  align-items: center;
+  justify-content: center;
+  gap: clamp(22px, 3.8vw, 48px);
+  width: 100%;
+  min-width: 0;
 }
 
 .card-avatar {
-  width: clamp(36px, 5vw, 80px);
-  height: clamp(36px, 5vw, 80px);
+  width: clamp(96px, 31%, 172px);
+  height: auto;
+  aspect-ratio: 1;
   border: 1px solid var(--line);
   flex-shrink: 0;
   overflow: hidden;
@@ -515,41 +528,59 @@ body.is-intro-ready .intro-overlay {
 }
 .card-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-.card-info { flex: 1; min-width: 0; }
+.card-info {
+  flex: 0 1 clamp(168px, 42%, 260px);
+  min-width: 0;
+  border-left: 1px solid var(--line);
+  padding-left: clamp(24px, 3.8vw, 46px);
+}
 .card-name {
-  font-size: clamp(13px, 1.65vw, 24px);
+  font-size: clamp(16px, 1.75vw, 24px);
   font-weight: 700;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.28em;
   color: var(--ink);
   line-height: 1.2;
+  white-space: nowrap;
 }
 .card-role {
-  font-size: clamp(8px, 0.82vw, 12px);
-  letter-spacing: 0.22em;
+  font-size: clamp(10px, 1.12vw, 15px);
+  letter-spacing: 0.2em;
   color: var(--muted);
-  margin-top: clamp(3px, 0.4vh, 6px);
+  margin-top: clamp(10px, 1.3vh, 16px);
   font-weight: 600;
 }
 .card-intro {
-  font-size: clamp(8px, 0.82vw, 12px);
-  letter-spacing: 0.08em;
+  font-size: clamp(10px, 1vw, 14px);
+  letter-spacing: 0.12em;
   color: rgba(0,0,0,0.45);
-  margin-top: clamp(5px, 0.7vh, 9px);
-  line-height: 1.65;
+  margin-top: clamp(18px, 2.3vh, 28px);
+  line-height: 1.72;
   font-weight: 400;
-  white-space: pre-wrap;
+  white-space: pre-line;
+}
+.face-front.is-front-tier-2 .card-name {
+  font-size: clamp(15px, 1.6vw, 22px);
+}
+.face-front.is-front-tier-2 .card-intro {
+  font-size: clamp(9px, 0.92vw, 13px);
+  line-height: 1.66;
+}
+.face-front.is-front-tier-3 .card-name {
+  font-size: clamp(14px, 1.45vw, 20px);
+}
+.face-front.is-front-tier-3 .card-intro {
+  font-size: clamp(8px, 0.84vw, 12px);
+  line-height: 1.6;
+}
+.face-front.is-front-tier-4 .card-name {
+  font-size: clamp(13px, 1.3vw, 18px);
+}
+.face-front.is-front-tier-4 .card-intro {
+  font-size: clamp(7px, 0.76vw, 11px);
+  line-height: 1.54;
 }
 .front-footer {
-  display: flex;
-  justify-content: flex-end;
-  align-items: flex-end;
-}
-.hint-text {
-  font-size: clamp(7px, 0.64vw, 9px);
-  letter-spacing: 0.18em;
-  color: var(--muted);
-  opacity: 0.5;
-  user-select: none;
+  display: none;
 }
 
 /* ── Back face ── */
@@ -586,9 +617,10 @@ body.is-intro-ready .intro-overlay {
   margin-bottom: 2px;
 }
 .card-link {
-  display: flex;
+  display: inline-flex;
   align-items: baseline;
   gap: 10px;
+  max-width: 100%;
   font-size: clamp(8px, 0.8vw, 11px);
   letter-spacing: 0.08em;
   color: var(--ink);
@@ -599,6 +631,9 @@ body.is-intro-ready .intro-overlay {
   font-weight: 600;
 }
 .card-link:hover { color: var(--accent); border-color: var(--accent); transform: translateX(2px); }
+.card-link-row {
+  display: block;
+}
 .link-label {
   color: var(--muted);
   min-width: clamp(36px, 4.5vw, 56px);
@@ -876,24 +911,51 @@ body.is-intro-ready .intro-overlay {
     letter-spacing: 0.2em;
   }
   .face-front {
-    padding: clamp(14px, 2.2vw, 24px);
+    padding: clamp(18px, 6vw, 28px) clamp(18px, 6vw, 30px);
   }
   .front-main {
-    gap: clamp(10px, 1.4vw, 18px);
+    gap: clamp(16px, 5vw, 24px);
   }
   .card-avatar {
-    width: clamp(36px, 4.5vw, 54px);
-    height: clamp(36px, 4.5vw, 54px);
-    font-size: clamp(13px, 1.6vw, 20px);
+    width: clamp(84px, 31%, 104px);
+    height: auto;
+    font-size: clamp(18px, 5vw, 24px);
+  }
+  .card-info {
+    flex-basis: clamp(142px, 46%, 190px);
+    padding-left: clamp(16px, 5vw, 24px);
   }
   .card-name {
-    font-size: clamp(13px, 1.5vw, 19px);
+    font-size: clamp(14px, 4vw, 19px);
+    letter-spacing: 0.2em;
   }
   .card-role {
-    font-size: clamp(8px, 0.78vw, 11px);
+    font-size: clamp(9px, 2.7vw, 12px);
+    margin-top: clamp(8px, 2vw, 12px);
   }
   .card-intro {
-    font-size: clamp(8px, 0.75vw, 10px);
+    font-size: clamp(8px, 2.45vw, 11px);
+    margin-top: clamp(12px, 3vw, 18px);
+    line-height: 1.62;
+  }
+  .face-front.is-front-tier-2 .card-name {
+    font-size: clamp(13px, 3.7vw, 18px);
+  }
+  .face-front.is-front-tier-2 .card-intro {
+    font-size: clamp(8px, 2.3vw, 10px);
+  }
+  .face-front.is-front-tier-3 .card-name {
+    font-size: clamp(12px, 3.4vw, 16px);
+  }
+  .face-front.is-front-tier-3 .card-intro {
+    font-size: clamp(7px, 2.1vw, 9px);
+  }
+  .face-front.is-front-tier-4 .card-name {
+    font-size: clamp(11px, 3.1vw, 15px);
+  }
+  .face-front.is-front-tier-4 .card-intro {
+    font-size: clamp(7px, 1.95vw, 8px);
+    line-height: 1.52;
   }
   .face-back {
     padding: clamp(14px, 2.2vw, 24px);
@@ -1262,9 +1324,6 @@ body.is-intro-ready .intro-overlay {
                   <div class="card-intro" id="cardIntro">塵世中的文字創作者，性別認同是小海豹。</div>
                 </div>
               </div>
-              <div class="front-footer">
-                <span class="hint-text" id="frontHintText">點擊翻面</span>
-              </div>
             </div>
           </div>
 
@@ -1318,6 +1377,7 @@ const DEFAULT_META = {
   drawerCountSuffix: '張',
   noLinksText: '（尚無連結）',
 };
+const MOBILE_FLIP_HINT = '左右滑動翻面';
 const FALLBACK_CARD = {
   id: 'kanekoe',
   slot: 1,
@@ -1411,13 +1471,13 @@ const typeLineEl = document.getElementById('cardTypeLine');
 const introLineEl = document.getElementById('cardIntroLine');
 const scene     = document.getElementById('cardScene');
 const card3d    = document.getElementById('card3d');
+const faceFrontEl = document.querySelector('.face-front');
 const avatarEl  = document.getElementById('cardAvatar');
 const nameEl    = document.getElementById('cardName');
 const roleEl    = document.getElementById('cardRole');
 const introTextEl = document.getElementById('cardIntro');
 const backImageEl = document.getElementById('cardBackImage');
 const linksEl   = document.getElementById('cardLinks');
-const frontHintTextEl = document.getElementById('frontHintText');
 const flipHintTextEl = document.getElementById('flipHintText');
 const drawerEl  = document.getElementById('cardDrawer');
 const drawerToggleEl = document.getElementById('mobileDrawerToggle');
@@ -1448,6 +1508,12 @@ const INTRO_COPY_TIER_CLASSES = [
   'is-copy-tier-3',
   'is-copy-tier-4',
 ];
+const FRONT_TEXT_TIER_CLASSES = [
+  'is-front-tier-1',
+  'is-front-tier-2',
+  'is-front-tier-3',
+  'is-front-tier-4',
+];
 const INTRO_GRID_ROWS_BY_TIER = {
   1: 5,
   2: 6,
@@ -1460,6 +1526,36 @@ function getIntroCopyTier(visibleLength) {
   if (visibleLength <= INTRO_COPY_LIMITS.tier2) return 2;
   if (visibleLength <= INTRO_COPY_LIMITS.tier3) return 3;
   return 4;
+}
+
+function countVisibleChars(text) {
+  return Array.from(String(text || '')).filter(ch => ch.trim()).length;
+}
+
+function getFrontTextTier(text) {
+  return getIntroCopyTier(Math.min(countVisibleChars(text), INTRO_COPY_LIMITS.max));
+}
+
+function wrapTextByChars(text, maxChars = 12) {
+  return String(text || '')
+    .replace(/\r\n?/g, '\n')
+    .split('\n')
+    .map(line => {
+      const chars = Array.from(line);
+      if (chars.length <= maxChars) return line;
+      const rows = [];
+      for (let i = 0; i < chars.length; i += maxChars) {
+        rows.push(chars.slice(i, i + maxChars).join(''));
+      }
+      return rows.join('\n');
+    })
+    .join('\n');
+}
+
+function setFrontTextTier(tier) {
+  if (!faceFrontEl) return;
+  faceFrontEl.classList.remove(...FRONT_TEXT_TIER_CLASSES);
+  faceFrontEl.classList.add(`is-front-tier-${tier}`);
 }
 
 function getIntroGridRows(tier, charCount) {
@@ -1744,9 +1840,13 @@ function applyMeta(meta) {
   if (introMarkEl) introMarkEl.textContent = UI_META.introMark;
   if (mobilePageTitleEl) mobilePageTitleEl.textContent = UI_META.boxTitle;
   if (panelTitleEl) panelTitleEl.textContent = UI_META.boxTitle;
-  if (frontHintTextEl) frontHintTextEl.textContent = UI_META.frontHint;
-  if (flipHintTextEl) flipHintTextEl.textContent = UI_META.flipHint;
+  updateFlipHintText();
   if (mobileDrawerLabelEl) mobileDrawerLabelEl.textContent = UI_META.drawerLabel;
+}
+
+function updateFlipHintText() {
+  if (!flipHintTextEl) return;
+  flipHintTextEl.textContent = isMobileView() ? MOBILE_FLIP_HINT : UI_META.flipHint;
 }
 
 function normalizeCard(raw, index) {
@@ -1841,12 +1941,16 @@ function tiltLoop() {
 }
 
 /* ── Card flip ── */
-scene.addEventListener('click', () => {
+function flipCard(withTransition = true) {
   flipped = !flipped;
-  // Stop tilt loop so transition runs cleanly
   if (tiltRaf) { cancelAnimationFrame(tiltRaf); tiltRaf = null; }
   tiltX = 0; tiltY = 0; targetTX = 0; targetTY = 0;
-  applyTransform(true);
+  applyTransform(withTransition);
+}
+
+scene.addEventListener('click', e => {
+  if (isMobileView() || e.target.closest('a')) return;
+  flipCard(true);
 });
 
 /* ── Mouse tilt ── */
@@ -1870,12 +1974,19 @@ scene.addEventListener('mouseleave', () => {
 
 /* ── Touch flip ── */
 let touchStartX = 0;
-scene.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
+let touchStartY = 0;
+scene.addEventListener('touchstart', e => {
+  const t = e.touches[0];
+  if (!t) return;
+  touchStartX = t.clientX;
+  touchStartY = t.clientY;
+}, { passive: true });
 scene.addEventListener('touchend', e => {
-  if (Math.abs(e.changedTouches[0].clientX - touchStartX) < 8) {
-    flipped = !flipped;
-    applyTransform(true);
-  }
+  const t = e.changedTouches[0];
+  if (!t || !isMobileView()) return;
+  const dx = t.clientX - touchStartX;
+  const dy = t.clientY - touchStartY;
+  if (Math.abs(dx) >= 36 && Math.abs(dx) > Math.abs(dy) * 1.2) flipCard(true);
 }, { passive: true });
 
 function isMobileView() {
@@ -2003,9 +2114,10 @@ function clearSelection() {
 
 function loadCardContent(card) {
   selectedHeadingEl.textContent = card.name.replace(/\s+/g, '');
+  setFrontTextTier(getFrontTextTier(card.intro));
   nameEl.textContent    = card.name;
   roleEl.textContent    = card.role;
-  introTextEl.textContent = card.intro;
+  introTextEl.textContent = wrapTextByChars(card.intro, 12);
 
   avatarEl.innerHTML = '';
   if (card.image) {
@@ -2043,16 +2155,26 @@ function loadCardContent(card) {
       a.className = 'card-link';
       a.href = lk.url || '#';
       if (lk.url && lk.url !== '#') { a.target = '_blank'; a.rel = 'noopener noreferrer'; }
+      a.addEventListener('click', e => e.stopPropagation());
       const label = document.createElement('span');
       label.className = 'link-label';
       label.textContent = lk.type;
       const text = document.createElement('span');
       text.textContent = lk.text;
       a.append(label, text);
-      linksEl.appendChild(a);
+      const row = document.createElement('div');
+      row.className = 'card-link-row';
+      row.appendChild(a);
+      linksEl.appendChild(row);
     });
   }
 }
+
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('selectstart', e => e.preventDefault());
+document.addEventListener('dragstart', e => {
+  if (e.target instanceof HTMLImageElement) e.preventDefault();
+});
 
 function finishIntro() {
   document.body.classList.remove('is-intro-running');
@@ -2081,6 +2203,7 @@ async function initCardcase() {
 
 initCardcase();
 window.addEventListener('resize', () => {
+  updateFlipHintText();
   typePaint.fitLine();
   introPaint.fitLine();
   idlePaint.cacheRects();
