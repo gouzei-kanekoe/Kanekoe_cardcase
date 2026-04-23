@@ -1384,13 +1384,13 @@ const FALLBACK_CARD = {
   id: 'kanekoe',
   slot: 1,
   isSelf: true,
-  image: null,
-  imageAlt: '鐘',
+  image: 'Avatar/Kanekoe.png',
+  imageAlt: '鐘聲',
   name: '鐘　聲',
   role: '文字創作者',
-  intro: '塵世中的文字創作者\n性別認同是小海豹。',
-  backImage: null,
-  backImageOpacity: 1,
+  intro: '塵世中寫百合文的小海豹；\n望為讀者帶來愛的多面向，\n還有共鳴。',
+  backImage: 'Avatar/Kanekoe_ill.png',
+  backImageOpacity: 0.5,
   links: [
     { type: 'Penana',  text: '@Kanekoe', url: 'https://www.penana.com/user/Kanekoe/' },
     { type: 'CXC',     text: '@Kanekoe', url: 'https://cxc.today/zh/@Kanekoe' },
@@ -1539,12 +1539,19 @@ function getFrontTextTier(text) {
 }
 
 function wrapTextByChars(text, maxChars = 12) {
-  const chars = Array.from(String(text || '').replace(/\s+/g, ''));
-  const rows = [];
-  for (let i = 0; i < chars.length; i += maxChars) {
-    rows.push(chars.slice(i, i + maxChars).join(''));
-  }
-  return rows.join('\n');
+  return String(text || '')
+    .replace(/\r\n?/g, '\n')
+    .split('\n')
+    .map(line => {
+      const chars = Array.from(line);
+      if (chars.length <= maxChars) return line;
+      const rows = [];
+      for (let i = 0; i < chars.length; i += maxChars) {
+        rows.push(chars.slice(i, i + maxChars).join(''));
+      }
+      return rows.join('\n');
+    })
+    .join('\n');
 }
 
 function setFrontTextTier(tier) {
@@ -1718,7 +1725,7 @@ function makePaintText(host, mode) {
 
     if (isIntroCopy) {
       const limited = limitIntroCopy(text);
-      chars = limited.chars;
+      chars = limited.chars.filter(ch => ch.trim());
       visibleLength = limited.visibleLength;
       introTier = getIntroCopyTier(visibleLength);
       host.classList.add(`is-copy-tier-${introTier}`);
@@ -1901,7 +1908,7 @@ async function loadCardData() {
 
 function oneLineIntro(card) {
   return (card.intro || '（尚未填寫一句話自我介紹）')
-    .replace(/\s+/g, ' ')
+    .replace(/\s+/g, '')
     .trim();
 }
 
