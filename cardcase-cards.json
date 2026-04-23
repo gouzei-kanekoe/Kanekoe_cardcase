@@ -118,7 +118,23 @@
       "intro": "住斯巴達的柴犬，喜歡寫不正常人類、瘋女人、戰爭與愛情。",
       "backImage": null,
       "backImageOpacity": 0.6,
-      "links": []
+      "links": [
+        {
+          "type": "Penana",
+          "text": "作者頁面",
+          "url": "https://www.penana.com/user/264356/%E6%9F%B4%E5%B7%B4%E9%81%94-%E1%90%A7-%CF%89-%E1%90%A7"
+        },
+        {
+          "type": "IG",
+          "text": "@shibaruta",
+          "url": "https://www.instagram.com/shibaruta/"
+        },
+        {
+          "type": "Discord",
+          "text": "交流伺服器",
+          "url": " discord.gg/R3jEuscs3K"
+        }
+      ]
     },
     {
       "id": "card-moaaiwm8hhj",
@@ -381,6 +397,59 @@
           "type": "Threads",
           "text": "@wsmileflowerw",
           "url": "https://www.threads.com/@wsmileflowerw"
+        }
+      ]
+    },
+    {
+      "id": "card-mobq0jw40rz",
+      "slot": 15,
+      "isSelf": false,
+      "image": "Avatar/Seikai.png",
+      "imageAlt": "世界",
+      "name": "世界連結處",
+      "role": "小說/網頁設計者",
+      "intro": "設定廚型創作者。\n對戲群經營/小說撰寫/設定集創作/單頁式網頁設計",
+      "backImage": null,
+      "backImageOpacity": 0.6,
+      "links": [
+        {
+          "type": "HP",
+          "text": "個人主頁",
+          "url": "https://zhengmingwei.my.canva.site/worldlink0811"
+        },
+        {
+          "type": "Penana",
+          "text": "作者頁面",
+          "url": "https://www.penana.com/user/312576/%E4%B8%96%E7%95%8C%E9%80%A3%E7%B5%90%E8%99%95"
+        },
+        {
+          "type": "Threads",
+          "text": "@worldlink0811",
+          "url": "https://www.threads.com/@worldlink0811"
+        }
+      ]
+    },
+    {
+      "id": "card-mobq8kqdfs2",
+      "slot": 16,
+      "isSelf": false,
+      "image": "Avatar/Bluebird.png",
+      "imageAlt": "鶄",
+      "name": "鶄",
+      "role": "文字創作者",
+      "intro": "一隻每日努力寫文和找鼠圖的倉鼠。\n目前連載劇情成長系故事《今日的我，依然為你拾筆寫字》\n和電影/書本心得。",
+      "backImage": null,
+      "backImageOpacity": 0.6,
+      "links": [
+        {
+          "type": "Threads",
+          "text": "@gs_bluebird",
+          "url": "https://www.threads.com/@gs_bluebird"
+        },
+        {
+          "type": "Penana",
+          "text": "作者頁面",
+          "url": "https://www.penana.com/user/93091/%E9%B6%84/stream"
         }
       ]
     }
