@@ -25,7 +25,7 @@
       "role": "文字創作者",
       "intro": "塵世中寫百合文的小海豹；\n望為讀者帶來愛的多面向，\n還有共鳴。",
       "backImage": "Avatar/Kanekoe_ill.png",
-      "backImageOpacity": 0.5,
+      "backImageOpacity": 0.6,
       "links": [
         {
           "type": "HP",
@@ -55,7 +55,7 @@
       "isSelf": false,
       "image": "Avatar/Fay.png",
       "imageAlt": "四郎",
-      "name": "四郎",
+      "name": "四　郎",
       "role": "文字創作者",
       "intro": "於殘雪處留下青春，\n凝結光輝之人。",
       "backImage": "Avatar/Fay_ill.png",
@@ -70,6 +70,11 @@
           "type": "IG",
           "text": "@doctor_fai",
           "url": "https://www.instagram.com/doctor_fai/"
+        },
+        {
+          "type": "Penana",
+          "text": "作者頁面",
+          "url": "https://www.penana.com/user/98865/%E9%83%AD%E5%87%9D%E8%BC%9D/stream"
         }
       ]
     },
@@ -81,9 +86,9 @@
       "imageAlt": "七海",
       "name": "七海NANAMI",
       "role": "圖文創作者",
-      "intro": "偶爾寫文、偶爾畫圖；每天都想看男人交配 :(",
+      "intro": "偶爾寫文、偶爾畫圖；每天都想看男人交配。",
       "backImage": "Avatar/Nanami_ill.png",
-      "backImageOpacity": 0.85,
+      "backImageOpacity": 0.6,
       "links": [
         {
           "type": "HP",
@@ -106,79 +111,149 @@
       "id": "card-moaaiwak13a",
       "slot": 4,
       "isSelf": false,
-      "image": null,
-      "imageAlt": "新",
-      "name": "新名片",
-      "role": "——",
-      "intro": "",
+      "image": "Avatar/Shiba.png",
+      "imageAlt": "柴巴達",
+      "name": "柴巴達",
+      "role": "圖文創作者",
+      "intro": "住斯巴達的柴犬，喜歡寫不正常人類、瘋女人、戰爭與愛情。",
       "backImage": null,
-      "backImageOpacity": 1,
+      "backImageOpacity": 0.6,
       "links": []
     },
     {
       "id": "card-moaaiwm8hhj",
       "slot": 5,
       "isSelf": false,
-      "image": null,
-      "imageAlt": "新",
-      "name": "新名片",
-      "role": "——",
-      "intro": "",
-      "backImage": null,
-      "backImageOpacity": 1,
-      "links": []
+      "image": "Avatar/ota.png",
+      "imageAlt": "Ota",
+      "name": "Ota",
+      "role": "文字創作者",
+      "intro": "目前正在寫能讓自己開心的百合小說\n希望也能帶給大家開心，\n所以分享在這裡",
+      "backImage": "Avatar/ota_ill.png",
+      "backImageOpacity": 0.6,
+      "links": [
+        {
+          "type": "HP",
+          "text": "個人主頁",
+          "url": "https://portaly.cc/Bioreta?utm_source=threads&utm_medium=social&utm_content=link_in_bio"
+        },
+        {
+          "type": "CXC",
+          "text": "塔塔會所",
+          "url": "https://cxc.today/zh/@otarewr/work"
+        },
+        {
+          "type": "PENANA",
+          "text": "作者主頁",
+          "url": "#"
+        }
+      ]
     },
     {
       "id": "card-moaaiws3x1u",
       "slot": 6,
       "isSelf": false,
-      "image": null,
-      "imageAlt": "新",
-      "name": "新名片",
-      "role": "——",
-      "intro": "",
+      "image": "Avatar/Catchdream.png",
+      "imageAlt": "捕夢",
+      "name": "捕夢捉月",
+      "role": "文字創作者",
+      "intro": "捕捉夢境，捉住文字，\n想嘗試各種題材的BG創作者！",
       "backImage": null,
-      "backImageOpacity": 1,
-      "links": []
+      "backImageOpacity": 0.6,
+      "links": [
+        {
+          "type": "HP",
+          "text": "個人主頁",
+          "url": "https://linkgoods.com/catchdreamandmoon66"
+        },
+        {
+          "type": "Penana",
+          "text": "作者頁面",
+          "url": "https://www.penana.com/user/91191/%E6%8D%95%E5%A4%A2%E6%8D%89%E6%9C%88"
+        },
+        {
+          "type": "CXC",
+          "text": "捕夢捉月--幻想情慾館",
+          "url": "https://cxc.today/zh/@catchdreamandmoon66/work"
+        }
+      ]
     },
     {
       "id": "card-moaaiwwoblc",
       "slot": 7,
       "isSelf": false,
-      "image": null,
-      "imageAlt": "新",
-      "name": "新名片",
-      "role": "——",
-      "intro": "",
+      "image": "Avatar/AJ.png",
+      "imageAlt": "AJ",
+      "name": "AJ （魚兒）",
+      "role": "文字創作者",
+      "intro": "一名超級業餘作者，\n現在最愛寫極短篇小說",
       "backImage": null,
-      "backImageOpacity": 1,
-      "links": []
+      "backImageOpacity": 0.6,
+      "links": [
+        {
+          "type": "HP",
+          "text": "個人主頁",
+          "url": "https://linktr.ee/chinjen2004"
+        }
+      ]
     },
     {
       "id": "card-moaaix22v0n",
       "slot": 8,
       "isSelf": false,
-      "image": null,
-      "imageAlt": "新",
-      "name": "新名片",
-      "role": "——",
-      "intro": "",
+      "image": "Avatar/miega.png",
+      "imageAlt": "橘柚",
+      "name": "橘　柚",
+      "role": "蕉園駐站作家",
+      "intro": "喜歡寫BL、仙俠、武俠、玄幻及BG。\n因為寫文速度慢，所以更新也較慢， 但絕不會斷更！",
       "backImage": null,
-      "backImageOpacity": 1,
-      "links": []
+      "backImageOpacity": 0.6,
+      "links": [
+        {
+          "type": "HP",
+          "text": "個人主頁",
+          "url": "https://portaly.cc/meiga?utm_source=threads&utm_medium=social&utm_content=link_in_bio"
+        },
+        {
+          "type": "PENANA",
+          "text": "作者頁面",
+          "url": "https://www.penana.com/user/132973/%E6%A9%98%E6%9F%9A/stream"
+        },
+        {
+          "type": "CXC",
+          "text": "橘柚的古耽、仙俠玄幻世界",
+          "url": "https://cxc.today/zh/@miega/work"
+        }
+      ]
     },
     {
       "id": "card-moaaix738g6",
       "slot": 9,
       "isSelf": false,
-      "image": null,
-      "imageAlt": "新",
-      "name": "新名片",
-      "role": "——",
-      "intro": "",
+      "image": "Avatar/Anna.Png",
+      "imageAlt": "安娜",
+      "name": "安　娜",
+      "role": "圖文創作者",
+      "intro": "最近開始嘗試小說創作，目前沉浸於觀察自己角色間的互動。 ",
       "backImage": null,
-      "backImageOpacity": 1,
-      "links": []
+      "backImageOpacity": 0.6,
+      "links": [
+        {
+          "type": "HP",
+          "text": "個人主頁",
+          "url": "https://linktr.ee/annafictionworld"
+        },
+        {
+          "type": "Penana",
+          "text": "作者頁面",
+          "url": "https://www.penana.com/user/295587/anna-liu/stream"
+        },
+        {
+          "type": "Nurtale",
+          "text": "作者頁面",
+          "url": "https://www.neurtale.com/user/352?tab=showcase"
+        }
+      ]
     },
     {
       "id": "card-moaaixcaqyk",
