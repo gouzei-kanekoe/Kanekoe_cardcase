@@ -1,0 +1,1894 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>名片盒編輯器</title>
+<style>
+/* ── Reset ── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+/* ── Tokens ── */
+:root {
+  --bg:      #ffffff;
+  --surface: #f5f5f7;
+  --border:  rgba(0,0,0,0.12);
+  --ink:     #1a1a1a;
+  --muted:   #888888;
+  --accent:  #464e66;
+  --accent-h:#353d55;
+  --danger:  #c0392b;
+  --font: -apple-system, 'PingFang TC', 'Microsoft JhengHei', 'Noto Sans TC', sans-serif;
+  --radius: 4px;
+  --sidebar-w: 260px;
+}
+
+html, body { height: 100%; }
+body {
+  font-family: var(--font);
+  font-size: 14px;
+  background: var(--bg);
+  color: var(--ink);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Header ── */
+.header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 18px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+  flex-shrink: 0;
+  min-height: 46px;
+}
+.header-title {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+  flex: 1;
+}
+
+/* ── Buttons ── */
+.btn {
+  padding: 6px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+  cursor: pointer;
+  font: inherit;
+  font-size: 13px;
+  color: var(--ink);
+  transition: background 0.14s, border-color 0.14s, color 0.14s;
+  white-space: nowrap;
+  line-height: 1.4;
+}
+.btn:hover { background: var(--surface); border-color: rgba(0,0,0,0.22); }
+.btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+.btn-primary:hover { background: var(--accent-h); border-color: var(--accent-h); }
+.btn-sm { padding: 4px 8px; font-size: 12px; }
+.btn-icon { padding: 3px 7px; min-width: 26px; text-align: center; font-size: 13px; }
+.btn-ghost { border-color: transparent; background: transparent; }
+.btn-ghost:hover { background: var(--surface); border-color: var(--border); }
+.btn-danger { color: var(--danger); border-color: rgba(192,57,43,0.25); }
+.btn-danger:hover { background: rgba(192,57,43,0.06); border-color: var(--danger); }
+.btn:disabled { opacity: 0.38; cursor: not-allowed; pointer-events: none; }
+
+/* ── Layout ── */
+.layout {
+  display: grid;
+  grid-template-columns: var(--sidebar-w) 1fr;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* ── Sidebar ── */
+.sidebar {
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--bg);
+}
+.sidebar-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 14px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.sidebar-head-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--muted);
+}
+.sidebar-count {
+  font-size: 11px;
+  color: var(--muted);
+  font-weight: 400;
+}
+.card-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 4px 0;
+}
+.card-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 10px 9px 14px;
+  cursor: pointer;
+  border-left: 3px solid transparent;
+  transition: background 0.12s;
+  user-select: none;
+  min-height: 40px;
+}
+.card-item:hover { background: var(--surface); }
+.card-item.is-active {
+  background: #eff1f8;
+  border-left-color: var(--accent);
+}
+.card-item-name {
+  flex: 1;
+  min-width: 0;
+  font-size: 13px;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 1.3;
+}
+.card-item-self {
+  font-size: 10px;
+  color: var(--accent);
+  font-weight: 700;
+  flex-shrink: 0;
+  letter-spacing: 0;
+}
+.card-item-actions {
+  display: flex;
+  gap: 1px;
+  flex-shrink: 0;
+  opacity: 0;
+  transition: opacity 0.12s;
+}
+.card-item:hover .card-item-actions,
+.card-item.is-active .card-item-actions { opacity: 1; }
+.sidebar-foot {
+  padding: 10px 12px;
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+/* ── Main ── */
+.main {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.editor-workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 380px);
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* ── Right preview pane ── */
+.preview-pane {
+  border-left: 1px solid var(--border);
+  background: var(--surface);
+  padding: 18px 18px 24px;
+  overflow-y: auto;
+  min-width: 0;
+}
+.preview-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.preview-label,
+.preview-face-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--muted);
+}
+.preview-sub {
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 0.06em;
+}
+.preview-card-stack {
+  display: grid;
+  gap: 18px;
+}
+.preview-side {
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+}
+.preview-card {
+  width: 100%;
+  aspect-ratio: 94 / 50;
+  border: 1px solid rgba(0,0,0,0.18);
+  background: #fff;
+  padding: clamp(18px, 8%, 34px) clamp(20px, 9%, 42px);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+  font-family: 'Songti TC', 'SimSun', 'Noto Serif TC', serif;
+  overflow: hidden;
+}
+.preview-card-front {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.preview-front-main {
+  display: flex;
+  gap: clamp(16px, 8%, 30px);
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  width: 100%;
+}
+.preview-avatar {
+  width: clamp(74px, 31%, 124px);
+  height: auto;
+  aspect-ratio: 1;
+  border: 1px solid rgba(0,0,0,0.14);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f3f3f3;
+  font-size: clamp(10px, 4%, 16px);
+  font-weight: 700;
+  color: var(--muted);
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.preview-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.preview-info {
+  flex: 0 1 42%;
+  min-width: 0;
+  overflow: hidden;
+  border-left: 1px solid rgba(0,0,0,0.14);
+  padding-left: clamp(16px, 8%, 30px);
+}
+.preview-name {
+  font-size: clamp(15px, 6.8%, 24px);
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.preview-role {
+  font-size: clamp(8px, 3.4%, 13px);
+  letter-spacing: 0.2em;
+  color: var(--muted);
+  margin-top: clamp(6px, 3%, 12px);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.preview-intro {
+  font-size: clamp(8px, 3%, 12px);
+  color: rgba(0,0,0,0.44);
+  margin-top: clamp(10px, 5%, 18px);
+  line-height: 1.65;
+  overflow: hidden;
+  white-space: pre;
+  word-break: keep-all;
+  overflow-wrap: normal;
+}
+.preview-card-front.is-front-tier-2 .preview-name {
+  font-size: clamp(14px, 6.2%, 22px);
+}
+.preview-card-front.is-front-tier-2 .preview-intro {
+  font-size: clamp(7px, 2.7%, 11px);
+  line-height: 1.58;
+}
+.preview-card-front.is-front-tier-3 .preview-name {
+  font-size: clamp(13px, 5.6%, 20px);
+}
+.preview-card-front.is-front-tier-3 .preview-intro {
+  font-size: clamp(7px, 2.45%, 10px);
+  line-height: 1.52;
+}
+.preview-card-front.is-front-tier-4 .preview-name {
+  font-size: clamp(12px, 5%, 18px);
+}
+.preview-card-front.is-front-tier-4 .preview-intro {
+  font-size: clamp(6px, 2.2%, 9px);
+  line-height: 1.46;
+}
+.preview-hint {
+  display: none;
+}
+.preview-card-back {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(4px, 2%, 8px);
+  background: #fafafa;
+}
+.preview-back-image {
+  position: absolute;
+  top: clamp(12px, 5%, 18px);
+  right: clamp(12px, 5%, 18px);
+  bottom: clamp(12px, 5%, 18px);
+  width: 52%;
+  object-fit: cover;
+  opacity: 1;
+  pointer-events: none;
+  z-index: 0;
+}
+.preview-back-content {
+  position: relative;
+  z-index: 1;
+}
+.preview-back-label {
+  font-size: clamp(6px, 2%, 9px);
+  letter-spacing: 0.3em;
+  color: var(--muted);
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.preview-links {
+  display: grid;
+  gap: 3px;
+}
+.preview-link,
+.preview-no-links {
+  border-left: 1px solid rgba(0,0,0,0.16);
+  padding: 2px 0 2px 8px;
+  font-size: clamp(6px, 2.1%, 9px);
+  letter-spacing: 0.08em;
+  color: var(--ink);
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.preview-link-label {
+  color: var(--muted);
+  margin-right: 7px;
+  font-size: 0.88em;
+}
+.preview-no-links {
+  color: var(--muted);
+  font-weight: 500;
+}
+
+/* ── Form area ── */
+.form-area {
+  flex: 1;
+  overflow-y: auto;
+  padding: 18px 24px 32px;
+}
+.empty-hint {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--muted);
+  font-size: 13px;
+  letter-spacing: 0.1em;
+}
+
+/* ── Tabs ── */
+.form-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 20px;
+  gap: 0;
+}
+.tab-btn {
+  padding: 8px 20px;
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: none;
+  cursor: pointer;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  transition: color 0.14s;
+  margin-bottom: -1px;
+}
+.tab-btn.is-active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+.tab-panel { display: none; }
+.tab-panel.is-active { display: block; }
+
+/* ── Fields ── */
+.section-head {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: var(--muted);
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+  margin: 20px 0 14px;
+}
+.section-head:first-child { margin-top: 0; }
+.field { margin-bottom: 14px; }
+.field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.field-row-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+}
+label.fl {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  margin-bottom: 5px;
+}
+.field-hint {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 4px;
+  line-height: 1.5;
+}
+input[type="text"],
+textarea {
+  width: 100%;
+  padding: 7px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font: inherit;
+  font-size: 13px;
+  background: var(--bg);
+  color: var(--ink);
+  transition: border-color 0.15s, box-shadow 0.15s;
+  outline: none;
+}
+input[type="text"]:focus,
+textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(70,78,102,0.10);
+}
+textarea {
+  resize: vertical;
+  min-height: 72px;
+  line-height: 1.65;
+}
+.path-input-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.path-input-row input {
+  flex: 1;
+  min-width: 0;
+}
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 6px 0 10px;
+}
+.checkbox-row input[type="checkbox"] {
+  width: 15px;
+  height: 15px;
+  accent-color: var(--accent);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.checkbox-row label {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--ink);
+  cursor: pointer;
+  margin: 0;
+}
+
+/* Range */
+.range-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 6px;
+}
+input[type="range"] {
+  flex: 1;
+  accent-color: var(--accent);
+  height: 4px;
+}
+.range-val {
+  font-size: 12px;
+  color: var(--muted);
+  min-width: 38px;
+  text-align: right;
+  font-weight: 600;
+}
+
+/* ── Link rows ── */
+.link-section-head {
+  display: grid;
+  grid-template-columns: 90px 1fr 1.5fr;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.link-section-head span {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+}
+.link-row {
+  display: grid;
+  grid-template-columns: 90px 1fr 1.5fr;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.link-row-num {
+  font-size: 11px;
+  color: rgba(0,0,0,0.28);
+  text-align: center;
+  padding-top: 8px;
+}
+
+/* ── Modal ── */
+.modal-back {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.38);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.18s, visibility 0s linear 0.18s;
+}
+.modal-back.is-open {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.18s;
+}
+.modal {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  width: min(560px, 93vw);
+  max-height: 82vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transform: translateY(10px);
+  transition: transform 0.18s;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.18);
+}
+.modal-back.is-open .modal { transform: translateY(0); }
+.modal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.modal-title { font-size: 14px; font-weight: 700; letter-spacing: 0.08em; }
+.modal-body { flex: 1; overflow-y: auto; padding: 18px 20px; }
+.modal-foot {
+  padding: 12px 18px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+/* ── Image status ── */
+.img-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 5px;
+  font-size: 11px;
+  min-height: 16px;
+  letter-spacing: 0.04em;
+}
+.img-status.ok   { color: #2e7d40; }
+.img-status.fail { color: #c0392b; }
+.img-status.idle { color: var(--muted); }
+.img-thumb {
+  width: 28px;
+  height: 28px;
+  object-fit: cover;
+  border: 1px solid var(--border);
+  display: block;
+  flex-shrink: 0;
+}
+.img-status-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.ok   .img-status-dot { background: #2e7d40; }
+.fail .img-status-dot { background: #c0392b; }
+.idle .img-status-dot { background: var(--muted); }
+
+/* ── File note banner ── */
+.file-note {
+  font-size: 12px;
+  color: #7a5c00;
+  background: #fffaeb;
+  border: 1px solid #f0d060;
+  border-radius: var(--radius);
+  padding: 8px 12px;
+  margin-bottom: 18px;
+  line-height: 1.6;
+  letter-spacing: 0.03em;
+}
+.local-folder-status {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 8px;
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 0.04em;
+}
+
+@media (max-width: 1040px) {
+  .editor-workspace {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+  .preview-pane {
+    order: -1;
+    border-left: none;
+    border-bottom: 1px solid var(--border);
+    max-height: 44vh;
+  }
+  .preview-card-stack {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .layout {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(170px, 32vh) minmax(0, 1fr);
+  }
+  .sidebar {
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
+  .header {
+    flex-wrap: wrap;
+  }
+  .preview-card-stack {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── JSON export modal ── */
+.json-info-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.json-stats {
+  font-size: 12px;
+  color: var(--muted);
+  letter-spacing: 0.06em;
+}
+.json-textarea {
+  width: 100%;
+  height: 300px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 12px;
+  line-height: 1.55;
+  resize: vertical;
+  background: var(--surface);
+  color: var(--ink);
+  outline: none;
+}
+.json-textarea:focus { border-color: var(--accent); }
+
+/* ── Toast ── */
+.toast {
+  position: fixed;
+  bottom: 22px;
+  left: 50%;
+  transform: translateX(-50%) translateY(8px);
+  background: #222;
+  color: #fff;
+  padding: 8px 20px;
+  border-radius: 20px;
+  font-size: 13px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.18s, transform 0.18s;
+  z-index: 200;
+  white-space: nowrap;
+  letter-spacing: 0.04em;
+}
+.toast.is-on {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ HEADER ═══ -->
+<header class="header">
+  <span class="header-title">名片盒編輯器</span>
+  <input type="file" id="fileInput" accept=".json" style="display:none" aria-hidden="true">
+  <input type="file" id="imageFolderInput" accept="image/*" webkitdirectory directory multiple style="display:none" aria-hidden="true">
+  <input type="file" id="avatarFileInput" accept="image/*" style="display:none" aria-hidden="true">
+  <input type="file" id="backImageFileInput" accept="image/*" style="display:none" aria-hidden="true">
+  <button class="btn" id="loadBtn">載入 JSON</button>
+  <button class="btn" id="imageFolderBtn">選擇本機圖片資料夾</button>
+  <button class="btn btn-primary" id="exportBtn">匯出 JSON</button>
+  <button class="btn btn-ghost" id="metaBtn">設定 ⚙</button>
+</header>
+
+<div class="layout">
+
+  <!-- ═══ SIDEBAR ═══ -->
+  <aside class="sidebar">
+    <div class="sidebar-head">
+      <span class="sidebar-head-label">名片清單</span>
+      <span class="sidebar-count" id="sidebarCount"></span>
+    </div>
+    <div class="card-list" id="cardList"></div>
+    <div class="sidebar-foot">
+      <button class="btn" style="width:100%;letter-spacing:0.08em" id="addBtn">＋　新增名片</button>
+    </div>
+  </aside>
+
+  <!-- ═══ MAIN ═══ -->
+  <main class="main">
+    <div class="editor-workspace">
+
+    <!-- Form area -->
+    <div class="form-area" id="formArea">
+      <div class="empty-hint" id="emptyHint">← 從左側點選名片開始編輯</div>
+      <div id="formBody" style="display:none">
+
+        <div class="form-tabs">
+          <button class="tab-btn is-active" data-tab="basic">基本資料</button>
+          <button class="tab-btn" data-tab="links">連結</button>
+        </div>
+
+        <!-- ── BASIC TAB ── -->
+        <div class="tab-panel is-active" id="tab-basic">
+
+          <div class="checkbox-row">
+            <input type="checkbox" id="fIsSelf">
+            <label for="fIsSelf">主要名片（自己的名片，isSelf）</label>
+          </div>
+
+          <div class="file-note" id="fileNote">
+            💡 <strong>圖片預覽說明：</strong>圖片路徑請使用 <code>Avatar/檔名.jpg</code>。可貼上本機完整路徑，編輯器會轉成 GitHub 可用的相對路徑。
+            離線檢查時可按上方「選擇本機圖片資料夾」，選擇 <code>Website</code> 或 <code>Avatar</code>。
+            <span class="local-folder-status" id="imageFolderStatus">尚未選擇本機圖片資料夾</span>
+          </div>
+
+          <div class="section-head">正面</div>
+
+          <div class="field-row field">
+            <div>
+              <label class="fl" for="fName">姓名 *</label>
+              <input type="text" id="fName" placeholder="鐘　聲">
+            </div>
+            <div>
+              <label class="fl" for="fImageAlt">頭像短字（無圖時顯示）</label>
+              <input type="text" id="fImageAlt" placeholder="鐘" maxlength="6">
+            </div>
+          </div>
+
+          <div class="field-row field">
+            <div>
+              <label class="fl" for="fRole">抬頭 / 分類</label>
+              <input type="text" id="fRole" placeholder="文字創作者">
+            </div>
+            <div>
+              <label class="fl" for="fId">ID（唯一識別碼）</label>
+              <input type="text" id="fId" placeholder="kanekoe">
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="fl" for="fIntro">一句話自我介紹（可換行，最多顯示 64 字）</label>
+            <textarea id="fIntro" rows="3" placeholder="塵世中的文字創作者&#10;性別認同是小海豹。"></textarea>
+          </div>
+
+          <div class="field">
+            <label class="fl" for="fImage">頭像圖片路徑</label>
+            <div class="path-input-row">
+              <input type="text" id="fImage" placeholder="Avatar/kanekoe.jpg">
+              <button class="btn btn-sm" id="avatarFileBtn" type="button">選檔</button>
+            </div>
+            <div class="field-hint">相對路徑，例如 <code>Avatar/kanekoe.jpg</code>。留空則顯示頭像短字。</div>
+            <div class="img-status idle" id="imgStatus"></div>
+          </div>
+
+          <div class="section-head">背面</div>
+
+          <div class="field">
+            <label class="fl" for="fBackImage">背面圖片路徑</label>
+            <div class="path-input-row">
+              <input type="text" id="fBackImage" placeholder="Avatar/kanekoe-back.jpg">
+              <button class="btn btn-sm" id="backImageFileBtn" type="button">選檔</button>
+            </div>
+            <div class="field-hint">留空時沿用正面頭像圖；兩者都無則不顯示圖片。</div>
+            <div class="img-status idle" id="backImgStatus"></div>
+          </div>
+
+          <div class="field">
+            <label class="fl" for="fOpacity">背面圖片透明度</label>
+            <div class="range-row">
+              <input type="range" id="fOpacity" min="0" max="1" step="0.05" value="1">
+              <span class="range-val" id="opacityVal">100%</span>
+            </div>
+          </div>
+
+        </div><!-- /tab-basic -->
+
+        <!-- ── LINKS TAB ── -->
+        <div class="tab-panel" id="tab-links">
+          <p style="font-size:12px;color:var(--muted);margin-bottom:16px;line-height:1.6;letter-spacing:0.04em">
+            最多顯示 4 組連結。三個欄位全部留空的組別，匯出時會自動移除。
+          </p>
+          <div class="link-section-head">
+            <span>平台名稱</span>
+            <span>顯示文字</span>
+            <span>網址</span>
+          </div>
+          <div id="linkRows"></div>
+        </div><!-- /tab-links -->
+
+      </div><!-- /formBody -->
+    </div><!-- /form-area -->
+
+    <!-- Preview pane -->
+    <aside class="preview-pane" id="previewBar" aria-label="名片預覽">
+      <div class="preview-head">
+        <span class="preview-label">預覽</span>
+        <span class="preview-sub">正面 / 背面</span>
+      </div>
+      <div class="preview-card-stack">
+        <section class="preview-side" aria-label="正面預覽">
+          <span class="preview-face-label">正面</span>
+          <div class="preview-card preview-card-front">
+            <div class="preview-front-main">
+              <div class="preview-avatar" id="pAvatar"></div>
+              <div class="preview-info">
+                <div class="preview-name" id="pName"></div>
+                <div class="preview-role" id="pRole"></div>
+                <div class="preview-intro" id="pIntro"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="preview-side" aria-label="背面預覽">
+          <span class="preview-face-label">背面</span>
+          <div class="preview-card preview-card-back">
+            <img class="preview-back-image" id="pBackImage" alt="">
+            <div class="preview-back-content">
+              <div class="preview-back-label">LINKS</div>
+              <div class="preview-links" id="pLinks"></div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </aside>
+
+    </div><!-- /editor-workspace -->
+
+  </main>
+</div><!-- /layout -->
+
+<!-- ═══ META MODAL ═══ -->
+<div class="modal-back" id="metaModal" role="dialog" aria-modal="true" aria-label="名片盒設定">
+  <div class="modal">
+    <div class="modal-head">
+      <span class="modal-title">名片盒設定</span>
+      <button class="btn btn-icon btn-ghost" id="metaClose" aria-label="關閉">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="field-row field">
+        <div>
+          <label class="fl" for="mOwnerName">持有人名稱</label>
+          <input type="text" id="mOwnerName">
+        </div>
+        <div>
+          <label class="fl" for="mBoxTitle">頁面標題 / 右側標題</label>
+          <input type="text" id="mBoxTitle">
+        </div>
+      </div>
+      <div class="field-row field">
+        <div>
+          <label class="fl" for="mIntroMark">開場動畫文字</label>
+          <input type="text" id="mIntroMark">
+        </div>
+        <div>
+          <label class="fl" for="mEmptyCaption">未選取名片提示</label>
+          <input type="text" id="mEmptyCaption">
+        </div>
+      </div>
+      <div class="field">
+        <label class="fl" for="mIdleQuote">未選取名片時的大字區文字</label>
+        <textarea id="mIdleQuote" rows="2"></textarea>
+      </div>
+      <div class="field-row field">
+        <div>
+          <label class="fl" for="mFlipHint">翻面提示（名片下方）</label>
+          <input type="text" id="mFlipHint">
+        </div>
+        <div>
+          <label class="fl" for="mFrontHint">翻面提示（名片正面右下）</label>
+          <input type="text" id="mFrontHint">
+        </div>
+      </div>
+      <div class="field-row field">
+        <div>
+          <label class="fl" for="mDrawerLabel">手機版選單標籤</label>
+          <input type="text" id="mDrawerLabel">
+        </div>
+        <div>
+          <label class="fl" for="mDrawerOpenText">選單展開後的文字</label>
+          <input type="text" id="mDrawerOpenText">
+        </div>
+      </div>
+      <div class="field-row field">
+        <div>
+          <label class="fl" for="mDrawerCountSuffix">數量後綴（張、個…）</label>
+          <input type="text" id="mDrawerCountSuffix">
+        </div>
+        <div>
+          <label class="fl" for="mNoLinksText">背面無連結時文字</label>
+          <input type="text" id="mNoLinksText">
+        </div>
+      </div>
+      <div class="field">
+        <label class="fl" for="mFailCaption">資料載入失敗提示</label>
+        <input type="text" id="mFailCaption">
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" id="metaCancel">取消</button>
+      <button class="btn btn-primary" id="metaSave">儲存設定</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ EXPORT MODAL ═══ -->
+<div class="modal-back" id="exportModal" role="dialog" aria-modal="true" aria-label="匯出 JSON">
+  <div class="modal">
+    <div class="modal-head">
+      <span class="modal-title">匯出 JSON</span>
+      <button class="btn btn-icon btn-ghost" id="exportModalClose" aria-label="關閉">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="json-info-row">
+        <span class="json-stats" id="jsonStats"></span>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-sm" id="exportDownloadBtn">下載檔案</button>
+          <button class="btn btn-sm btn-primary" id="copyJsonBtn">複製全部</button>
+        </div>
+      </div>
+      <textarea class="json-textarea" id="jsonOutput" readonly spellcheck="false"></textarea>
+    </div>
+    <div class="modal-foot">
+      <span style="font-size:12px;color:var(--muted);letter-spacing:0.04em">貼到 <code>cardcase-cards.json</code> 並儲存</span>
+      <button class="btn" id="exportModalClose2">關閉</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ════════════════════════════════════════
+   STATE
+   ════════════════════════════════════════ */
+const DEFAULT_META = {
+  ownerName:            '鐘　聲',
+  boxTitle:             '鐘　聲　的　名　片　盒',
+  introMark:            '名片盒',
+  idleQuote:            '這就是我的名片盒：翻閱名片來認識鐘聲，還有其推薦作家。',
+  emptyCaption:         '請點擊頭像',
+  dataLoadFailedCaption:'名片資料載入失敗',
+  flipHint:             '點擊名片可翻面',
+  frontHint:            '點擊翻面',
+  drawerLabel:          '名片選單',
+  drawerOpenText:       '收合',
+  drawerCountSuffix:    '張',
+  noLinksText:          '（尚無連結）',
+};
+
+let state = {
+  meta: { ...DEFAULT_META },
+  cards: [],      // normalized card objects
+  activeIdx: -1,  // which card is open in the form
+};
+
+/* ════════════════════════════════════════
+   DOM REFS
+   ════════════════════════════════════════ */
+const fileInput    = document.getElementById('fileInput');
+const imageFolderInput = document.getElementById('imageFolderInput');
+const avatarFileInput = document.getElementById('avatarFileInput');
+const backImageFileInput = document.getElementById('backImageFileInput');
+const loadBtn      = document.getElementById('loadBtn');
+const imageFolderBtn = document.getElementById('imageFolderBtn');
+const avatarFileBtn = document.getElementById('avatarFileBtn');
+const backImageFileBtn = document.getElementById('backImageFileBtn');
+const exportBtn    = document.getElementById('exportBtn');
+const metaBtn      = document.getElementById('metaBtn');
+const cardListEl   = document.getElementById('cardList');
+const sidebarCount = document.getElementById('sidebarCount');
+const addBtn       = document.getElementById('addBtn');
+const emptyHint    = document.getElementById('emptyHint');
+const formBody     = document.getElementById('formBody');
+const linkRowsEl   = document.getElementById('linkRows');
+const opacityVal   = document.getElementById('opacityVal');
+const metaModal    = document.getElementById('metaModal');
+const toastEl      = document.getElementById('toast');
+const imageFolderStatus = document.getElementById('imageFolderStatus');
+
+// Preview
+const pAvatar    = document.getElementById('pAvatar');
+const pFrontCard = document.querySelector('.preview-card-front');
+const pName      = document.getElementById('pName');
+const pRole      = document.getElementById('pRole');
+const pIntro     = document.getElementById('pIntro');
+const pBackImage = document.getElementById('pBackImage');
+const pLinks     = document.getElementById('pLinks');
+
+// Form fields
+const fIsSelf    = document.getElementById('fIsSelf');
+const fId        = document.getElementById('fId');
+const fName      = document.getElementById('fName');
+const fImageAlt  = document.getElementById('fImageAlt');
+const fRole      = document.getElementById('fRole');
+const fIntro     = document.getElementById('fIntro');
+const fImage     = document.getElementById('fImage');
+const fBackImage = document.getElementById('fBackImage');
+const fOpacity   = document.getElementById('fOpacity');
+
+/* ════════════════════════════════════════
+   UTILITIES
+   ════════════════════════════════════════ */
+let _toastTimer = null;
+function toast(msg, ms = 2400) {
+  toastEl.textContent = msg;
+  toastEl.classList.add('is-on');
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(() => toastEl.classList.remove('is-on'), ms);
+}
+
+function esc(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function genId() {
+  return 'card-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
+}
+
+function clampOpacity(v) {
+  const n = Number(v);
+  if (!Number.isFinite(n)) return 1;
+  return Math.min(1, Math.max(0, n > 1 ? n / 100 : n));
+}
+
+const INTRO_TIER_LIMITS = {
+  tier1: 18,
+  tier2: 32,
+  tier3: 48,
+  max: 64,
+};
+const FRONT_TEXT_TIER_CLASSES = [
+  'is-front-tier-1',
+  'is-front-tier-2',
+  'is-front-tier-3',
+  'is-front-tier-4',
+];
+
+function countVisibleChars(text) {
+  return Array.from(String(text || '')).filter(ch => ch.trim()).length;
+}
+
+function getFrontTextTier(text) {
+  const visibleLength = Math.min(countVisibleChars(text), INTRO_TIER_LIMITS.max);
+  if (visibleLength <= INTRO_TIER_LIMITS.tier1) return 1;
+  if (visibleLength <= INTRO_TIER_LIMITS.tier2) return 2;
+  if (visibleLength <= INTRO_TIER_LIMITS.tier3) return 3;
+  return 4;
+}
+
+function wrapTextByChars(text, maxChars = 12) {
+  return String(text || '')
+    .replace(/\r\n?/g, '\n')
+    .split('\n')
+    .map(line => {
+      const chars = Array.from(line);
+      if (chars.length <= maxChars) return line;
+      const rows = [];
+      for (let i = 0; i < chars.length; i += maxChars) {
+        rows.push(chars.slice(i, i + maxChars).join(''));
+      }
+      return rows.join('\n');
+    })
+    .join('\n');
+}
+
+function setPreviewTextTier(tier) {
+  if (!pFrontCard) return;
+  pFrontCard.classList.remove(...FRONT_TEXT_TIER_CLASSES);
+  pFrontCard.classList.add(`is-front-tier-${tier}`);
+}
+
+function firstChar(str) {
+  return Array.from(String(str).trim())[0] || '？';
+}
+
+function unwrapPath(path) {
+  return String(path || '').trim().replace(/^["']|["']$/g, '');
+}
+
+function normalizeSlashes(path) {
+  return unwrapPath(path).replace(/\\/g, '/');
+}
+
+function isWebUrl(path) {
+  return /^https?:\/\//i.test(unwrapPath(path));
+}
+
+function canonicalizeImagePath(path) {
+  const raw = unwrapPath(path);
+  if (!raw) return '';
+  if (isWebUrl(raw)) return raw.replace(/\\/g, '/');
+
+  const normalized = raw
+    .replace(/\\/g, '/')
+    .replace(/^\.\/+/, '');
+  const parts = normalized.split('/').filter(Boolean);
+  const avatarIdx = parts.findIndex(part => part.toLowerCase() === 'avatar');
+  if (avatarIdx >= 0 && parts.length > avatarIdx + 1) {
+    return ['Avatar', ...parts.slice(avatarIdx + 1)].join('/');
+  }
+  return normalized;
+}
+
+function isAbsPath(path) {
+  const normalized = normalizeSlashes(path);
+  return /^[A-Za-z]:\//.test(normalized) || /^\/\//.test(normalized);
+}
+
+function isUnsafeExportPath(path) {
+  const raw = unwrapPath(path);
+  const normalized = normalizeSlashes(raw);
+  return isAbsPath(normalized) || /^[a-z][a-z0-9+.-]*:/i.test(raw);
+}
+
+function shouldRewritePathInput(raw, canonical) {
+  if (!raw || !canonical || raw === canonical) return false;
+  return raw.includes('\\') || isAbsPath(raw) || /^(file|blob|data):/i.test(raw) || /^\.\/+/.test(raw);
+}
+
+function syncPathInput(inputEl, canonical) {
+  const raw = inputEl.value.trim();
+  if (shouldRewritePathInput(raw, canonical)) inputEl.value = canonical;
+}
+
+function isImageFileName(path) {
+  return /\.(avif|bmp|gif|jpe?g|png|svg|webp)$/i.test(path);
+}
+
+const localImages = {
+  byPath: new Map(),
+  byLowerPath: new Map(),
+  objectUrls: new Map(),
+};
+
+function clearLocalImageLibrary() {
+  localImages.objectUrls.forEach(url => URL.revokeObjectURL(url));
+  localImages.byPath.clear();
+  localImages.byLowerPath.clear();
+  localImages.objectUrls.clear();
+}
+
+function getLocalImageObjectUrl(file) {
+  if (!localImages.objectUrls.has(file)) {
+    localImages.objectUrls.set(file, URL.createObjectURL(file));
+  }
+  return localImages.objectUrls.get(file);
+}
+
+function rememberLocalImage(file, preferredPath = '') {
+  const relPath = preferredPath || file.webkitRelativePath || file.name;
+  const canonical = canonicalizeImagePath(relPath);
+  if (!canonical.startsWith('Avatar/') || !isImageFileName(canonical)) return false;
+  const entry = { path: canonical, file };
+  localImages.byPath.set(canonical, entry);
+  localImages.byLowerPath.set(canonical.toLowerCase(), entry);
+  return true;
+}
+
+function findLocalImage(path) {
+  const canonical = canonicalizeImagePath(path);
+  if (!canonical) return null;
+  return localImages.byPath.get(canonical) || localImages.byLowerPath.get(canonical.toLowerCase()) || null;
+}
+
+function resolveImageSource(path) {
+  const canonical = canonicalizeImagePath(path);
+  if (!canonical || isUnsafeExportPath(canonical)) return { src: '', path: canonical, local: false };
+  const local = findLocalImage(canonical);
+  if (local) {
+    return {
+      src: getLocalImageObjectUrl(local.file),
+      path: local.path,
+      local: true,
+    };
+  }
+  return { src: canonical, path: canonical, local: false };
+}
+
+/* ════════════════════════════════════════
+   NORMALIZE
+   ════════════════════════════════════════ */
+function normalizeCard(raw, idx) {
+  const s = (raw && typeof raw === 'object') ? raw : {};
+  const name = String(s.name || `名片 ${idx + 1}`);
+  const opacity = clampOpacity(s.backImageOpacity ?? s.backImageAlpha ?? 1);
+  const rawLinks = Array.isArray(s.links) ? s.links : [];
+  // Always ensure exactly 4 link slots
+  const links = Array.from({ length: 4 }, (_, i) => {
+    const lk = rawLinks[i];
+    return {
+      type: String((lk && (lk.type || lk.label)) || ''),
+      text: String((lk && lk.text) || ''),
+      url:  String((lk && lk.url)  || ''),
+    };
+  });
+  return {
+    id:               String(s.id ?? genId()),
+    slot:             Number.isFinite(Number(s.slot)) ? Number(s.slot) : idx + 1,
+    isSelf:           Boolean(s.isSelf),
+    image:            canonicalizeImagePath(s.image || s.avatar || '') || null,
+    imageAlt:         String(s.imageAlt ?? s.nameShort ?? firstChar(name)),
+    name,
+    role:             String(s.role || ''),
+    intro:            String(s.intro ?? s.tagline ?? ''),
+    backImage:        canonicalizeImagePath(s.backImage || s.back_image || '') || null,
+    backImageOpacity: opacity,
+    links,
+  };
+}
+
+function newBlankCard() {
+  return normalizeCard({ id: genId(), name: '新名片' }, state.cards.length);
+}
+
+/* ════════════════════════════════════════
+   RENDER SIDEBAR
+   ════════════════════════════════════════ */
+function renderList() {
+  cardListEl.innerHTML = '';
+  const n = state.cards.length;
+  sidebarCount.textContent = `${n} 張`;
+
+  state.cards.forEach((card, i) => {
+    const row = document.createElement('div');
+    row.className = 'card-item' + (i === state.activeIdx ? ' is-active' : '');
+    row.setAttribute('role', 'button');
+    row.setAttribute('tabindex', '0');
+    row.setAttribute('aria-label', card.name);
+    row.innerHTML =
+      `<span class="card-item-name">${esc(card.name)}</span>` +
+      (card.isSelf ? '<span class="card-item-self">★</span>' : '') +
+      `<span class="card-item-actions">` +
+        `<button class="btn btn-icon btn-ghost" data-a="up"   title="上移" ${i === 0     ? 'disabled' : ''}>↑</button>` +
+        `<button class="btn btn-icon btn-ghost" data-a="dn"   title="下移" ${i === n - 1 ? 'disabled' : ''}>↓</button>` +
+        `<button class="btn btn-icon btn-ghost btn-danger" data-a="del" title="刪除"  ${n <= 1     ? 'disabled' : ''}>✕</button>` +
+      `</span>`;
+
+    row.addEventListener('click', e => {
+      const a = e.target.closest('[data-a]')?.dataset.a;
+      if (a === 'up')  { moveCard(i, -1); return; }
+      if (a === 'dn')  { moveCard(i, +1); return; }
+      if (a === 'del') { deleteCard(i);   return; }
+      selectCard(i);
+    });
+    row.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectCard(i); }
+    });
+    cardListEl.appendChild(row);
+  });
+}
+
+/* ════════════════════════════════════════
+   CARD ACTIONS
+   ════════════════════════════════════════ */
+function moveCard(i, dir) {
+  const j = i + dir;
+  if (j < 0 || j >= state.cards.length) return;
+  [state.cards[i], state.cards[j]] = [state.cards[j], state.cards[i]];
+  if (state.activeIdx === i)      state.activeIdx = j;
+  else if (state.activeIdx === j) state.activeIdx = i;
+  renderList();
+}
+
+function deleteCard(i) {
+  if (state.cards.length <= 1) return;
+  if (!confirm(`確定要刪除「${state.cards[i].name}」嗎？`)) return;
+  state.cards.splice(i, 1);
+  if (state.activeIdx >= state.cards.length) state.activeIdx = state.cards.length - 1;
+  else if (state.activeIdx > i)              state.activeIdx -= 1;
+  renderList();
+  selectCard(state.activeIdx);
+}
+
+function addCard() {
+  const card = newBlankCard();
+  state.cards.push(card);
+  renderList();
+  selectCard(state.cards.length - 1);
+  cardListEl.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+/* ════════════════════════════════════════
+   SELECT / DESELECT
+   ════════════════════════════════════════ */
+function selectCard(i) {
+  state.activeIdx = i;
+  renderList();
+  if (i < 0 || i >= state.cards.length) {
+    emptyHint.style.display = '';
+    formBody.style.display = 'none';
+    clearPreview();
+    return;
+  }
+  emptyHint.style.display = 'none';
+  formBody.style.display = '';
+  fillForm(state.cards[i]);
+  renderPreview(state.cards[i]);
+}
+
+/* ════════════════════════════════════════
+   FORM FILL & READ
+   ════════════════════════════════════════ */
+function fillForm(card) {
+  fIsSelf.checked   = card.isSelf;
+  fId.value         = card.id;
+  fName.value       = card.name;
+  fImageAlt.value   = card.imageAlt;
+  fRole.value       = card.role;
+  fIntro.value      = card.intro;
+  fImage.value      = card.image || '';
+  fBackImage.value  = card.backImage || '';
+  fOpacity.value    = String(card.backImageOpacity);
+  opacityVal.textContent = Math.round(card.backImageOpacity * 100) + '%';
+  renderLinkRows(card.links);
+  checkImg(card.image,     imgStatusEl);
+  checkImg(card.backImage, backImgStatusEl);
+}
+
+function renderLinkRows(links) {
+  linkRowsEl.innerHTML = '';
+  for (let i = 0; i < 4; i++) {
+    const lk = links[i] || { type: '', text: '', url: '' };
+    const row = document.createElement('div');
+    row.className = 'link-row';
+    row.innerHTML =
+      `<input type="text" data-li="${i}" data-lf="type" value="${esc(lk.type)}" placeholder="Penana" aria-label="連結${i+1}平台名稱">` +
+      `<input type="text" data-li="${i}" data-lf="text" value="${esc(lk.text)}" placeholder="@Kanekoe" aria-label="連結${i+1}顯示文字">` +
+      `<input type="text" data-li="${i}" data-lf="url"  value="${esc(lk.url)}"  placeholder="https://..." aria-label="連結${i+1}網址">`;
+    linkRowsEl.appendChild(row);
+  }
+}
+
+function readForm() {
+  if (state.activeIdx < 0) return;
+  const card = state.cards[state.activeIdx];
+  const imagePath = canonicalizeImagePath(fImage.value);
+  const backImagePath = canonicalizeImagePath(fBackImage.value);
+  card.isSelf           = fIsSelf.checked;
+  card.id               = fId.value.trim() || genId();
+  card.name             = fName.value.trim() || '未命名';
+  card.imageAlt         = fImageAlt.value.trim() || firstChar(card.name);
+  card.role             = fRole.value;
+  card.intro            = fIntro.value;
+  card.image            = imagePath || null;
+  card.backImage        = backImagePath || null;
+  card.backImageOpacity = clampOpacity(parseFloat(fOpacity.value));
+  syncPathInput(fImage, imagePath);
+  syncPathInput(fBackImage, backImagePath);
+  linkRowsEl.querySelectorAll('[data-li]').forEach(inp => {
+    const i  = parseInt(inp.dataset.li, 10);
+    const lf = inp.dataset.lf;
+    if (!card.links[i]) card.links[i] = { type: '', text: '', url: '' };
+    card.links[i][lf] = inp.value;
+  });
+}
+
+/* ════════════════════════════════════════
+   PREVIEW
+   ════════════════════════════════════════ */
+function renderPreview(card) {
+  setPreviewTextTier(getFrontTextTier(card.intro));
+  pName.textContent  = card.name;
+  pRole.textContent  = card.role || '——';
+  pIntro.textContent = wrapTextByChars(card.intro, 12);
+  pAvatar.innerHTML  = '';
+  if (card.image) {
+    const source = resolveImageSource(card.image);
+    const img = document.createElement('img');
+    img.src = source.src || card.image;
+    img.alt = card.name;
+    img.onerror = () => { pAvatar.textContent = card.imageAlt; };
+    pAvatar.appendChild(img);
+  } else {
+    pAvatar.textContent = card.imageAlt;
+  }
+
+  const backPath = card.backImage || card.image;
+  if (backPath) {
+    const source = resolveImageSource(backPath);
+    pBackImage.src = source.src || backPath;
+    pBackImage.alt = card.name;
+    pBackImage.style.opacity = String(card.backImageOpacity);
+    pBackImage.style.display = 'block';
+    pBackImage.onerror = () => {
+      pBackImage.removeAttribute('src');
+      pBackImage.style.display = 'none';
+    };
+  } else {
+    pBackImage.removeAttribute('src');
+    pBackImage.alt = '';
+    pBackImage.style.display = 'none';
+  }
+
+  pLinks.innerHTML = '';
+  const links = (Array.isArray(card.links) ? card.links : [])
+    .filter(lk => lk.type.trim() || lk.text.trim() || lk.url.trim())
+    .slice(0, 4);
+  if (!links.length) {
+    const empty = document.createElement('div');
+    empty.className = 'preview-no-links';
+    empty.textContent = state.meta.noLinksText || DEFAULT_META.noLinksText;
+    pLinks.appendChild(empty);
+  } else {
+    links.forEach(lk => {
+      const row = document.createElement('div');
+      row.className = 'preview-link';
+      const label = document.createElement('span');
+      label.className = 'preview-link-label';
+      label.textContent = lk.type || 'LINK';
+      const text = document.createElement('span');
+      text.textContent = lk.text || lk.url || '#';
+      row.append(label, text);
+      pLinks.appendChild(row);
+    });
+  }
+}
+
+function clearPreview() {
+  setPreviewTextTier(1);
+  pName.textContent = pRole.textContent = pIntro.textContent = '';
+  pAvatar.innerHTML = '';
+  pBackImage.removeAttribute('src');
+  pBackImage.alt = '';
+  pBackImage.style.display = 'none';
+  pLinks.innerHTML = '';
+}
+
+/* ════════════════════════════════════════
+   IMAGE PATH CHECK
+   ════════════════════════════════════════ */
+const imgStatusEl     = document.getElementById('imgStatus');
+const backImgStatusEl = document.getElementById('backImgStatus');
+
+function suggestRelPath(path) {
+  const canonical = canonicalizeImagePath(path);
+  if (canonical && !isUnsafeExportPath(canonical)) return canonical;
+  const parts = normalizeSlashes(path).split('/').filter(Boolean);
+  return parts[parts.length - 1] || path;
+}
+
+function checkImg(path, statusEl) {
+  if (!statusEl) return;
+  const raw = (path || '').trim();
+  const canonical = canonicalizeImagePath(raw);
+  if (!canonical) {
+    statusEl.className = 'img-status idle';
+    statusEl.innerHTML = '';
+    return;
+  }
+
+  if (isUnsafeExportPath(canonical)) {
+    statusEl.className = 'img-status fail';
+    statusEl.innerHTML =
+      `<span class="img-status-dot"></span>` +
+      `⚠ 無法轉成可上傳路徑。請改填 <strong>${esc(suggestRelPath(raw))}</strong> 或 Avatar/檔名。`;
+    return;
+  }
+
+  const local = findLocalImage(canonical);
+  if (local) {
+    statusEl.className = 'img-status ok';
+    statusEl.innerHTML =
+      `<img class="img-thumb" src="${esc(getLocalImageObjectUrl(local.file))}" alt="">` +
+      `<span class="img-status-dot"></span>✓ 本機圖片可預覽（${esc(local.path)}）`;
+    return;
+  }
+
+  statusEl.className = 'img-status idle';
+  statusEl.innerHTML = '<span class="img-status-dot"></span>檢查中…';
+  const tester = new Image();
+  tester.onload = () => {
+    statusEl.className = 'img-status ok';
+    statusEl.innerHTML =
+      `<img class="img-thumb" src="${esc(canonical)}" alt="">` +
+      `<span class="img-status-dot"></span>✓ 圖片載入成功（${esc(canonical)}）`;
+  };
+  tester.onerror = () => {
+    statusEl.className = 'img-status fail';
+    statusEl.innerHTML =
+      `<span class="img-status-dot"></span>✕ 找不到圖片。可選擇本機圖片資料夾，或確認 ${esc(canonical)} 是否存在。`;
+  };
+  tester.src = canonical;
+}
+
+function refreshImagePreviewState() {
+  if (state.activeIdx < 0) return;
+  const card = state.cards[state.activeIdx];
+  renderPreview(card);
+  checkImg(card.image, imgStatusEl);
+  checkImg(card.backImage, backImgStatusEl);
+}
+
+function loadLocalImageFolder(files) {
+  clearLocalImageLibrary();
+  let count = 0;
+  Array.from(files || []).forEach(file => {
+    if ((file.type && file.type.startsWith('image/')) || isImageFileName(file.name)) {
+      if (rememberLocalImage(file)) count += 1;
+    }
+  });
+
+  if (count > 0) {
+    imageFolderStatus.textContent = `已載入 ${count} 張 Avatar 圖片供離線預覽`;
+    toast(`已載入 ${count} 張本機圖片`);
+  } else {
+    imageFolderStatus.textContent = '未找到 Avatar 圖片，請選擇 Website 或 Avatar 資料夾';
+    toast('未找到 Avatar 圖片');
+  }
+  refreshImagePreviewState();
+}
+
+function avatarPathForFile(file) {
+  const fromRelativePath = canonicalizeImagePath(file.webkitRelativePath || '');
+  if (fromRelativePath.startsWith('Avatar/')) return fromRelativePath;
+  return `Avatar/${file.name}`;
+}
+
+function chooseImageFileForPath(file, inputEl, statusEl) {
+  if (!file) return;
+  if (!(file.type && file.type.startsWith('image/')) && !isImageFileName(file.name)) {
+    toast('請選擇圖片檔');
+    return;
+  }
+  const path = avatarPathForFile(file);
+  rememberLocalImage(file, path);
+  inputEl.value = path;
+  onFormChange();
+  checkImg(path, statusEl);
+  toast(`已填入 ${path}`);
+}
+
+/* ════════════════════════════════════════
+   LIVE UPDATE – form → state → preview
+   ════════════════════════════════════════ */
+function onFormChange() {
+  readForm();
+  if (state.activeIdx < 0) return;
+  const card = state.cards[state.activeIdx];
+  renderPreview(card);
+  // Sync name in sidebar without full re-render
+  const items = cardListEl.children;
+  const item = items[state.activeIdx];
+  if (item) {
+    item.querySelector('.card-item-name').textContent = card.name;
+    const selfBadge = item.querySelector('.card-item-self');
+    if (card.isSelf && !selfBadge) {
+      const sp = document.createElement('span');
+      sp.className = 'card-item-self';
+      sp.textContent = '★';
+      item.insertBefore(sp, item.querySelector('.card-item-actions'));
+    } else if (!card.isSelf && selfBadge) {
+      selfBadge.remove();
+    }
+  }
+}
+
+imageFolderBtn.addEventListener('click', () => imageFolderInput.click());
+imageFolderInput.addEventListener('change', () => loadLocalImageFolder(imageFolderInput.files));
+avatarFileBtn.addEventListener('click', () => avatarFileInput.click());
+backImageFileBtn.addEventListener('click', () => backImageFileInput.click());
+avatarFileInput.addEventListener('change', () => {
+  chooseImageFileForPath(avatarFileInput.files[0], fImage, imgStatusEl);
+  avatarFileInput.value = '';
+});
+backImageFileInput.addEventListener('change', () => {
+  chooseImageFileForPath(backImageFileInput.files[0], fBackImage, backImgStatusEl);
+  backImageFileInput.value = '';
+});
+
+// Wire up all form inputs
+[fIsSelf, fId, fName, fImageAlt, fRole, fIntro, fImage, fBackImage].forEach(el =>
+  el.addEventListener('input', onFormChange));
+fImage.addEventListener('input',     () => checkImg(fImage.value,     imgStatusEl));
+fBackImage.addEventListener('input', () => checkImg(fBackImage.value, backImgStatusEl));
+fIsSelf.addEventListener('change', onFormChange);
+fOpacity.addEventListener('input', () => {
+  opacityVal.textContent = Math.round(parseFloat(fOpacity.value) * 100) + '%';
+  onFormChange();
+});
+linkRowsEl.addEventListener('input', onFormChange);
+
+/* ════════════════════════════════════════
+   TABS
+   ════════════════════════════════════════ */
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('is-active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('is-active'));
+    btn.classList.add('is-active');
+    document.getElementById('tab-' + btn.dataset.tab).classList.add('is-active');
+  });
+});
+
+/* ════════════════════════════════════════
+   LOAD JSON
+   ════════════════════════════════════════ */
+loadBtn.addEventListener('click', () => fileInput.click());
+fileInput.addEventListener('change', () => {
+  const file = fileInput.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const data = JSON.parse(e.target.result);
+      applyData(data);
+      toast(`已載入 ${state.cards.length} 張名片`);
+    } catch {
+      toast('JSON 格式錯誤，無法載入');
+    }
+    fileInput.value = '';
+  };
+  reader.readAsText(file, 'UTF-8');
+});
+
+function applyData(data) {
+  const root = (data && typeof data === 'object') ? data : {};
+  const ms   = (root.meta && typeof root.meta === 'object') ? root.meta : root;
+  state.meta = Object.fromEntries(
+    Object.keys(DEFAULT_META).map(k => [k, String(ms[k] ?? DEFAULT_META[k])])
+  );
+  const rawCards = Array.isArray(root.cards) ? root.cards : [];
+  state.cards = rawCards.length > 0
+    ? rawCards.map(normalizeCard)
+    : [newBlankCard()];
+  state.activeIdx = -1;
+  renderList();
+  selectCard(0);
+}
+
+/* ════════════════════════════════════════
+   EXPORT JSON
+   ════════════════════════════════════════ */
+let _lastJsonStr = '';
+let _lastOutputCards = [];
+
+function buildOutput() {
+  readForm();
+
+  // Block paths that cannot be saved safely to GitHub Pages.
+  const unsafePaths = state.cards
+    .flatMap(c => [c.image, c.backImage].filter(Boolean))
+    .map(canonicalizeImagePath)
+    .filter(isUnsafeExportPath);
+  if (unsafePaths.length > 0) {
+    const list = [...new Set(unsafePaths)].join('\n');
+    alert(`以下圖片路徑仍不是可上傳的相對路徑，已停止匯出：\n\n${list}\n\n請改為 Avatar/檔名.jpg，或貼上包含 Avatar 資料夾的完整路徑讓編輯器自動轉換。`);
+    return null;
+  }
+
+  // Check duplicate IDs
+  const ids = state.cards.map(c => c.id);
+  const dupes = [...new Set(ids.filter((id, i) => ids.indexOf(id) !== i))];
+  if (dupes.length > 0) {
+    if (!confirm(`警告：以下 ID 重複：\n${dupes.join('、')}\n\n重複 ID 可能導致名片盒顯示異常。仍要繼續匯出嗎？`)) return null;
+  }
+
+  const outputCards = state.cards.map((card, i) => {
+    const image = canonicalizeImagePath(card.image);
+    const backImage = canonicalizeImagePath(card.backImage);
+    const cleanLinks = card.links
+      .filter(lk => lk.type.trim() || lk.text.trim() || lk.url.trim())
+      .slice(0, 4)
+      .map(lk => ({ type: lk.type, text: lk.text, url: lk.url || '#' }));
+    const alt = card.imageAlt.trim() || firstChar(card.name);
+    return {
+      id:               card.id,
+      slot:             i + 1,
+      isSelf:           card.isSelf,
+      image:            image || null,
+      imageAlt:         alt,
+      name:             card.name,
+      role:             card.role || '——',
+      intro:            card.intro,
+      backImage:        backImage || null,
+      backImageOpacity: Math.min(1, Math.max(0, card.backImageOpacity)),
+      links:            cleanLinks,
+    };
+  });
+
+  return { outputCards, json: JSON.stringify({ version: 1, meta: state.meta, cards: outputCards }, null, 2) };
+}
+
+function downloadJson(jsonStr) {
+  const blob = new Blob([jsonStr], { type: 'application/json' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url; a.download = 'cardcase-cards.json'; a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+exportBtn.addEventListener('click', () => {
+  const result = buildOutput();
+  if (!result) return;
+  _lastJsonStr = result.json;
+  _lastOutputCards = result.outputCards;
+
+  const outputEl = document.getElementById('jsonOutput');
+  outputEl.value = _lastJsonStr;
+  document.getElementById('jsonStats').textContent =
+    `${_lastOutputCards.length} 張名片`;
+  document.getElementById('exportModal').classList.add('is-open');
+  // Auto-select for quick copy
+  setTimeout(() => { outputEl.focus(); outputEl.select(); }, 80);
+});
+
+// Copy button
+document.getElementById('copyJsonBtn').addEventListener('click', () => {
+  const btn = document.getElementById('copyJsonBtn');
+  navigator.clipboard.writeText(_lastJsonStr).then(() => {
+    btn.textContent = '已複製 ✓';
+    btn.disabled = true;
+    setTimeout(() => { btn.textContent = '複製全部'; btn.disabled = false; }, 1800);
+  }).catch(() => {
+    // Fallback: select textarea for manual copy
+    const ta = document.getElementById('jsonOutput');
+    ta.focus(); ta.select();
+    toast('請手動按 Ctrl+C 複製');
+  });
+});
+
+// Download button inside modal
+document.getElementById('exportDownloadBtn').addEventListener('click', () => {
+  downloadJson(_lastJsonStr);
+  toast(`已下載 ${_lastOutputCards.length} 張名片`);
+});
+
+// Close export modal
+function closeExportModal() {
+  document.getElementById('exportModal').classList.remove('is-open');
+}
+document.getElementById('exportModalClose').addEventListener('click',  closeExportModal);
+document.getElementById('exportModalClose2').addEventListener('click', closeExportModal);
+document.getElementById('exportModal').addEventListener('click', e => {
+  if (e.target === document.getElementById('exportModal')) closeExportModal();
+});
+
+/* ════════════════════════════════════════
+   META MODAL
+   ════════════════════════════════════════ */
+const META_FIELDS = [
+  ['mOwnerName',    'ownerName'],
+  ['mBoxTitle',     'boxTitle'],
+  ['mIntroMark',    'introMark'],
+  ['mIdleQuote',    'idleQuote'],
+  ['mEmptyCaption', 'emptyCaption'],
+  ['mFailCaption',  'dataLoadFailedCaption'],
+  ['mFlipHint',     'flipHint'],
+  ['mFrontHint',    'frontHint'],
+  ['mDrawerLabel',  'drawerLabel'],
+  ['mDrawerOpenText','drawerOpenText'],
+  ['mDrawerCountSuffix','drawerCountSuffix'],
+  ['mNoLinksText',  'noLinksText'],
+];
+
+function openMeta() {
+  META_FIELDS.forEach(([elId, key]) => {
+    document.getElementById(elId).value = state.meta[key] ?? '';
+  });
+  metaModal.classList.add('is-open');
+  document.getElementById('mOwnerName').focus();
+}
+function closeMeta() { metaModal.classList.remove('is-open'); }
+function saveMeta() {
+  META_FIELDS.forEach(([elId, key]) => {
+    state.meta[key] = document.getElementById(elId).value;
+  });
+  if (state.activeIdx >= 0) renderPreview(state.cards[state.activeIdx]);
+  closeMeta();
+  toast('設定已儲存');
+}
+
+metaBtn.addEventListener('click', openMeta);
+document.getElementById('metaClose').addEventListener('click',  closeMeta);
+document.getElementById('metaCancel').addEventListener('click', closeMeta);
+document.getElementById('metaSave').addEventListener('click',   saveMeta);
+metaModal.addEventListener('click', e => { if (e.target === metaModal) closeMeta(); });
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeMeta(); closeExportModal(); }
+});
+addBtn.addEventListener('click', addCard);
+
+/* ════════════════════════════════════════
+   INIT — load default data on start
+   ════════════════════════════════════════ */
+applyData({
+  meta: { ...DEFAULT_META },
+  cards: [
+    {
+      id: 'kanekoe', slot: 1, isSelf: true,
+      image: null, imageAlt: '鐘',
+      name: '鐘　聲', role: '文字創作者',
+      intro: '塵世中的文字創作者\n性別認同是小海豹。',
+      backImage: null, backImageOpacity: 1,
+      links: [
+        { type: 'Penana',  text: '@Kanekoe', url: 'https://www.penana.com/user/Kanekoe/' },
+        { type: 'CXC',     text: '@Kanekoe', url: 'https://cxc.today/zh/@Kanekoe' },
+        { type: 'Discord', text: '見字寫文',  url: '#' },
+        { type: '',        text: '',          url: '' },
+      ],
+    },
+  ],
+});
+</script>
+</body>
+</html>

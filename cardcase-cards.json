@@ -259,14 +259,130 @@
       "id": "card-moaaixcaqyk",
       "slot": 10,
       "isSelf": false,
-      "image": null,
-      "imageAlt": "新",
-      "name": "新名片",
-      "role": "——",
-      "intro": "",
+      "image": "Avatar/Shui.png",
+      "imageAlt": "微水",
+      "name": "微　水",
+      "role": "文字創作者",
+      "intro": "業餘耽美寫手\n主要創作耽美BL小說\n作品有青粥小菜，也有紅燒燉肉",
+      "backImage": "Avatar/Shui_ill.png",
+      "backImageOpacity": 0.6,
+      "links": [
+        {
+          "type": "HP",
+          "text": "個人主頁",
+          "url": "https://portaly.cc/watery"
+        },
+        {
+          "type": "Penana",
+          "text": "作者頁面",
+          "url": "https://penana.com/user/169112/%E5%BE%AE%E6%B0%B4/stream"
+        },
+        {
+          "type": "CXC",
+          "text": "白寫工作室",
+          "url": "https://cxc.today/zh/@Shui/work"
+        }
+      ]
+    },
+    {
+      "id": "card-mobo6x5808d",
+      "slot": 11,
+      "isSelf": false,
+      "image": "Avatar/bang.png",
+      "imageAlt": "BANG",
+      "name": "BANG 無虐",
+      "role": "文字創作者",
+      "intro": "三月出生的雙魚，喜歡寫點自己想寫的東西。\n思考結構跟一般人不同，是個以愛為食的怪物。",
       "backImage": null,
-      "backImageOpacity": 1,
+      "backImageOpacity": 0.55,
       "links": []
+    },
+    {
+      "id": "card-mobofu9phrm",
+      "slot": 12,
+      "isSelf": false,
+      "image": "Avatar/658158034_17881909956514853_119502407110991090_n.jpg",
+      "imageAlt": "新",
+      "name": "晴來透（はるく・とう）",
+      "role": "文字創作者",
+      "intro": "如晴日到來，光影澄透。\n一位喜歡在文字裡尋找光的人。\n寫青春、寫傷痕，也寫那些不敢說出口的心事。",
+      "backImage": null,
+      "backImageOpacity": 0.5,
+      "links": [
+        {
+          "type": "HP",
+          "text": "個人主頁",
+          "url": "https://linktr.ee/harukutou"
+        },
+        {
+          "type": "Penana",
+          "text": "作者頁面",
+          "url": "https://www.penana.com/user/286349/%E6%99%B4%E4%BE%86%E9%80%8F/stream"
+        },
+        {
+          "type": "CXC",
+          "text": "晴來透",
+          "url": "https://cxc.today/zh/@harukutou/work"
+        },
+        {
+          "type": "Threads",
+          "text": "@haruku_tou",
+          "url": "https://www.threads.com/@haruku_tou"
+        }
+      ]
+    },
+    {
+      "id": "card-mobot8c1tuy",
+      "slot": 13,
+      "isSelf": false,
+      "image": "Avatar/satining.png",
+      "imageAlt": "新",
+      "name": "雪　緞",
+      "role": "文字創作者",
+      "intro": "陳年GL寫手，含原創及同人百合作品。",
+      "backImage": "Avatar/satining_ill.png",
+      "backImageOpacity": 0.6,
+      "links": [
+        {
+          "type": "HP",
+          "text": "個人主頁",
+          "url": "https://linktr.ee/blossoming.faded?utm_source=threads&utm_medium=social&utm_content=link_in_bio"
+        },
+        {
+          "type": "PENANA",
+          "text": "作者頁面",
+          "url": "https://www.penana.com/user/241879/satining/portfolio"
+        },
+        {
+          "type": "IG",
+          "text": "@blossoming.faded",
+          "url": "https://www.instagram.com/blossoming.faded/"
+        }
+      ]
+    },
+    {
+      "id": "card-mobp0ivppcf",
+      "slot": 14,
+      "isSelf": false,
+      "image": "Avatar/Smileflower.png",
+      "imageAlt": "Smile",
+      "name": "Smile Flower",
+      "role": "遊戲開發者",
+      "intro": "獨立遊戲開發中~ 喜歡玩文字向/溫馨的遊戲\n往全職開發者的目標緩慢前進中。",
+      "backImage": null,
+      "backImageOpacity": 0.6,
+      "links": [
+        {
+          "type": "HP",
+          "text": "個人主頁",
+          "url": "https://en.yorubox.eu/smileflower/"
+        },
+        {
+          "type": "Threads",
+          "text": "@wsmileflowerw",
+          "url": "https://www.threads.com/@wsmileflowerw"
+        }
+      ]
     }
   ]
 }
