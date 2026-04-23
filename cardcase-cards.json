@@ -54,7 +54,7 @@
       "slot": 2,
       "isSelf": false,
       "image": "Avatar/Fay.png",
-      "imageAlt": "新",
+      "imageAlt": "四郎",
       "name": "四郎",
       "role": "文字創作者",
       "intro": "於殘雪處留下青春，\n凝結光輝之人。",
@@ -77,14 +77,30 @@
       "id": "card-moaaiw1fovf",
       "slot": 3,
       "isSelf": false,
-      "image": null,
-      "imageAlt": "新",
-      "name": "新名片",
-      "role": "——",
-      "intro": "",
-      "backImage": null,
-      "backImageOpacity": 1,
-      "links": []
+      "image": "Avatar/Nanami.png",
+      "imageAlt": "七海",
+      "name": "七海NANAMI",
+      "role": "圖文創作者",
+      "intro": "偶爾寫文、偶爾畫圖；每天都想看男人交配 :(",
+      "backImage": "Avatar/Nanami_ill.png",
+      "backImageOpacity": 0.85,
+      "links": [
+        {
+          "type": "HP",
+          "text": "點擊進入",
+          "url": "https://linktr.ee/nanamiao"
+        },
+        {
+          "type": "Penana",
+          "text": "作者頁面",
+          "url": "https://www.penana.com/user/286182/nanami%E6%B5%B7/stream"
+        },
+        {
+          "type": "CXC",
+          "text": "七海海ㄉ小倉庫",
+          "url": "https://cxc.today/zh/@nanami777"
+        }
+      ]
     },
     {
       "id": "card-moaaiwak13a",
