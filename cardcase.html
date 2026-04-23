@@ -556,7 +556,9 @@ body.is-intro-ready .intro-overlay {
   margin-top: clamp(18px, 2.3vh, 28px);
   line-height: 1.72;
   font-weight: 400;
-  white-space: pre-line;
+  white-space: pre;
+  word-break: keep-all;
+  overflow-wrap: normal;
 }
 .face-front.is-front-tier-2 .card-name {
   font-size: clamp(15px, 1.6vw, 22px);
@@ -1537,19 +1539,12 @@ function getFrontTextTier(text) {
 }
 
 function wrapTextByChars(text, maxChars = 12) {
-  return String(text || '')
-    .replace(/\r\n?/g, '\n')
-    .split('\n')
-    .map(line => {
-      const chars = Array.from(line);
-      if (chars.length <= maxChars) return line;
-      const rows = [];
-      for (let i = 0; i < chars.length; i += maxChars) {
-        rows.push(chars.slice(i, i + maxChars).join(''));
-      }
-      return rows.join('\n');
-    })
-    .join('\n');
+  const chars = Array.from(String(text || '').replace(/\s+/g, ''));
+  const rows = [];
+  for (let i = 0; i < chars.length; i += maxChars) {
+    rows.push(chars.slice(i, i + maxChars).join(''));
+  }
+  return rows.join('\n');
 }
 
 function setFrontTextTier(tier) {
