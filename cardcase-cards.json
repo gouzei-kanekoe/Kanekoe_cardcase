@@ -23,7 +23,7 @@
       "imageAlt": "鐘聲",
       "name": "鐘　聲",
       "role": "文字創作者",
-      "intro": "塵世中寫百合文的小海豹；望為讀者帶來愛的多面向，還有共鳴。",
+      "intro": "塵世中寫百合文的小海豹；\n望為讀者帶來愛的多面向，\n還有共鳴。",
       "backImage": "Avatar/Kanekoe_ill.png",
       "backImageOpacity": 0.5,
       "links": [
@@ -50,20 +50,31 @@
       ]
     },
     {
-      "id": "card-moaaitzvq86",
+      "id": "card-moaaiv6dcyj",
       "slot": 2,
       "isSelf": false,
-      "image": null,
+      "image": "Avatar/Fay.png",
       "imageAlt": "新",
-      "name": "新名片",
-      "role": "——",
-      "intro": "",
-      "backImage": null,
-      "backImageOpacity": 1,
-      "links": []
+      "name": "四郎",
+      "role": "文字創作者",
+      "intro": "於殘雪處留下青春，\n凝結光輝之人。",
+      "backImage": "Avatar/Fay.png",
+      "backImageOpacity": 0.6,
+      "links": [
+        {
+          "type": "HP",
+          "text": "個人主頁",
+          "url": "https://www.kwokyingfai.com/"
+        },
+        {
+          "type": "IG",
+          "text": "@doctor_fai",
+          "url": "https://www.instagram.com/doctor_fai/"
+        }
+      ]
     },
     {
-      "id": "card-moaaiv6dcyj",
+      "id": "card-moaaiw1fovf",
       "slot": 3,
       "isSelf": false,
       "image": null,
@@ -76,7 +87,7 @@
       "links": []
     },
     {
-      "id": "card-moaaivpq7pc",
+      "id": "card-moaaiwak13a",
       "slot": 4,
       "isSelf": false,
       "image": null,
@@ -89,7 +100,7 @@
       "links": []
     },
     {
-      "id": "card-moaaiw1fovf",
+      "id": "card-moaaiwm8hhj",
       "slot": 5,
       "isSelf": false,
       "image": null,
@@ -102,7 +113,7 @@
       "links": []
     },
     {
-      "id": "card-moaaiwak13a",
+      "id": "card-moaaiws3x1u",
       "slot": 6,
       "isSelf": false,
       "image": null,
@@ -115,7 +126,7 @@
       "links": []
     },
     {
-      "id": "card-moaaiwm8hhj",
+      "id": "card-moaaiwwoblc",
       "slot": 7,
       "isSelf": false,
       "image": null,
@@ -128,7 +139,7 @@
       "links": []
     },
     {
-      "id": "card-moaaiws3x1u",
+      "id": "card-moaaix22v0n",
       "slot": 8,
       "isSelf": false,
       "image": null,
@@ -141,7 +152,7 @@
       "links": []
     },
     {
-      "id": "card-moaaiwwoblc",
+      "id": "card-moaaix738g6",
       "slot": 9,
       "isSelf": false,
       "image": null,
@@ -154,86 +165,8 @@
       "links": []
     },
     {
-      "id": "card-moaaix22v0n",
-      "slot": 10,
-      "isSelf": false,
-      "image": null,
-      "imageAlt": "新",
-      "name": "新名片",
-      "role": "——",
-      "intro": "",
-      "backImage": null,
-      "backImageOpacity": 1,
-      "links": []
-    },
-    {
-      "id": "card-moaaix738g6",
-      "slot": 11,
-      "isSelf": false,
-      "image": null,
-      "imageAlt": "新",
-      "name": "新名片",
-      "role": "——",
-      "intro": "",
-      "backImage": null,
-      "backImageOpacity": 1,
-      "links": []
-    },
-    {
       "id": "card-moaaixcaqyk",
-      "slot": 12,
-      "isSelf": false,
-      "image": null,
-      "imageAlt": "新",
-      "name": "新名片",
-      "role": "——",
-      "intro": "",
-      "backImage": null,
-      "backImageOpacity": 1,
-      "links": []
-    },
-    {
-      "id": "card-moaaixhaz51",
-      "slot": 13,
-      "isSelf": false,
-      "image": null,
-      "imageAlt": "新",
-      "name": "新名片",
-      "role": "——",
-      "intro": "",
-      "backImage": null,
-      "backImageOpacity": 1,
-      "links": []
-    },
-    {
-      "id": "card-moaaixsbt5d",
-      "slot": 14,
-      "isSelf": false,
-      "image": null,
-      "imageAlt": "新",
-      "name": "新名片",
-      "role": "——",
-      "intro": "",
-      "backImage": null,
-      "backImageOpacity": 1,
-      "links": []
-    },
-    {
-      "id": "card-moaaixztk7z",
-      "slot": 15,
-      "isSelf": false,
-      "image": null,
-      "imageAlt": "新",
-      "name": "新名片",
-      "role": "——",
-      "intro": "",
-      "backImage": null,
-      "backImageOpacity": 1,
-      "links": []
-    },
-    {
-      "id": "card-moaaiybph95",
-      "slot": 16,
+      "slot": 10,
       "isSelf": false,
       "image": null,
       "imageAlt": "新",
