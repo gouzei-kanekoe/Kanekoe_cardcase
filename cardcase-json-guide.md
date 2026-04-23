@@ -3,7 +3,7 @@
 這份文件整理 `cardcase-cards.json` 的資料格式，供之後製作離線編輯器使用。畫面樣式由 `cardcase.html` 控制，JSON 只負責可編輯內容。
 
 ## 基本結構
-
+ 
 ```json
 {
   "version": 1,
