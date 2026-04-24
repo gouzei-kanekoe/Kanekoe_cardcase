@@ -724,9 +724,12 @@ body.is-intro-ready .intro-overlay {
   align-items: center;
   justify-content: center;
   width: 100%;
+  min-width: 0;
   min-height: 0;
   max-height: min(64svh, 520px);
+  overflow-x: hidden;
   overflow-y: auto;
+  overscroll-behavior-x: none;
   padding: var(--grid-edge-fade) 1px;
   scrollbar-width: thin;
   -webkit-mask-image: linear-gradient(
@@ -749,6 +752,8 @@ body.is-intro-ready .intro-overlay {
   grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: clamp(4px, 0.6vw, 8px);
   width: var(--grid-w);
+  max-width: 100%;
+  min-width: 0;
 }
 .grid-cell {
   aspect-ratio: 1;
@@ -1313,16 +1318,20 @@ body.is-intro-ready .intro-overlay {
     flex: 1 1 auto;
     width: 100%;
     max-height: calc(min(76svh, 560px) - var(--mobile-drawer-tab-h) - 88px);
+    min-width: 0;
+    overflow-x: hidden;
     overflow-y: auto;
     align-items: flex-start;
     justify-content: center;
-    padding: var(--grid-edge-fade) 1px;
+    overscroll-behavior-x: none;
+    padding: var(--grid-edge-fade) 0;
   }
 
   .panel-right .card-grid {
-    grid-template-columns: repeat(auto-fill, minmax(clamp(54px, 17vw, 78px), 1fr));
-    gap: clamp(7px, 2.2vw, 11px);
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: clamp(6px, 1.8vw, 10px);
     width: 100%;
+    max-width: 100%;
   }
 
   .panel-right .grid-caption {
@@ -1946,18 +1955,23 @@ function normalizeCard(raw, index) {
   };
 }
 
+function finalizeCardData(data, options = {}) {
+  const root = data && typeof data === 'object' ? data : {};
+  const cards = Array.isArray(root.cards) ? root.cards.map(normalizeCard) : [];
+  if (!cards.length) throw new Error('No cards found');
+  return {
+    meta: normalizeMeta(root),
+    cards,
+    failed: Boolean(options.failed),
+  };
+}
+
 async function loadCardData() {
   try {
     const response = await fetch(CARD_DATA_URL, { cache: 'no-cache' });
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const data = await response.json();
-    const cards = Array.isArray(data.cards) ? data.cards.map(normalizeCard) : [];
-    if (!cards.length) throw new Error('No cards found');
-    return {
-      meta: normalizeMeta(data),
-      cards,
-      failed: false,
-    };
+    return finalizeCardData(data);
   } catch (error) {
     console.warn('Cardcase data fallback:', error);
     return {
@@ -2318,9 +2332,17 @@ function runIntro() {
 }
 
 /* ── Init ── */
-async function initCardcase() {
-  const data = await loadCardData();
-  dataLoadFailed = data.failed;
+function applyCardDataSet(data) {
+  dataLoadFailed = Boolean(data.failed);
+  activeId = null;
+  flipped = false;
+  clearMobileTiltTimer();
+  tiltX = 0;
+  tiltY = 0;
+  targetTX = 0;
+  targetTY = 0;
+  applyTransform(false);
+  showcaseEl.classList.remove('is-selected');
   applyMeta(data.meta);
   ALL_CARDS = shuffleCardsForEntry(data.cards);
   idlePaint.render(UI_META.idleQuote);
@@ -2328,6 +2350,11 @@ async function initCardcase() {
   loadCardContent(ALL_CARDS[0] || FALLBACK_CARD);
   restoreCaption();
   setDrawerOpen(false);
+}
+
+async function initCardcase() {
+  const data = await loadCardData();
+  applyCardDataSet(data);
   runIntro();
 }
 
