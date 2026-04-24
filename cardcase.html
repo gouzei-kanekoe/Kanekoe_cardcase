@@ -30,6 +30,7 @@ html { -webkit-text-size-adjust: 100%; }
   --safe-left: env(safe-area-inset-left, 0px);
   --safe-right: env(safe-area-inset-right, 0px);
   --drawer-bottom-pad: max(10px, var(--safe-bottom));
+  --mobile-credit-space: 8px;
   --grid-w: min(100%, clamp(340px, 30vw, 500px));
 }
 
@@ -677,6 +678,7 @@ body.is-intro-ready .intro-overlay {
 
 /* ─────────────── RIGHT PANEL ─────────────── */
 .panel-right {
+  position: relative;
   border-left: 1px solid var(--line);
   display: flex;
   flex-direction: column;
@@ -720,6 +722,7 @@ body.is-intro-ready .intro-overlay {
 .grid-wrap {
   --grid-edge-fade: clamp(16px, 2.8vh, 28px);
   flex: 0 0 auto;
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -818,6 +821,85 @@ body.is-intro-ready .intro-overlay {
   width: var(--grid-w);
 }
 
+.grid-notice {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 3;
+  min-width: min(72%, 240px);
+  max-width: calc(100% - 24px);
+  padding: clamp(10px, 1.5vw, 14px) clamp(14px, 2vw, 20px);
+  border: 1px solid rgba(0,0,0,0.12);
+  background: rgba(255,255,255,0.84);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: rgba(0,0,0,0.46);
+  font-size: clamp(10px, 0.92vw, 13px);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  line-height: 1.5;
+  text-align: center;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.24s ease;
+}
+
+.grid-wrap.is-failed .grid-notice {
+  opacity: 1;
+}
+
+.grid-cell.is-disabled {
+  cursor: default;
+  background: rgba(247,247,247,0.76);
+  border-color: rgba(0,0,0,0.1);
+  box-shadow: none;
+}
+
+.grid-cell.is-disabled::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0.44);
+  backdrop-filter: blur(2px) grayscale(1);
+  -webkit-backdrop-filter: blur(2px) grayscale(1);
+}
+
+.grid-cell.is-disabled:hover {
+  transform: none;
+  box-shadow: none;
+  border-color: rgba(0,0,0,0.1);
+  z-index: auto;
+}
+
+.site-credit {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(10px, 1.6vh, 16px);
+  transform: translateX(-50%);
+  z-index: 2;
+  max-width: calc(100% - 24px);
+  font-size: 8px;
+  line-height: 1.2;
+  letter-spacing: 0.04em;
+  color: rgba(0, 0, 0, 0.22);
+  text-align: center;
+  white-space: nowrap;
+  pointer-events: auto;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: none;
+  transition: opacity 0.24s ease;
+}
+
+.site-credit-char {
+  display: inline-block;
+  color: rgba(0, 0, 0, 0.22);
+  transition: color 0.2s ease;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .layout,
   .intro-deck,
@@ -861,7 +943,7 @@ body.is-intro-ready .intro-overlay {
     flex-direction: column;
     min-height: 100svh;
     padding-top: calc(var(--safe-top) + var(--mobile-title-h));
-    padding-bottom: calc(var(--mobile-drawer-tab-h) + var(--drawer-bottom-pad));
+    padding-bottom: calc(var(--mobile-drawer-tab-h) + var(--drawer-bottom-pad) + var(--mobile-credit-space));
     animation: none;
     transform: none !important;
   }
@@ -1062,11 +1144,11 @@ body.is-intro-ready .intro-overlay {
   .panel-left {
     border-bottom: 0;
     justify-content: center;
-    min-height: calc(100svh - var(--safe-top) - var(--mobile-title-h) - var(--mobile-drawer-tab-h) - var(--drawer-bottom-pad));
+    min-height: calc(100svh - var(--safe-top) - var(--mobile-title-h) - var(--mobile-drawer-tab-h) - var(--drawer-bottom-pad) - var(--mobile-credit-space));
   }
 
   .card-showcase {
-    min-height: calc(100svh - var(--safe-top) - var(--mobile-title-h) - var(--mobile-drawer-tab-h) - var(--drawer-bottom-pad) - clamp(42px, 10vw, 72px));
+    min-height: calc(100svh - var(--safe-top) - var(--mobile-title-h) - var(--mobile-drawer-tab-h) - var(--drawer-bottom-pad) - var(--mobile-credit-space) - clamp(42px, 10vw, 72px));
   }
 
   .card-showcase.is-selected {
@@ -1252,10 +1334,10 @@ body.is-intro-ready .intro-overlay {
     right: 0;
     bottom: 0;
     z-index: 18;
-    height: calc(var(--mobile-drawer-tab-h) + var(--drawer-bottom-pad));
+    height: calc(var(--mobile-drawer-tab-h) + var(--drawer-bottom-pad) + var(--mobile-credit-space));
     min-height: 0;
     max-height: none;
-    padding: 0 max(clamp(16px, 5vw, 28px), var(--safe-right)) var(--drawer-bottom-pad) max(clamp(16px, 5vw, 28px), var(--safe-left));
+    padding: 0 max(clamp(16px, 5vw, 28px), var(--safe-right)) calc(var(--drawer-bottom-pad) + var(--mobile-credit-space)) max(clamp(16px, 5vw, 28px), var(--safe-left));
     border-left: 0;
     border-top: 1px solid var(--line);
     background: rgba(255,255,255,0.98);
@@ -1339,6 +1421,15 @@ body.is-intro-ready .intro-overlay {
     width: 100%;
     margin-top: clamp(10px, 3vw, 16px);
     min-height: 1.4em;
+  }
+
+  .site-credit {
+    bottom: max(6px, calc(var(--safe-bottom) * 0.35 + 2px));
+  }
+
+  .panel-right.is-open .site-credit {
+    opacity: 0;
+    pointer-events: none;
   }
 
   .panel-right:not(.is-open) .panel-title,
@@ -1426,7 +1517,9 @@ body.is-intro-ready .intro-overlay {
     <div class="panel-title" id="panelTitle">鐘　聲　的　名　片　盒</div>
     <div class="grid-wrap">
       <div class="card-grid" id="cardGrid"></div>
+      <div class="grid-notice" id="gridNotice" aria-live="polite" role="status" hidden></div>
     </div>
+    <p class="site-credit" id="siteCredit"></p>
     <div class="grid-caption" id="gridCaption">請點擊頭像</div>
   </div>
 
@@ -1518,6 +1611,23 @@ const FALLBACK_CARDS = [
     };
   }),
 ];
+Object.assign(FALLBACK_CARD, {
+  imageAlt: '鐘聲',
+  name: '鐘　聲',
+  role: '文字創作者',
+  intro: '塵世中寫百合文的小海豹；\n望為讀者帶來愛的多面向，\n還有共鳴。',
+  backImage: 'Avatar/Kanekoe_ill.png',
+  backImageOpacity: 0.6,
+});
+FALLBACK_CARD.links = [
+  { type: 'HP', text: '鐘聲 個人主頁', url: 'https://gouzei-kanekoe.github.io/Kanekoe_works' },
+  { type: 'Penana', text: '作者頁面', url: 'https://www.penana.com/user/177564/%E9%90%98%E8%81%B2' },
+  { type: 'CXC', text: '【天國管理局文學部】', url: 'https://cxc.today/zh/@Kanekoe' },
+  { type: 'THREADS', text: '@gouzei_kanekoe', url: 'https://www.threads.com/@gouzei_kanekoe' },
+];
+FALLBACK_CARDS.length = 1;
+FALLBACK_CARDS[0] = FALLBACK_CARD;
+const FAILED_GRID_SLOT_COUNT = 25;
 
 let ALL_CARDS = [];
 let UI_META = { ...DEFAULT_META };
@@ -1557,12 +1667,18 @@ const drawerToggleEl = document.getElementById('mobileDrawerToggle');
 const mobileDrawerLabelEl = document.getElementById('mobileDrawerLabel');
 const drawerStatusEl = document.getElementById('mobileDrawerStatus');
 const panelTitleEl = document.getElementById('panelTitle');
+const gridWrapEl = document.querySelector('.grid-wrap');
 const gridEl    = document.getElementById('cardGrid');
+const gridNoticeEl = document.getElementById('gridNotice');
 const captionEl = document.getElementById('gridCaption');
+const siteCreditEl = document.getElementById('siteCredit');
 
 /* ── Quote paint effect ── */
+const SITE_CREDIT_TEXT = '\u7248\u6b0a\u6b78\u9418\u8072(\u304b\u306d\u3053\u3048)\u6240\u6709, 2026';
 const QUOTE_BASE_RGB  = [247, 247, 247];
 const QUOTE_HOVER_RGB = [196, 196, 196];
+const CREDIT_BASE_RGB = [156, 156, 156];
+const CREDIT_HOVER_RGB = [92, 92, 92];
 const QUOTE_AUTO_RGBS = [
   [247, 247, 247],
   [232, 232, 232],
@@ -1658,6 +1774,78 @@ function limitIntroCopy(text) {
     chars: output,
     visibleLength: truncated ? INTRO_COPY_LIMITS.max : visibleLength,
   };
+}
+
+let siteCreditChars = [];
+let siteCreditRects = [];
+
+function initSiteCredit() {
+  if (!siteCreditEl || siteCreditChars.length) return;
+
+  siteCreditEl.textContent = '';
+  siteCreditEl.setAttribute('aria-label', SITE_CREDIT_TEXT);
+  Array.from(SITE_CREDIT_TEXT).forEach(ch => {
+    const span = document.createElement('span');
+    span.className = 'site-credit-char';
+    span.setAttribute('aria-hidden', 'true');
+    span.textContent = ch === ' ' ? '\u00A0' : ch;
+    siteCreditEl.appendChild(span);
+    siteCreditChars.push(span);
+  });
+
+  clearSiteCreditPaint();
+  cacheSiteCreditRects();
+}
+
+function cacheSiteCreditRects() {
+  if (!siteCreditChars.length) return;
+  siteCreditRects = siteCreditChars.map(el => ({
+    el,
+    rect: el.getBoundingClientRect()
+  }));
+}
+
+function clearSiteCreditPaint() {
+  siteCreditChars.forEach(el => {
+    el.style.color = `rgb(${CREDIT_BASE_RGB.join(',')})`;
+  });
+}
+
+function paintSiteCreditFromPoint(x, y) {
+  if (!siteCreditRects.length) cacheSiteCreditRects();
+
+  siteCreditRects.forEach(({ el, rect }) => {
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    const dist = Math.sqrt((x - cx) ** 2 + (y - cy) ** 2);
+    const range = Math.max(rect.width, rect.height) * 2.2;
+    const t = Math.max(0, 1 - dist / range);
+    const smooth = t * t * (3 - 2 * t);
+    const r = Math.round(CREDIT_BASE_RGB[0] + smooth * (CREDIT_HOVER_RGB[0] - CREDIT_BASE_RGB[0]));
+    const g = Math.round(CREDIT_BASE_RGB[1] + smooth * (CREDIT_HOVER_RGB[1] - CREDIT_BASE_RGB[1]));
+    const b = Math.round(CREDIT_BASE_RGB[2] + smooth * (CREDIT_HOVER_RGB[2] - CREDIT_BASE_RGB[2]));
+    el.style.color = `rgb(${r},${g},${b})`;
+  });
+}
+
+function bindSiteCreditInteractions() {
+  if (!siteCreditEl) return;
+
+  siteCreditEl.addEventListener('pointerenter', cacheSiteCreditRects);
+  siteCreditEl.addEventListener('pointermove', e => paintSiteCreditFromPoint(e.clientX, e.clientY));
+  siteCreditEl.addEventListener('pointerleave', clearSiteCreditPaint);
+  siteCreditEl.addEventListener('touchstart', e => {
+    const touch = e.touches[0];
+    if (!touch) return;
+    cacheSiteCreditRects();
+    paintSiteCreditFromPoint(touch.clientX, touch.clientY);
+  }, { passive: true });
+  siteCreditEl.addEventListener('touchmove', e => {
+    const touch = e.touches[0];
+    if (!touch) return;
+    paintSiteCreditFromPoint(touch.clientX, touch.clientY);
+  }, { passive: true });
+  siteCreditEl.addEventListener('touchend', clearSiteCreditPaint, { passive: true });
 }
 
 function makePaintText(host, mode) {
@@ -1871,6 +2059,9 @@ const idlePaint = makePaintText(idleQuoteEl, 'block');
 const typePaint = makePaintText(typeLineEl, 'line');
 const introPaint = makePaintText(introLineEl, 'line');
 
+initSiteCredit();
+bindSiteCreditInteractions();
+
 function textOr(value, fallback) {
   return value == null || value === '' ? fallback : String(value);
 }
@@ -1913,6 +2104,7 @@ function applyMeta(meta) {
   if (introMarkEl) introMarkEl.textContent = UI_META.introMark;
   if (mobilePageTitleEl) mobilePageTitleEl.textContent = UI_META.boxTitle;
   if (panelTitleEl) panelTitleEl.textContent = UI_META.boxTitle;
+  if (gridNoticeEl) gridNoticeEl.textContent = UI_META.dataLoadFailedCaption;
   updateFlipHintText();
   if (mobileDrawerLabelEl) mobileDrawerLabelEl.textContent = UI_META.drawerLabel;
 }
@@ -2145,6 +2337,8 @@ function setDrawerOpen(isOpen) {
   drawerEl.classList.toggle('is-open', isOpen);
   drawerToggleEl.setAttribute('aria-expanded', String(isOpen));
   updateDrawerStatus(isOpen);
+  clearSiteCreditPaint();
+  if (!isOpen) cacheSiteCreditRects();
 }
 
 function closeDrawerOnMobile() {
@@ -2168,7 +2362,7 @@ function getActiveCard() {
 function getRestingCaption() {
   const activeCard = getActiveCard();
   if (activeCard) return activeCard.name;
-  return dataLoadFailed ? UI_META.dataLoadFailedCaption : UI_META.emptyCaption;
+  return dataLoadFailed ? '' : UI_META.emptyCaption;
 }
 
 function showPreviewCaption(card) {
@@ -2181,10 +2375,31 @@ function restoreCaption() {
   captionEl.textContent = getRestingCaption();
 }
 
+function updateGridFailureState() {
+  if (!gridWrapEl || !gridNoticeEl) return;
+  gridWrapEl.classList.toggle('is-failed', dataLoadFailed);
+  gridNoticeEl.hidden = !dataLoadFailed;
+  gridNoticeEl.textContent = UI_META.dataLoadFailedCaption;
+}
+
 /* ── Build grid ── */
 function buildGrid() {
   gridEl.innerHTML = '';
-  ALL_CARDS.forEach(card => {
+  const cardsBySlot = new Map(ALL_CARDS.map(card => [Number(card.slot) || 1, card]));
+  const gridItems = dataLoadFailed
+    ? Array.from({ length: FAILED_GRID_SLOT_COUNT }, (_, index) => cardsBySlot.get(index + 1) || null)
+    : ALL_CARDS;
+
+  gridItems.forEach((card, index) => {
+    if (!card) {
+      const placeholder = document.createElement('div');
+      placeholder.className = 'grid-cell is-disabled';
+      placeholder.dataset.slot = String(index + 1);
+      placeholder.setAttribute('aria-hidden', 'true');
+      gridEl.appendChild(placeholder);
+      return;
+    }
+
     const cell = document.createElement('div');
     cell.className = ['grid-cell', card.isSelf ? 'is-self' : '', card.id === activeId ? 'is-active' : ''].filter(Boolean).join(' ');
     cell.dataset.id = card.id;
@@ -2213,6 +2428,7 @@ function buildGrid() {
     });
     gridEl.appendChild(cell);
   });
+  updateGridFailureState();
   updateDrawerStatus(drawerEl?.classList.contains('is-open'));
 }
 
@@ -2366,6 +2582,8 @@ window.addEventListener('resize', () => {
   idlePaint.cacheRects();
   typePaint.cacheRects();
   introPaint.cacheRects();
+  cacheSiteCreditRects();
+  clearSiteCreditPaint();
 });
 </script>
 </body>
