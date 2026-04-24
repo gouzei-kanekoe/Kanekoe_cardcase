@@ -452,6 +452,98 @@
           "url": "https://www.penana.com/user/93091/%E9%B6%84/stream"
         }
       ]
+    },
+    {
+      "id": "card-mocwm7hkd9q",
+      "slot": 17,
+      "isSelf": false,
+      "image": "Avatar/milly2.png",
+      "imageAlt": "米粒",
+      "name": "米粒露一手",
+      "role": "故事創作人",
+      "intro": "寫幻想小說，也寫戀愛和現實主題，主要出沒在 Penana",
+      "backImage": "Avatar/milly.png",
+      "backImageOpacity": 0.6,
+      "links": [
+        {
+          "type": "HP",
+          "text": "個人主頁",
+          "url": "https://portaly.cc/millygamestream"
+        },
+        {
+          "type": "Penana",
+          "text": "作者頁面",
+          "url": "https://www.penana.com/user/235506/%E7%B1%B3%E7%B2%92%E9%9C%B2%E4%B8%80%E6%89%8B"
+        },
+        {
+          "type": "Threads",
+          "text": "@millygamestream",
+          "url": "https://www.threads.com/@millygamestream"
+        },
+        {
+          "type": "Youtube",
+          "text": "實況與遊戲攻略影片",
+          "url": "https://www.youtube.com/@millygamestream"
+        }
+      ]
+    },
+    {
+      "id": "card-mocx593c688",
+      "slot": 18,
+      "isSelf": false,
+      "image": "Avatar/airen.jpg",
+      "imageAlt": "藹仁",
+      "name": "藹　仁",
+      "role": "文字創作者",
+      "intro": "這裡是藹仁，目前在多平台上連載小説，\n願各位每天都能笑迎每個晨曦與星光。",
+      "backImage": null,
+      "backImageOpacity": 0.6,
+      "links": [
+        {
+          "type": "角角者",
+          "text": "作者頁面",
+          "url": "https://www.kadokado.com.tw/user/207474?utm_source=kado_ios"
+        },
+        {
+          "type": "CXC",
+          "text": "藹仁",
+          "url": "https://cxc.today/zh/@gameaddict"
+        },
+        {
+          "type": "Threads",
+          "text": "@airen_20020202",
+          "url": "https://www.threads.com/@airen_20020202"
+        }
+      ]
+    },
+    {
+      "id": "card-mocx59au4bu",
+      "slot": 19,
+      "isSelf": false,
+      "image": "Avatar/Lopood.jpg",
+      "imageAlt": "兀郎洛普",
+      "name": "兀郎洛普",
+      "role": "文字創作者",
+      "intro": "一名喜愛歐美翻譯文學的文字創作者，\n寫作黑暗奇幻史詩《旗官》系列。",
+      "backImage": null,
+      "backImageOpacity": 0.6,
+      "links": [
+        {
+          "type": "HP",
+          "text": "個人主頁",
+          "url": "https://portaly.cc/lopood"
+        },
+        {
+          "type": "Penana",
+          "text": "作者頁面",
+          "url": "https://www.penana.com/user/104959/%CF%80%E9%83%8E"
+        },
+        {
+          "type": "角角者",
+          "text": "旗官首部曲：失心者",
+          "url": "https://www.kadokado.com.tw/book/55432?utm_source=kado_website&utm_medium=book_link"
+        }
+      ]
     }
   ]
 }
