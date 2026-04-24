@@ -544,6 +544,69 @@
           "url": "https://www.kadokado.com.tw/book/55432?utm_source=kado_website&utm_medium=book_link"
         }
       ]
+    },
+    {
+      "id": "card-mocxm9b3p5l",
+      "slot": 20,
+      "isSelf": false,
+      "image": null,
+      "imageAlt": "旬玉水",
+      "name": "旬玉水",
+      "role": "文字創作者",
+      "intro": "BL/GL文寫手，不寫文的時候是個遊戲廢人。\n喜歡驚喜，也喜歡給讀者驚喜。\n最有名的作品是《網遊之犯賤沒藥醫》。",
+      "backImage": null,
+      "backImageOpacity": 1,
+      "links": [
+        {
+          "type": "CXC",
+          "text": "沒有節操的世界",
+          "url": "https://cxc.today/zh/@hiyoririyohi/"
+        },
+        {
+          "type": "Threads",
+          "text": "@hiyoricheb2025",
+          "url": "https://www.threads.com/@hiyoricheb2025"
+        },
+        {
+          "type": "噗浪",
+          "text": "hiyoririyohi",
+          "url": "https://www.plurk.com/hiyoririyohi"
+        }
+      ]
+    },
+    {
+      "id": "card-mocxpnlifp9",
+      "slot": 21,
+      "isSelf": false,
+      "image": "Avatar/chanlapjeng.png",
+      "imageAlt": "陳立正",
+      "name": "陳立正",
+      "role": "蕉園駐站作家",
+      "intro": "正在旅途上，傾聽旅人們底語之間的故事；一開首是興趣使然，直到現在卻依然在追著夢的某個人；喜歡讀到令自己動容的故事，後來希望寫出使人動容的故事。",
+      "backImage": null,
+      "backImageOpacity": 0.6,
+      "links": [
+        {
+          "type": "HP",
+          "text": "個人主頁",
+          "url": "https://linktr.ee/chanlapjeng"
+        },
+        {
+          "type": "Penana",
+          "text": "作者頁面",
+          "url": "https://www.penana.com/user/123061/%E9%99%B3%E7%AB%8B%E6%AD%A3"
+        },
+        {
+          "type": "IG",
+          "text": "@chanlapjeng",
+          "url": "https://www.instagram.com/chanlapjeng/"
+        },
+        {
+          "type": "Threads",
+          "text": "@chanlapjeng",
+          "url": "https://www.threads.com/@chanlapjeng"
+        }
+      ]
     }
   ]
 }
