@@ -878,6 +878,7 @@ body.is-intro-ready .intro-overlay {
   left: 50%;
   bottom: clamp(10px, 1.6vh, 16px);
   transform: translateX(-50%);
+<<<<<<< HEAD
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -887,6 +888,14 @@ body.is-intro-ready .intro-overlay {
   font-size: clamp(5.6px, 1.7vw, 8px);
   line-height: 1.35;
   color: rgb(232, 232, 232);
+=======
+  z-index: 2;
+  max-width: calc(100% - 24px);
+  font-size: 8px;
+  line-height: 1.2;
+  letter-spacing: 0.04em;
+  color: rgba(0, 0, 0, 0.22);
+>>>>>>> 809900662e35e8a481cb0f01385a6d2322f1a37e
   text-align: center;
   white-space: nowrap;
   pointer-events: auto;
@@ -899,8 +908,12 @@ body.is-intro-ready .intro-overlay {
 
 .site-credit-char {
   display: inline-block;
+<<<<<<< HEAD
   flex: 0 0 auto;
   color: rgb(232, 232, 232);
+=======
+  color: rgba(0, 0, 0, 0.22);
+>>>>>>> 809900662e35e8a481cb0f01385a6d2322f1a37e
   transition: color 0.2s ease;
 }
 
@@ -1523,7 +1536,10 @@ body.is-intro-ready .intro-overlay {
       <div class="card-grid" id="cardGrid"></div>
       <div class="grid-notice" id="gridNotice" aria-live="polite" role="status" hidden></div>
     </div>
+<<<<<<< HEAD
     <!-- &#169; 2026 Kanekoe (Gouzei). All rights reserved. -->
+=======
+>>>>>>> 809900662e35e8a481cb0f01385a6d2322f1a37e
     <p class="site-credit" id="siteCredit"></p>
     <div class="grid-caption" id="gridCaption">請點擊頭像</div>
   </div>
@@ -1679,9 +1695,15 @@ const captionEl = document.getElementById('gridCaption');
 const siteCreditEl = document.getElementById('siteCredit');
 
 /* ── Quote paint effect ── */
+<<<<<<< HEAD
 const SITE_CREDIT_TEXT = '\u00A9 2026 Kanekoe (Gouzei). All rights reserved.';
+=======
+const SITE_CREDIT_TEXT = '\u7248\u6b0a\u6b78\u9418\u8072(\u304b\u306d\u3053\u3048)\u6240\u6709, 2026';
+>>>>>>> 809900662e35e8a481cb0f01385a6d2322f1a37e
 const QUOTE_BASE_RGB  = [247, 247, 247];
 const QUOTE_HOVER_RGB = [196, 196, 196];
+const CREDIT_BASE_RGB = [156, 156, 156];
+const CREDIT_HOVER_RGB = [92, 92, 92];
 const QUOTE_AUTO_RGBS = [
   [247, 247, 247],
   [232, 232, 232],

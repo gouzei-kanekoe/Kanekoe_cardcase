@@ -607,6 +607,145 @@
           "url": "https://www.threads.com/@chanlapjeng"
         }
       ]
+    },
+    {
+      "id": "card-moeps97nwno",
+      "slot": 22,
+      "isSelf": false,
+      "image": "Avatar/amys.png",
+      "imageAlt": "艾米莉",
+      "name": "艾米莉",
+      "role": "圖文創作者",
+      "intro": "文繪雙修的治癒系作者，擅長奇幻與鬼故事。\nUDN簽約作家，準備出版三本作品，正作影視化/遊戲化等媒合。",
+      "backImage": "Avatar/amys_ill.png",
+      "backImageOpacity": 0.6,
+      "links": [
+        {
+          "type": "Penana",
+          "text": "作者頁面",
+          "url": "https://www.penana.com/user/122171/%E8%89%BE%E7%B1%B3%E8%8E%89/stream"
+        },
+        {
+          "type": "CXC",
+          "text": "艾美莉的圖文世界",
+          "url": "https://cxc.today/zh/@amys230708"
+        },
+        {
+          "type": "角角者",
+          "text": "作者頁面",
+          "url": "https://www.kadokado.com.tw/user/26086"
+        },
+        {
+          "type": "Threads",
+          "text": "@amys_ublog",
+          "url": "https://www.threads.com/@amys_ublog"
+        }
+      ]
+    },
+    {
+      "id": "card-moepsa9bt4c",
+      "slot": 23,
+      "isSelf": false,
+      "image": "Avatar/yeye.jpg",
+      "imageAlt": "熊兒",
+      "name": "熊　兒",
+      "role": "文字創作者",
+      "intro": "迷糊的愛情小說家，喜歡無厘頭的事物與窩在同溫層",
+      "backImage": null,
+      "backImageOpacity": 0.6,
+      "links": [
+        {
+          "type": "Penana",
+          "text": "作者頁面",
+          "url": "https://l.threads.com/?u=https%3A%2F%2Fm.penana.com%2Fuser%2F240522%2F%25E7%2586%258A%25E5%2585%2592%2Fstream&e=AT7rZMHQNuFVDR0zzOtehz8AossLbvtYgA-7Q2GqpIRjrxncwf--1rKUmTAtT83U8krQFppbKmoVdmAbwUkw-O3BTN1UAvoC9eoyWJz5PWrgfbaL7anDkjfPbYzqfpzQ_xY2Gtw"
+        },
+        {
+          "type": "Threads",
+          "text": "@the_worldinmyeye",
+          "url": "https://www.threads.com/@the_worldinmyeye"
+        },
+        {
+          "type": "CXC",
+          "text": "熊兒，今天星期五",
+          "url": "https://cxc.today/zh/@theworldinmyeye/work"
+        }
+      ]
+    },
+    {
+      "id": "card-moeq0ywvuek",
+      "slot": 24,
+      "isSelf": false,
+      "image": "Avatar/STAR.PNG",
+      "imageAlt": "星河代日落",
+      "name": "星河代日落",
+      "role": "文字創作者",
+      "intro": "星河代替日落編寫故事\n主打BL古風小說，也有寫現代校園文",
+      "backImage": null,
+      "backImageOpacity": 0.6,
+      "links": [
+        {
+          "type": "Penana",
+          "text": "作者頁面",
+          "url": "https://www.penana.com/user/277345/%E6%98%9F%E6%B2%B3%E4%BB%A3%E6%97%A5%E8%90%BD/stream"
+        },
+        {
+          "type": "CXC",
+          "text": "星落小天地",
+          "url": "https://cxc.today/zh/@jonie_0225/work"
+        },
+        {
+          "type": "Threads",
+          "text": "@xl112593",
+          "url": "https://www.threads.com/@xl112593"
+        },
+        {
+          "type": "Discord",
+          "text": "@xinghedairluo",
+          "url": "https://discord.com/invite/75tby6nP"
+        }
+      ]
+    },
+    {
+      "id": "card-moeq9dypv5y",
+      "slot": 25,
+      "isSelf": false,
+      "image": "Avatar/candy.png",
+      "imageAlt": "老薑糖",
+      "name": "老薑糖",
+      "role": "文字創作者",
+      "intro": "致力於成為戀愛腦的作家。創作時內心想的色慾、厭世、發瘋，還有酒精跟鹽酥雞。",
+      "backImage": null,
+      "backImageOpacity": 0.6,
+      "links": [
+        {
+          "type": "Penana",
+          "text": "作者頁面",
+          "url": "https://www.penana.com/user/245986/%E8%80%81%E8%96%91%E7%B3%96"
+        },
+        {
+          "type": "角角者",
+          "text": "作者頁面",
+          "url": "https://www.kadokado.com.twuser/217208"
+        },
+        {
+          "type": "Threads",
+          "text": "@l.j.candy",
+          "url": "https://www.threads.com/@l.j.candy"
+        }
+      ]
+    },
+    {
+      "id": "card-moeqkcv3yg7",
+      "slot": 26,
+      "isSelf": false,
+      "image": "Avatar/ruoyang.jpg",
+      "imageAlt": "若央",
+      "name": "若　央",
+      "role": "文字創作者",
+      "intro": "BL、BG都寫的飆車大王，走音系翻唱Cover，燒肉、鮮奶茶愛好者。\n代表作為《愛的所有物》。",
+      "backImage": "Avatar/ruoyang_ill.png",
+      "backImageOpacity": 0.6,
+      "links": []
     }
   ]
 }
