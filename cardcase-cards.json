@@ -43,7 +43,7 @@
           "url": "https://cxc.today/zh/@Kanekoe"
         },
         {
-          "type": "THREADS",
+          "type": "Threads",
           "text": "@gouzei_kanekoe",
           "url": "https://www.threads.com/@gouzei_kanekoe"
         }
@@ -745,7 +745,96 @@
       "intro": "BL、BG都寫的飆車大王，走音系翻唱Cover，燒肉、鮮奶茶愛好者。\n代表作為《愛的所有物》。",
       "backImage": "Avatar/ruoyang_ill.png",
       "backImageOpacity": 0.6,
-      "links": []
+      "links": [
+        {
+          "type": "HP",
+          "text": "官方網站",
+          "url": "https://ruoyangofficial.my.canva.site/phone/"
+        },
+        {
+          "type": "CxC",
+          "text": "若央好想吃燒肉",
+          "url": "https://cxc.today/zh/@Ruoyang/work"
+        },
+        {
+          "type": "Penana",
+          "text": "作者頁面",
+          "url": "https://www.penana.com/user/105824"
+        },
+        {
+          "type": "YouTube",
+          "text": "若央",
+          "url": "https://www.youtube.com/@RRRuoyang"
+        }
+      ]
+    },
+    {
+      "id": "card-moeqsh1hk5t",
+      "slot": 27,
+      "isSelf": false,
+      "image": "Avatar/bunny.jpg",
+      "imageAlt": "凝雨",
+      "name": "凝　雨",
+      "role": "文字創作者",
+      "intro": "來自香港的佛系作者，時間到了自然會更文。\n目前專注於散文評論，以及黑暗奇幻和諷刺小說的創作。",
+      "backImage": null,
+      "backImageOpacity": 0.6,
+      "links": [
+        {
+          "type": "Penana",
+          "text": "作者頁面",
+          "url": "https://www.penana.com/user/107672/%E5%87%9D%E9%9B%A8/stream"
+        },
+        {
+          "type": "方格子",
+          "text": "凝雨創作小屋",
+          "url": "vocus.cc/user/@bunny_fox_330"
+        },
+        {
+          "type": "Threads",
+          "text": "@bunny_fox_forever",
+          "url": "https://www.threads.net/@bunny_fox_forever"
+        },
+        {
+          "type": "FB",
+          "text": "作者帳號",
+          "url": "https://www.facebook.com/ning.yu.358529?mibextid=D4KYlr"
+        }
+      ]
+    },
+    {
+      "id": "card-moer11nc8q9",
+      "slot": 28,
+      "isSelf": false,
+      "image": "Avatar/Purplejiu.jpg",
+      "imageAlt": "紫玖島",
+      "name": "紫玖島",
+      "role": "文字創作者",
+      "intro": "一手寫高甜色色BL、一手寫懸疑驚悚刑偵類型小說的紫布丁！",
+      "backImage": null,
+      "backImageOpacity": 0.6,
+      "links": [
+        {
+          "type": "HP",
+          "text": "歡迎登陸布丁島",
+          "url": "https://portaly.cc/purplejiu_island"
+        },
+        {
+          "type": "Penana",
+          "text": "紫布丁住蕉園",
+          "url": "https://www.penana.com/user/131648"
+        },
+        {
+          "type": "角角者",
+          "text": "紫玖闖角角",
+          "url": "https://www.kadokado.com.tw/user/229758"
+        },
+        {
+          "type": "CXC",
+          "text": "阿玖小市集",
+          "url": "https://cxc.today/zh/@purpleisland0923"
+        }
+      ]
     }
   ]
 }
