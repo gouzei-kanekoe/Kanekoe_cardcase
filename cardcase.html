@@ -1,0 +1,4192 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>鐘聲的名片盒</title>
+<link rel="icon" type="image/png" href="ICO/cardcase_ico.png">
+<link rel="shortcut icon" href="ICO/cardcase_ico.png">
+<link rel="apple-touch-icon" href="ICO/cardcase_ico.png">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ── Reset ── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+[hidden] { display: none !important; }
+
+/* ── Tokens ── */
+:root {
+  --bg:     #ffffff;
+  --ink:    #000000;
+  --muted:  #a5a5a5;
+  --accent: #464e66;
+  --line:   rgba(0,0,0,0.14);
+  --font:   'Noto Serif TC', 'Songti TC', 'SimSun', serif;
+  --ease-spring: cubic-bezier(0.22, 1, 0.36, 1);
+  --card-w: clamp(360px, 37vw, 590px);
+  --card-h: calc(var(--card-w) * 50 / 94);
+  --card-half-h: calc(var(--card-h) * 0.5);
+  --selected-card-top: clamp(8px, 2.2vh, 26px);
+  --mobile-drawer-tab-h: 58px;
+  --mobile-title-h: clamp(40px, 11vw, 56px);
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+  --drawer-bottom-pad: max(10px, var(--safe-bottom));
+  --mobile-credit-space: 8px;
+  --grid-w: min(100%, clamp(340px, 30vw, 500px));
+  --realcard-landscape-w: min(92vw, clamp(340px, 46vw, 760px));
+  --realcard-landscape-h: calc(var(--realcard-landscape-w) * 50 / 94);
+  --realcard-portrait-w: clamp(220px, 20vw, 286px);
+  --realcard-portrait-h: calc(var(--realcard-portrait-w) * 1063 / 638);
+  --realcard-w: var(--realcard-landscape-w);
+  --realcard-h: var(--realcard-landscape-h);
+  --realcard-thickness: clamp(4px, 0.4vw, 6px);
+}
+
+body {
+  font-family: var(--font);
+  font-weight: 600;
+  background: var(--bg);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  overscroll-behavior: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+body.is-realcard-open {
+  overflow: hidden;
+}
+
+img {
+  -webkit-user-drag: none;
+  user-drag: none;
+}
+
+body.is-intro-running {
+  overflow: hidden;
+}
+
+body:not(.is-intro-ready) .layout {
+  opacity: 0;
+  transform: translateY(12px);
+  animation: none;
+}
+
+/* ── Opening card fan intro ── */
+.intro-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  background: var(--bg);
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition: opacity 0.56s ease, visibility 0s linear 0.56s;
+}
+
+body.is-intro-ready .intro-overlay {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.intro-stage {
+  position: relative;
+  width: clamp(180px, 22vw, 320px);
+  height: clamp(126px, 15vw, 210px);
+  perspective: 900px;
+  transform-style: preserve-3d;
+}
+
+.intro-deck {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  animation: introDeckSettle 1.8s var(--ease-spring) both;
+}
+
+.intro-card {
+  --intro-card-x: 0px;
+  --intro-card-y: 0px;
+  --intro-card-r: 0deg;
+  --intro-tint: #fbfbfb;
+  left: 50%;
+  top: 46%;
+  width: 66%;
+  aspect-ratio: 94 / 50;
+  position: absolute;
+  border: 1px solid rgba(0,0,0,0.16);
+  background:
+    linear-gradient(90deg, rgba(255,255,255,0.72), rgba(255,255,255,0.1)),
+    var(--intro-tint);
+  box-shadow: 0 18px 38px rgba(0,0,0,0.08);
+  opacity: 0;
+  transform: translate(-50%, -50%) translateY(18px) scale(0.74) rotateZ(0deg);
+  transform-origin: 50% 68%;
+  animation: introCardFan 1.76s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.intro-card::before {
+  content: "";
+  position: absolute;
+  left: 12%;
+  top: 28%;
+  width: 16%;
+  aspect-ratio: 1;
+  border: 1px solid rgba(0,0,0,0.12);
+  background: rgba(255,255,255,0.55);
+}
+
+.intro-card::after {
+  content: "";
+  position: absolute;
+  left: 36%;
+  right: 12%;
+  top: 34%;
+  height: 1px;
+  background: rgba(0,0,0,0.16);
+  box-shadow: 0 9px 0 rgba(0,0,0,0.09);
+}
+
+.intro-card-a {
+  --intro-card-x: -58px;
+  --intro-card-y: 14px;
+  --intro-card-r: -14deg;
+  --intro-tint: #f6f6f6;
+  z-index: 1;
+}
+
+.intro-card-b {
+  --intro-card-x: -30px;
+  --intro-card-y: -4px;
+  --intro-card-r: -7deg;
+  --intro-tint: #fafafa;
+  z-index: 2;
+}
+
+.intro-card-c {
+  --intro-card-x: 0px;
+  --intro-card-y: -12px;
+  --intro-card-r: 0deg;
+  --intro-tint: #ffffff;
+  z-index: 3;
+}
+
+.intro-card-d {
+  --intro-card-x: 30px;
+  --intro-card-y: -4px;
+  --intro-card-r: 7deg;
+  --intro-tint: #f8f8f8;
+  z-index: 4;
+}
+
+.intro-card-e {
+  --intro-card-x: 58px;
+  --intro-card-y: 14px;
+  --intro-card-r: 14deg;
+  --intro-tint: #f5f5f5;
+  z-index: 5;
+}
+
+.intro-mark {
+  position: absolute;
+  left: 50%;
+  bottom: -0.4em;
+  transform: translateX(-50%);
+  font-size: clamp(9px, 0.8vw, 12px);
+  letter-spacing: 0.28em;
+  color: rgba(0,0,0,0.28);
+  white-space: nowrap;
+  animation: introMarkFade 1.2s 0.45s ease both;
+}
+
+.intro-hint {
+  position: absolute;
+  left: 50%;
+  top: calc(100% + clamp(18px, 3vh, 30px));
+  width: min(82vw, 560px);
+  transform: translateX(-50%) translateY(4px);
+  color: rgba(0,0,0,0.48);
+  font-size: clamp(11px, 0.92vw, 14px);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  line-height: 1.8;
+  text-align: center;
+  white-space: normal;
+  animation: introHintFade 1.05s 0.58s ease both;
+}
+
+.intro-hint-mobile {
+  display: none;
+}
+
+@keyframes introDeckSettle {
+  0%   { opacity: 0; transform: translateY(18px) rotateX(10deg) scale(0.94); }
+  18%  { opacity: 1; }
+  72%  { transform: translateY(0) rotateX(0deg) scale(1); }
+  100% { opacity: 1; transform: translateY(-4px) rotateX(0deg) scale(1.02); }
+}
+
+@keyframes introCardFan {
+  0%   { opacity: 0; transform: translate(-50%, -50%) translateY(18px) scale(0.74) rotateZ(0deg); }
+  16%  { opacity: 1; transform: translate(-50%, -50%) translateY(0) scale(0.78) rotateZ(0deg); }
+  44%  { opacity: 1; transform: translate(-50%, -50%) translateY(0) scale(0.78) rotateZ(0deg); }
+  74%  { opacity: 1; transform: translate(-50%, -50%) translate(var(--intro-card-x), var(--intro-card-y)) scale(1) rotateZ(var(--intro-card-r)); }
+  100% { opacity: 1; transform: translate(-50%, -50%) translate(var(--intro-card-x), calc(var(--intro-card-y) - 4px)) scale(1.02) rotateZ(var(--intro-card-r)); }
+}
+
+@keyframes introMarkFade {
+  from { opacity: 0; transform: translateX(-50%) translateY(4px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+@keyframes introHintFade {
+  from { opacity: 0; transform: translateX(-50%) translateY(4px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+/* ── Layout ── */
+.layout {
+  display: grid;
+  grid-template-columns: 45fr 55fr;
+  min-height: 100svh;
+  animation: fadeUp 0.7s var(--ease-spring) both;
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.mobile-page-title {
+  display: none;
+}
+
+/* ─────────────── LEFT PANEL ─────────────── */
+.panel-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(40px, 5vh, 80px) clamp(32px, 4vw, 60px);
+  gap: 0;
+  min-height: 100svh;
+  position: relative;
+}
+
+.card-showcase {
+  position: relative;
+  --selected-lift: clamp(42px, 8vh, 86px);
+  width: min(100%, calc(var(--card-w) + clamp(80px, 9vw, 150px)));
+  min-height: min(760px, calc(100svh - clamp(84px, 11vh, 150px)));
+}
+
+.idle-quote,
+.quote-line,
+.selected-copy,
+.card-showcase .card-scene,
+.card-showcase .card-actions {
+  transition: opacity 0.36s ease, transform 0.36s var(--ease-spring);
+}
+
+.card-showcase:not(.is-selected) .selected-only {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.card-showcase.is-selected .selected-only {
+  opacity: 1;
+  visibility: visible;
+}
+
+.card-showcase.is-selected .idle-quote {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translate(-50%, -50%) scale(0.96);
+}
+
+.idle-quote {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(70svh, calc(var(--card-w) + 76px), 440px);
+  aspect-ratio: 1;
+  border: 1px solid var(--line);
+  overflow: hidden;
+  padding: clamp(14px, 2vmin, 28px);
+  touch-action: none;
+}
+
+.paint-grid {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.paint-grid .char {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #f7f7f7;
+  line-height: 1;
+  font-weight: 700;
+  transition: color 0.2s ease;
+}
+
+.idle-quote .char {
+  font-size: clamp(28px, 5.8vmin, 72px);
+}
+
+.selected-copy {
+  position: absolute;
+  left: clamp(0px, 1vw, 12px);
+  right: clamp(0px, 1vw, 12px);
+  top: calc(var(--selected-card-top) + var(--card-h) + clamp(82px, 9.6vh, 112px));
+  width: auto;
+  height: clamp(320px, 40vh, 500px);
+  transform: none;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) clamp(64px, 6vw, 90px);
+  justify-content: stretch;
+  align-items: flex-start;
+  column-gap: clamp(20px, 2.2vw, 36px);
+  padding-inline: clamp(10px, 1.6vw, 22px);
+}
+
+.selected-heading {
+  display: none;
+}
+
+.selected-copy .quote-line {
+  position: relative;
+  width: auto;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  display: block;
+  padding: 0;
+  border: 0;
+  touch-action: none;
+}
+
+.selected-copy .type-line {
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: end;
+  width: clamp(64px, 6vw, 90px);
+  overflow: visible;
+}
+
+.selected-copy .intro-line {
+  grid-column: 1;
+  grid-row: 1;
+  justify-self: stretch;
+  width: 100%;
+  min-width: 0;
+}
+
+.selected-copy .quote-line .paint-grid {
+  display: block;
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: max-content;
+  height: 100%;
+  white-space: normal;
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  line-height: 1.38;
+  transform-origin: top right;
+  will-change: transform;
+}
+
+.selected-copy .intro-line .paint-grid {
+  line-height: 2.08;
+}
+
+.selected-copy .intro-line .paint-grid.is-intro-grid {
+  left: 0;
+  right: 0;
+  width: min(100%, clamp(380px, 36vw, 560px));
+  margin-inline: auto;
+  display: grid;
+  writing-mode: horizontal-tb;
+  text-orientation: mixed;
+  align-content: start;
+  justify-content: center;
+  justify-items: center;
+  align-items: center;
+  row-gap: 0.34em;
+  column-gap: clamp(28px, 3.2vw, 48px);
+}
+
+.selected-copy .type-line .paint-grid {
+  line-height: 1.18;
+}
+
+.selected-copy .quote-line .char {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1em;
+  min-height: 1em;
+  font-size: clamp(22px, 2.85vw, 40px);
+  letter-spacing: 0.08em;
+  vertical-align: top;
+}
+
+.selected-copy .intro-line.is-copy-tier-1 .char {
+  font-size: clamp(22px, 2.85vw, 40px);
+  letter-spacing: 0.08em;
+}
+
+.selected-copy .intro-line.is-copy-tier-2 .char {
+  font-size: clamp(18px, 2.35vw, 34px);
+  letter-spacing: 0.07em;
+}
+
+.selected-copy .intro-line.is-copy-tier-3 .char {
+  font-size: clamp(15px, 1.95vw, 28px);
+  letter-spacing: 0.06em;
+}
+
+.selected-copy .intro-line.is-copy-tier-4 .char {
+  font-size: clamp(13px, 1.65vw, 24px);
+  letter-spacing: 0.05em;
+}
+
+.selected-copy .type-line .char {
+  font-size: clamp(24px, 3vw, 42px);
+  letter-spacing: 0.08em;
+}
+
+.flip-hint {
+  font-size: clamp(9px, 0.72vw, 11px);
+  letter-spacing: 0.18em;
+  color: var(--muted);
+  opacity: 0.5;
+  user-select: none;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.card-showcase .card-actions {
+  position: absolute;
+  left: 50%;
+  top: calc(var(--selected-card-top) + var(--card-h) + clamp(28px, 3.6vh, 40px));
+  transform: translateX(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  white-space: nowrap;
+}
+
+.realcard-launch {
+  appearance: none;
+  border: 1px solid rgba(0,0,0,0.12);
+  border-radius: 999px;
+  background: rgba(250,250,250,0.96);
+  color: var(--muted);
+  font: inherit;
+  font-size: clamp(9px, 0.72vw, 11px);
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  line-height: 1;
+  padding: 8px 14px;
+  margin-left: 12px;
+  cursor: pointer;
+  opacity: 0.9;
+  transition:
+    color 0.24s ease,
+    opacity 0.24s ease,
+    background-color 0.24s ease,
+    border-color 0.24s ease,
+    box-shadow 0.24s ease,
+    transform 0.24s ease;
+  white-space: nowrap;
+}
+
+.realcard-launch[hidden] {
+  display: none !important;
+}
+
+.realcard-launch:hover {
+  color: var(--muted);
+  opacity: 1;
+  background: rgba(246,246,246,0.98);
+  border-color: rgba(0,0,0,0.18);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+  transform: translateY(-1px);
+}
+
+.realcard-launch:focus-visible,
+.realcard-viewer__close:focus-visible {
+  outline: 2px solid rgba(70,78,102,0.42);
+  outline-offset: 3px;
+}
+
+.realcard-viewer {
+  position: fixed;
+  inset: 0;
+  z-index: 32;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding:
+    max(28px, var(--safe-top))
+    max(28px, var(--safe-right))
+    max(28px, var(--safe-bottom))
+    max(28px, var(--safe-left));
+  background:
+    radial-gradient(circle at 50% 22%, rgba(248,248,248,0.96), rgba(255,255,255,0.9) 52%, rgba(255,255,255,0.94) 100%);
+  backdrop-filter: blur(14px);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.34s ease, visibility 0s linear 0.34s;
+}
+
+.realcard-viewer.is-portrait-mode {
+  --realcard-w: var(--realcard-portrait-w);
+  --realcard-h: var(--realcard-portrait-h);
+}
+
+.realcard-viewer.is-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition: opacity 0.34s ease;
+}
+
+.realcard-viewer__shell {
+  position: relative;
+  width: min(100%, 1180px);
+  min-height: min(100%, 760px);
+  display: grid;
+  grid-template-rows: auto auto 1fr;
+  align-items: start;
+  padding-bottom: clamp(18px, 3vh, 34px);
+  gap: clamp(18px, 2.6vh, 28px);
+}
+
+.realcard-viewer__close {
+  appearance: none;
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,0.78);
+  color: var(--ink);
+  font: inherit;
+  font-size: clamp(10px, 0.9vw, 12px);
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  line-height: 1;
+  padding: 12px 16px;
+  justify-self: start;
+  cursor: pointer;
+  transition:
+    transform 0.24s var(--ease-spring),
+    border-color 0.24s ease,
+    color 0.24s ease,
+    background 0.24s ease;
+}
+
+.realcard-viewer__close:hover {
+  color: var(--accent);
+  border-color: rgba(70,78,102,0.34);
+  background: rgba(255,255,255,0.94);
+  transform: translateY(-1px);
+}
+
+.realcard-viewer__meta {
+  display: grid;
+  gap: 10px;
+  justify-items: center;
+  text-align: center;
+  width: min(100%, 760px);
+  margin: 0 auto;
+  padding-top: clamp(10px, 1.2vh, 18px);
+}
+
+.realcard-viewer__eyebrow {
+  font-size: clamp(9px, 0.78vw, 11px);
+  font-weight: 600;
+  letter-spacing: 0.36em;
+  color: rgba(0,0,0,0.32);
+}
+
+.realcard-viewer__title {
+  font-size: clamp(20px, 2.2vw, 32px);
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  line-height: 1.22;
+  color: rgba(0,0,0,0.78);
+  max-width: min(100%, 720px);
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+
+.realcard-viewer__hint {
+  font-size: clamp(10px, 0.86vw, 12px);
+  letter-spacing: 0.14em;
+  color: rgba(0,0,0,0.42);
+}
+
+.realcard-viewer__stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 0;
+}
+
+.realcard-viewer__stage::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(0,0,0,0.08);
+  pointer-events: none;
+}
+
+.realcard-viewer__viewport {
+  position: relative;
+  width: min(100%, calc(var(--realcard-w) + 360px));
+  min-height: min(70svh, calc(var(--realcard-h) + 180px));
+  display: grid;
+  place-items: center;
+  perspective: 2200px;
+  touch-action: none;
+  cursor: grab;
+}
+
+.realcard-viewer__viewport.is-dragging {
+  cursor: grabbing;
+}
+
+.realcard-viewer__shadow {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: calc(var(--realcard-w) * 0.74);
+  height: clamp(24px, 4vh, 44px);
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(0,0,0,0.16) 0%, rgba(0,0,0,0.08) 42%, rgba(0,0,0,0) 72%);
+  transform: translate(-50%, calc(var(--realcard-h) * 0.47));
+  filter: blur(8px);
+  pointer-events: none;
+}
+
+.realcard-model {
+  --realcard-front-layout-max: min(100%, clamp(450px, 76%, 620px));
+  --realcard-front-avatar-size: clamp(112px, 29%, 184px);
+  --realcard-front-gap: clamp(16px, 2.6vw, 36px);
+  --realcard-front-copy-max: clamp(226px, 38%, 340px);
+  position: relative;
+  width: var(--realcard-w);
+  height: var(--realcard-h);
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.realcard-face,
+.realcard-edge {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform-style: preserve-3d;
+}
+
+.realcard-face {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border: 1px solid rgba(0,0,0,0.14);
+  box-shadow:
+    0 28px 54px rgba(0,0,0,0.09),
+    0 10px 18px rgba(0,0,0,0.06);
+  background: linear-gradient(135deg, rgba(255,255,255,0.98), rgba(245,245,245,0.98));
+}
+
+.realcard-face__fullimage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  user-select: none;
+  pointer-events: none;
+}
+
+.realcard-face.is-image-mode .realcard-sheet {
+  display: none;
+}
+
+.realcard-face.front {
+  transform: translate(-50%, -50%) translateZ(calc(var(--realcard-thickness) / 2));
+}
+
+.realcard-face.back {
+  transform: translate(-50%, -50%) rotateY(180deg) translateZ(calc(var(--realcard-thickness) / 2));
+}
+
+.realcard-sheet {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.realcard-sheet::before {
+  content: "";
+  position: absolute;
+  inset: clamp(12px, 1.6vw, 18px);
+  border: 1px solid rgba(0,0,0,0.08);
+  pointer-events: none;
+}
+
+.realcard-paper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding: clamp(18px, 2.4vw, 34px);
+  background:
+    linear-gradient(135deg, rgba(255,255,255,0.99) 0%, rgba(249,249,249,0.98) 48%, rgba(242,242,242,0.98) 100%);
+}
+
+.realcard-sheet--back .realcard-paper {
+  background:
+    linear-gradient(135deg, rgba(252,252,252,0.99) 0%, rgba(246,246,246,0.98) 52%, rgba(240,240,240,0.98) 100%);
+}
+
+.realcard-front,
+.realcard-back {
+  height: 100%;
+}
+
+.realcard-front {
+  display: grid;
+  grid-template-columns: minmax(84px, var(--realcard-front-avatar-size)) minmax(0, 1fr);
+  align-items: center;
+  justify-content: center;
+  column-gap: var(--realcard-front-gap);
+  row-gap: 0;
+  width: var(--realcard-front-layout-max);
+  margin: 0 auto;
+  min-width: 0;
+}
+
+.realcard-front__media {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: var(--realcard-front-avatar-size);
+  justify-self: end;
+}
+
+.realcard-front__avatar {
+  width: 100%;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f3f3f3;
+  color: var(--muted);
+}
+
+.realcard-front__avatar img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.realcard-front__avatar-fallback {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(13px, 1.9vw, 26px);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+}
+
+.realcard-front__copy {
+  width: 100%;
+  min-width: 0;
+  max-width: var(--realcard-front-copy-max);
+  border-left: 1px solid var(--line);
+  padding-left: clamp(22px, 3.4vw, 42px);
+  text-align: left;
+  justify-self: start;
+}
+
+.realcard-front__name {
+  font-size: clamp(16px, 1.7vw, 23px);
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  color: var(--ink);
+  line-height: 1.18;
+  white-space: normal;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+.realcard-front__role {
+  font-size: clamp(10px, 1.08vw, 15px);
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  line-height: 1.3;
+  color: var(--muted);
+  margin-top: clamp(10px, 1.3vh, 16px);
+  white-space: normal;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+.realcard-front__intro {
+  font-size: clamp(10px, 0.98vw, 14px);
+  line-height: 1.72;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  color: rgba(0,0,0,0.45);
+  margin-top: clamp(18px, 2.3vh, 28px);
+  white-space: pre-line;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+  max-width: 100%;
+}
+
+.realcard-back {
+  width: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(6px, 0.9vh, 10px);
+}
+
+.realcard-back__image {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 50%;
+  object-fit: cover;
+  opacity: 0.6;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.realcard-back__fallback {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(16px, 2.2vw, 28px);
+  border-left: 1px solid rgba(0,0,0,0.08);
+  font-size: clamp(16px, 1.8vw, 26px);
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  line-height: 1.5;
+  text-align: center;
+  color: rgba(0,0,0,0.18);
+  z-index: 0;
+}
+
+.realcard-back__content {
+  position: relative;
+  z-index: 1;
+  width: min(46%, 390px);
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(6px, 0.9vh, 10px);
+}
+
+.realcard-back__label {
+  font-size: clamp(9px, 0.9vw, 13px);
+  letter-spacing: 0.3em;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.realcard-back__links {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(6px, 0.82vh, 10px);
+}
+
+.realcard-back__link-row {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: clamp(62px, 8.5vw, 106px) minmax(0, 1fr);
+  gap: 8px;
+  align-items: baseline;
+}
+
+.realcard-back__link-type {
+  color: var(--muted);
+  font-size: clamp(11px, 1.1vw, 15px);
+  line-height: 1.45;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.realcard-back__link-anchor,
+.realcard-back__link-text {
+  min-width: 0;
+  font-size: clamp(11px, 1.1vw, 15px);
+  line-height: 1.56;
+  letter-spacing: 0.04em;
+  font-weight: 600;
+  white-space: pre-line;
+  word-break: normal;
+  overflow-wrap: normal;
+}
+
+.realcard-back__link-anchor {
+  color: var(--ink);
+  text-decoration: none;
+  transition: color 0.24s ease, transform 0.24s ease;
+}
+
+.realcard-back__link-anchor:hover {
+  color: var(--accent);
+  transform: translateX(2px);
+}
+
+.realcard-back__link-text {
+  color: rgba(0,0,0,0.62);
+}
+
+.realcard-back__empty {
+  font-size: clamp(11px, 1.1vw, 15px);
+  line-height: 1.7;
+  letter-spacing: 0.08em;
+  color: rgba(0,0,0,0.28);
+  font-weight: 400;
+}
+
+.realcard-model.is-realcard-tier-2 {
+  --realcard-front-layout-max: min(100%, clamp(440px, 75%, 604px));
+  --realcard-front-avatar-size: clamp(108px, 28%, 176px);
+  --realcard-front-gap: clamp(14px, 2.4vw, 32px);
+  --realcard-front-copy-max: clamp(232px, 39%, 346px);
+}
+
+.realcard-model.is-realcard-tier-2 .realcard-front__name {
+  font-size: clamp(15px, 1.6vw, 22px);
+}
+
+.realcard-model.is-realcard-tier-2 .realcard-front__role {
+  font-size: clamp(9px, 1vw, 14px);
+}
+
+.realcard-model.is-realcard-tier-2 .realcard-front__intro {
+  font-size: clamp(9px, 0.92vw, 13px);
+  line-height: 1.66;
+}
+
+.realcard-model.is-realcard-tier-3 {
+  --realcard-front-layout-max: min(100%, clamp(430px, 74%, 588px));
+  --realcard-front-avatar-size: clamp(102px, 27%, 164px);
+  --realcard-front-gap: clamp(12px, 2.1vw, 26px);
+  --realcard-front-copy-max: clamp(238px, 40%, 352px);
+}
+
+.realcard-model.is-realcard-tier-3 .realcard-front__name {
+  font-size: clamp(14px, 1.45vw, 20px);
+}
+
+.realcard-model.is-realcard-tier-3 .realcard-front__role {
+  font-size: clamp(8px, 0.92vw, 13px);
+}
+
+.realcard-model.is-realcard-tier-3 .realcard-front__intro {
+  font-size: clamp(8px, 0.84vw, 12px);
+  line-height: 1.6;
+}
+
+.realcard-model.is-realcard-tier-4 {
+  --realcard-front-layout-max: min(100%, clamp(420px, 72%, 572px));
+  --realcard-front-avatar-size: clamp(96px, 26%, 152px);
+  --realcard-front-gap: clamp(10px, 1.9vw, 22px);
+  --realcard-front-copy-max: clamp(244px, 41%, 360px);
+}
+
+.realcard-model.is-realcard-tier-4 .realcard-front__name {
+  font-size: clamp(13px, 1.3vw, 18px);
+}
+
+.realcard-model.is-realcard-tier-4 .realcard-front__role {
+  font-size: clamp(7px, 0.84vw, 12px);
+}
+
+.realcard-model.is-realcard-tier-4 .realcard-front__intro {
+  font-size: clamp(7px, 0.76vw, 11px);
+  line-height: 1.54;
+}
+
+.realcard-model.is-realcard-back-tier-2 .realcard-back__content {
+  width: min(48%, 420px);
+}
+
+.realcard-model.is-realcard-back-tier-2 .realcard-back__image,
+.realcard-model.is-realcard-back-tier-2 .realcard-back__fallback {
+  width: 48%;
+}
+
+.realcard-model.is-realcard-back-tier-2 .realcard-back__label {
+  font-size: clamp(7px, 0.7vw, 10px);
+}
+
+.realcard-model.is-realcard-back-tier-2 .realcard-back__link-row {
+  grid-template-columns: clamp(52px, 7vw, 88px) minmax(0, 1fr);
+}
+
+.realcard-model.is-realcard-back-tier-2 .realcard-back__link-type,
+.realcard-model.is-realcard-back-tier-2 .realcard-back__link-anchor,
+.realcard-model.is-realcard-back-tier-2 .realcard-back__link-text {
+  font-size: clamp(9px, 0.9vw, 12px);
+}
+
+.realcard-model.is-realcard-back-tier-3 .realcard-back__content {
+  width: min(50%, 440px);
+  gap: clamp(5px, 0.8vh, 8px);
+}
+
+.realcard-model.is-realcard-back-tier-3 .realcard-back__image,
+.realcard-model.is-realcard-back-tier-3 .realcard-back__fallback {
+  width: 46%;
+}
+
+.realcard-model.is-realcard-back-tier-3 .realcard-back__label {
+  font-size: clamp(6px, 0.58vw, 8px);
+  letter-spacing: 0.24em;
+}
+
+.realcard-model.is-realcard-back-tier-3 .realcard-back__link-row {
+  grid-template-columns: clamp(46px, 6vw, 72px) minmax(0, 1fr);
+  gap: 7px;
+}
+
+.realcard-model.is-realcard-back-tier-3 .realcard-back__link-type,
+.realcard-model.is-realcard-back-tier-3 .realcard-back__link-anchor,
+.realcard-model.is-realcard-back-tier-3 .realcard-back__link-text,
+.realcard-model.is-realcard-back-tier-3 .realcard-back__empty {
+  font-size: clamp(7px, 0.72vw, 10px);
+  line-height: 1.5;
+}
+
+.realcard-model.is-realcard-name-long .realcard-front__name,
+.realcard-model.is-realcard-name-long .realcard-back__fallback {
+  letter-spacing: 0.16em;
+}
+
+.realcard-model.is-realcard-name-long {
+  --realcard-front-layout-max: min(100%, clamp(444px, 75%, 604px));
+  --realcard-front-avatar-size: clamp(102px, 27%, 166px);
+  --realcard-front-gap: clamp(12px, 2.1vw, 26px);
+  --realcard-front-copy-max: clamp(250px, 42%, 366px);
+}
+
+.realcard-model.is-realcard-name-long .realcard-front__name {
+  font-size: clamp(15px, 1.55vw, 21px);
+}
+
+.realcard-model.is-realcard-name-very-long .realcard-front__name,
+.realcard-model.is-realcard-name-very-long .realcard-back__fallback {
+  letter-spacing: 0.1em;
+}
+
+.realcard-model.is-realcard-name-very-long {
+  --realcard-front-layout-max: min(100%, clamp(436px, 74%, 600px));
+  --realcard-front-avatar-size: clamp(96px, 26%, 154px);
+  --realcard-front-gap: clamp(10px, 1.8vw, 20px);
+  --realcard-front-copy-max: clamp(258px, 44%, 376px);
+}
+
+.realcard-model.is-realcard-name-very-long .realcard-front__name {
+  font-size: clamp(13px, 1.34vw, 18px);
+}
+
+.realcard-edge {
+  background:
+    linear-gradient(180deg, rgba(249,249,249,0.98) 0%, rgba(235,235,235,1) 56%, rgba(214,214,214,0.98) 100%);
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.05);
+}
+
+.realcard-edge.top,
+.realcard-edge.bottom {
+  width: 100%;
+  height: var(--realcard-thickness);
+}
+
+.realcard-edge.left,
+.realcard-edge.right {
+  width: var(--realcard-thickness);
+  height: 100%;
+}
+
+.realcard-edge.top {
+  transform: translate(-50%, -50%) rotateX(90deg) translateZ(calc(var(--realcard-h) / 2));
+}
+
+.realcard-edge.bottom {
+  transform: translate(-50%, -50%) rotateX(90deg) translateZ(calc(var(--realcard-h) / -2));
+}
+
+.realcard-edge.left {
+  transform: translate(-50%, -50%) rotateY(90deg) translateZ(calc(var(--realcard-w) / -2));
+}
+
+.realcard-edge.right {
+  transform: translate(-50%, -50%) rotateY(90deg) translateZ(calc(var(--realcard-w) / 2));
+}
+
+/* ── 3D card scene ── */
+.card-scene {
+  width: var(--card-w);
+  height: var(--card-h);
+  perspective: 1200px;
+  cursor: pointer;
+  flex-shrink: 0;
+  touch-action: pan-y;
+}
+
+.card-showcase .card-scene {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.card-showcase.is-selected .card-scene {
+  top: var(--selected-card-top);
+  transform: translateX(-50%);
+}
+
+/*
+ * Single element handles BOTH tilt (mouse) AND flip (click).
+ * JS sets: rotateX(tiltX) rotateY(baseY + tiltY)
+ * where baseY = 0 (front) or 180 (back).
+ * One preserve-3d context = backface-visibility works reliably.
+ */
+.card-3d {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  will-change: transform;
+  transform: rotateX(0deg) rotateY(0deg);
+}
+
+/* card faces */
+.card-face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border: 1px solid var(--line);
+  overflow: hidden;
+}
+.card-face.front { background: var(--bg); }
+.card-face.back  { background: #fafafa; transform: rotateY(180deg); }
+
+/* ── Front face ── */
+.face-front {
+  width: 100%; height: 100%;
+  padding: clamp(24px, 4.1vw, 52px) clamp(28px, 4.8vw, 66px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.front-main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(20px, 3.4vw, 44px);
+  width: 100%;
+  min-width: 0;
+}
+
+.card-avatar {
+  width: clamp(108px, 34%, 194px);
+  height: auto;
+  aspect-ratio: 1;
+  border: 1px solid var(--line);
+  flex-shrink: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f3f3f3;
+  font-size: clamp(13px, 1.9vw, 26px);
+  font-weight: 700;
+  color: var(--muted);
+}
+.card-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.card-info {
+  flex: 0 1 clamp(172px, 41%, 276px);
+  min-width: 0;
+  border-left: 1px solid var(--line);
+  padding-left: clamp(24px, 3.8vw, 46px);
+}
+.card-name {
+  font-size: clamp(16px, 1.75vw, 24px);
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  color: var(--ink);
+  line-height: 1.2;
+  white-space: nowrap;
+}
+.card-role {
+  font-size: clamp(10px, 1.12vw, 15px);
+  letter-spacing: 0.2em;
+  color: var(--muted);
+  margin-top: clamp(10px, 1.3vh, 16px);
+  font-weight: 600;
+}
+.card-intro {
+  font-size: clamp(10px, 1vw, 14px);
+  letter-spacing: 0.12em;
+  color: rgba(0,0,0,0.45);
+  margin-top: clamp(18px, 2.3vh, 28px);
+  line-height: 1.72;
+  font-weight: 400;
+  white-space: pre;
+  word-break: keep-all;
+  overflow-wrap: normal;
+}
+.face-front.is-front-tier-2 .card-name {
+  font-size: clamp(15px, 1.6vw, 22px);
+}
+.face-front.is-front-tier-2 .card-intro {
+  font-size: clamp(9px, 0.92vw, 13px);
+  line-height: 1.66;
+}
+.face-front.is-front-tier-3 .card-name {
+  font-size: clamp(14px, 1.45vw, 20px);
+}
+.face-front.is-front-tier-3 .card-intro {
+  font-size: clamp(8px, 0.84vw, 12px);
+  line-height: 1.6;
+}
+.face-front.is-front-tier-4 .card-name {
+  font-size: clamp(13px, 1.3vw, 18px);
+}
+.face-front.is-front-tier-4 .card-intro {
+  font-size: clamp(7px, 0.76vw, 11px);
+  line-height: 1.54;
+}
+.front-footer {
+  display: none;
+}
+
+/* ── Back face ── */
+.face-back {
+  width: 100%; height: 100%;
+  padding: clamp(18px, 2.6vw, 36px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(6px, 0.9vh, 10px);
+  position: relative;
+}
+.back-image {
+  position: absolute;
+  top: clamp(18px, 2.6vw, 36px);
+  right: clamp(18px, 2.6vw, 36px);
+  bottom: clamp(18px, 2.6vw, 36px);
+  width: 52%;
+  object-fit: cover;
+  opacity: 0.6;
+  pointer-events: none;
+  z-index: 0;
+}
+.back-label,
+#cardLinks {
+  position: relative;
+  z-index: 1;
+}
+.back-label {
+  font-size: clamp(7px, 0.66vw, 9px);
+  letter-spacing: 0.3em;
+  color: var(--muted);
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+.card-link {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 10px;
+  max-width: 100%;
+  font-size: clamp(8px, 0.8vw, 11px);
+  letter-spacing: 0.08em;
+  color: var(--ink);
+  text-decoration: none;
+  border-left: 1px solid var(--line);
+  padding: 3px 0 3px 10px;
+  transition: color 0.24s ease, border-color 0.24s ease, transform 0.24s ease;
+  font-weight: 600;
+}
+.card-link:hover { color: var(--accent); border-color: var(--accent); transform: translateX(2px); }
+.card-link-row {
+  display: block;
+}
+.link-label {
+  color: var(--muted);
+  min-width: clamp(36px, 4.5vw, 56px);
+  font-size: 0.88em;
+  letter-spacing: 0.12em;
+  flex-shrink: 0;
+}
+.no-links {
+  font-size: clamp(8px, 0.78vw, 10px);
+  letter-spacing: 0.16em;
+  color: rgba(0,0,0,0.28);
+  font-weight: 400;
+}
+
+/* ─────────────── RIGHT PANEL ─────────────── */
+.panel-right {
+  position: relative;
+  border-left: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(40px, 5.8vh, 64px) clamp(36px, 4.8vw, 72px);
+  gap: clamp(24px, 3.6vh, 42px);
+  overflow: hidden;
+  min-height: 100svh;
+}
+
+.mobile-drawer-toggle {
+  display: none;
+}
+
+.mobile-drawer-status {
+  color: var(--muted);
+  font-size: 0.82em;
+  letter-spacing: 0.12em;
+}
+
+.mobile-drawer-chevron {
+  width: 0.62em;
+  height: 0.62em;
+  border-right: 1px solid currentColor;
+  border-bottom: 1px solid currentColor;
+  transform: rotate(225deg);
+  transition: transform 0.24s var(--ease-spring);
+}
+.panel-title {
+  font-size: clamp(13px, 1.08vw, 17px);
+  letter-spacing: 0.6em;
+  color: var(--muted);
+  font-weight: 600;
+  text-align: center;
+  flex-shrink: 0;
+  width: var(--grid-w);
+}
+
+/* ── 5×5 Grid ── */
+.grid-wrap {
+  --grid-edge-fade: clamp(16px, 2.8vh, 28px);
+  flex: 0 0 auto;
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  max-height: min(64svh, 520px);
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior-x: none;
+  padding: 0 1px var(--grid-edge-fade);
+  scrollbar-width: thin;
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    #000 0,
+    #000 calc(100% - var(--grid-edge-fade)),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    #000 0,
+    #000 calc(100% - var(--grid-edge-fade)),
+    transparent 100%
+  );
+}
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: clamp(4px, 0.6vw, 8px);
+  width: var(--grid-w);
+  max-width: 100%;
+  min-width: 0;
+}
+.grid-cell {
+  aspect-ratio: 1;
+  border: 1px solid var(--line);
+  cursor: pointer;
+  position: relative;
+  transition: transform 0.2s var(--ease-spring), box-shadow 0.2s ease, border-color 0.2s ease;
+  background: #f7f7f7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.grid-cell.is-self { background: var(--bg); }
+.grid-cell:hover {
+  transform: scale(1.10);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.10);
+  border-color: rgba(0,0,0,0.26);
+  z-index: 2;
+}
+.grid-cell.is-active { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.grid-cell.is-active:hover { box-shadow: 0 6px 20px rgba(70,78,102,0.18), 0 0 0 1px var(--accent); }
+
+.cell-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: grayscale(1) saturate(0) contrast(0.92);
+  opacity: 0.78;
+  transition: filter 0.24s ease, opacity 0.24s ease;
+}
+.grid-cell.is-active .cell-img {
+  filter: none;
+  opacity: 1;
+}
+.cell-name,
+.cell-initial {
+  max-width: 100%;
+  padding: clamp(5px, 0.8vw, 9px);
+  font-size: clamp(9px, 1.05vw, 15px);
+  font-weight: 700;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+  line-height: 1.25;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+.is-self .cell-name,
+.is-self .cell-initial { color: var(--accent); }
+
+.grid-caption {
+  font-size: clamp(10px, 0.78vw, 12px);
+  letter-spacing: 0.22em;
+  color: var(--muted);
+  text-align: right;
+  font-weight: 600;
+  flex-shrink: 0;
+  min-height: 1.2em;
+  width: var(--grid-w);
+}
+
+.grid-notice {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 3;
+  min-width: min(72%, 240px);
+  max-width: calc(100% - 24px);
+  padding: clamp(10px, 1.5vw, 14px) clamp(14px, 2vw, 20px);
+  border: 1px solid rgba(0,0,0,0.12);
+  background: rgba(255,255,255,0.84);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: rgba(0,0,0,0.46);
+  font-size: clamp(10px, 0.92vw, 13px);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  line-height: 1.5;
+  text-align: center;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.24s ease;
+}
+
+.grid-wrap.is-failed .grid-notice {
+  opacity: 1;
+}
+
+.grid-cell.is-disabled {
+  cursor: default;
+  background: rgba(247,247,247,0.76);
+  border-color: rgba(0,0,0,0.1);
+  box-shadow: none;
+}
+
+.grid-cell.is-disabled::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0.44);
+  backdrop-filter: blur(2px) grayscale(1);
+  -webkit-backdrop-filter: blur(2px) grayscale(1);
+}
+
+.grid-cell.is-disabled:hover {
+  transform: none;
+  box-shadow: none;
+  border-color: rgba(0,0,0,0.1);
+  z-index: auto;
+}
+
+.site-credit {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(10px, 1.6vh, 16px);
+  transform: translateX(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.08em;
+  z-index: 2;
+  max-width: calc(100% - 24px);
+  font-size: clamp(5.6px, 1.7vw, 8px);
+  line-height: 1.35;
+  color: rgb(232, 232, 232);
+  text-align: center;
+  white-space: nowrap;
+  pointer-events: auto;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: none;
+  transition: opacity 0.24s ease;
+}
+
+
+.realcard-viewer__shell .site-credit {
+  bottom: clamp(6px, 1.2vh, 12px);
+  font-size: clamp(5.6px, 0.72vw, 8px);
+  opacity: 0.72;
+}
+
+.site-credit-char {
+  display: inline-block;
+  flex: 0 0 auto;
+  color: rgb(232, 232, 232);
+  transition: color 0.2s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .layout,
+  .intro-deck,
+  .intro-card,
+  .intro-mark,
+  .intro-hint {
+    animation: none;
+  }
+
+  .intro-hint {
+    opacity: 1;
+    transform: translateX(-50%);
+  }
+
+  .intro-overlay,
+  .realcard-viewer,
+  .realcard-launch,
+  .realcard-viewer__close {
+    transition: opacity 0.2s ease, visibility 0s linear 0.2s;
+  }
+}
+
+/* ─────────────── MOBILE ─────────────── */
+@media (max-width: 768px) {
+  .intro-stage {
+    width: clamp(176px, 52vw, 260px);
+    height: clamp(122px, 38vw, 176px);
+  }
+  .intro-hint {
+    top: calc(100% + clamp(18px, 5svh, 32px));
+    width: min(78vw, 340px);
+    font-size: clamp(11px, 3.2vw, 13px);
+    letter-spacing: 0.05em;
+    line-height: 1.75;
+  }
+  .intro-hint-desktop {
+    display: none;
+  }
+  .intro-hint-mobile {
+    display: block;
+  }
+  .layout {
+    display: flex;
+    flex-direction: column;
+    min-height: 100svh;
+    padding-top: calc(var(--safe-top) + var(--mobile-title-h));
+    padding-bottom: calc(var(--mobile-drawer-tab-h) + var(--drawer-bottom-pad) + var(--mobile-credit-space));
+    animation: none;
+    transform: none !important;
+  }
+  :root { --card-w: min(320px, 84vw); }
+  .mobile-page-title {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 16;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: calc(var(--safe-top) + var(--mobile-title-h));
+    padding: var(--safe-top) max(18px, var(--safe-right)) 0 max(18px, var(--safe-left));
+    background: rgba(255,255,255,0.96);
+    color: var(--muted);
+    font-size: clamp(12px, 3.4vw, 15px);
+    font-weight: 700;
+    letter-spacing: 0.42em;
+    line-height: 1.2;
+    text-align: center;
+  }
+  .panel-left {
+    padding: clamp(22px, 6vw, 42px) max(clamp(24px, 6vw, 44px), var(--safe-right)) clamp(20px, 4vw, 36px) max(clamp(24px, 6vw, 44px), var(--safe-left));
+    border-bottom: 1px solid var(--line);
+    flex-direction: column-reverse;
+    gap: 14px;
+    min-height: clamp(420px, 58svh, 620px);
+  }
+  .card-showcase {
+    --selected-lift: clamp(34px, 7svh, 68px);
+    width: 100%;
+    min-height: clamp(360px, 58svh, 500px);
+  }
+  .idle-quote { width: min(76vw, 340px); }
+  .idle-quote .char { font-size: clamp(20px, 7vmin, 48px); }
+  .card-showcase.is-selected .card-scene {
+    top: calc(50% - var(--selected-lift));
+    transform: translate(-50%, -50%);
+  }
+  .selected-copy {
+    position: static;
+    width: auto;
+    height: auto;
+    transform: none;
+    display: block;
+  }
+  .selected-copy .quote-line {
+    position: absolute;
+    left: 50%;
+    width: min(76vw, calc(var(--card-w) - 18px));
+    min-height: 26px;
+    height: auto;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 clamp(8px, 3vw, 14px);
+    border-block: 1px solid rgba(0,0,0,0.10);
+    touch-action: none;
+    flex: none;
+  }
+  .selected-copy .type-line {
+    top: calc(50% - var(--selected-lift) + var(--card-half-h) + 14px);
+    transform: translateX(-50%);
+  }
+  .selected-copy .intro-line {
+    top: calc(50% - var(--selected-lift) + var(--card-half-h) + 42px);
+    transform: translateX(-50%);
+  }
+  .selected-copy .quote-line .paint-grid {
+    position: static;
+    top: auto;
+    right: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.18em;
+    height: auto;
+    width: max-content;
+    max-width: none;
+    white-space: nowrap;
+    writing-mode: horizontal-tb;
+    text-orientation: mixed;
+    line-height: 1;
+    transform-origin: center;
+  }
+  .selected-copy .intro-line .paint-grid.is-intro-grid {
+    display: flex;
+    width: max-content;
+    justify-content: center;
+    align-content: center;
+    row-gap: 0;
+    column-gap: 0.18em;
+  }
+  .selected-copy .quote-line .char {
+    flex: 0 0 auto;
+    min-width: 0;
+    min-height: 0;
+    display: flex;
+    font-size: clamp(8px, 2.55vw, 11px);
+    letter-spacing: 0.06em;
+  }
+  .selected-copy .intro-line.is-copy-tier-1 .char,
+  .selected-copy .intro-line.is-copy-tier-2 .char,
+  .selected-copy .intro-line.is-copy-tier-3 .char,
+  .selected-copy .intro-line.is-copy-tier-4 .char {
+    font-size: clamp(8px, 2.55vw, 11px);
+    letter-spacing: 0.06em;
+  }
+  .selected-copy .type-line .char {
+    font-size: clamp(7px, 2.2vw, 9px);
+    letter-spacing: 0.2em;
+  }
+  .face-front {
+    padding: clamp(18px, 6vw, 28px) clamp(18px, 6vw, 30px);
+  }
+  .front-main {
+    gap: clamp(14px, 4.4vw, 22px);
+  }
+  .card-avatar {
+    width: clamp(92px, 34%, 118px);
+    height: auto;
+    font-size: clamp(18px, 5vw, 24px);
+  }
+  .card-info {
+    flex-basis: clamp(148px, 44%, 198px);
+    padding-left: clamp(14px, 4.4vw, 22px);
+  }
+  .card-name {
+    font-size: clamp(14px, 4vw, 19px);
+    letter-spacing: 0.2em;
+  }
+  .card-role {
+    font-size: clamp(9px, 2.7vw, 12px);
+    margin-top: clamp(8px, 2vw, 12px);
+  }
+  .card-intro {
+    font-size: clamp(8px, 2.45vw, 11px);
+    margin-top: clamp(12px, 3vw, 18px);
+    line-height: 1.62;
+  }
+  .face-front.is-front-tier-2 .card-name {
+    font-size: clamp(13px, 3.7vw, 18px);
+  }
+  .face-front.is-front-tier-2 .card-intro {
+    font-size: clamp(8px, 2.3vw, 10px);
+  }
+  .face-front.is-front-tier-3 .card-name {
+    font-size: clamp(12px, 3.4vw, 16px);
+  }
+  .face-front.is-front-tier-3 .card-intro {
+    font-size: clamp(7px, 2.1vw, 9px);
+  }
+  .face-front.is-front-tier-4 .card-name {
+    font-size: clamp(11px, 3.1vw, 15px);
+  }
+  .face-front.is-front-tier-4 .card-intro {
+    font-size: clamp(7px, 1.95vw, 8px);
+    line-height: 1.52;
+  }
+  .face-back {
+    padding: clamp(14px, 2.2vw, 24px);
+  }
+  .quote-line {
+    padding-inline: clamp(8px, 3vw, 14px);
+  }
+  .type-line { top: calc(50% - var(--selected-lift) + var(--card-half-h) + 14px); }
+  .intro-line { top: calc(50% - var(--selected-lift) + var(--card-half-h) + 42px); }
+  .card-showcase .card-actions { top: calc(50% - var(--selected-lift) + var(--card-half-h) + 72px); }
+  .quote-line .char { font-size: clamp(8px, 2.55vw, 11px); }
+  .type-line .char { font-size: clamp(7px, 2.2vw, 9px); }
+  .panel-right {
+    border-left: none;
+    align-items: stretch;
+    justify-content: flex-start;
+    padding: clamp(20px, 5vw, 36px);
+    min-height: auto;
+    overflow: visible;
+    flex: 1;
+  }
+  .panel-title {
+    text-align: right;
+    width: auto;
+  }
+  .grid-wrap {
+    flex: 1;
+    width: auto;
+  }
+  .card-grid { gap: clamp(4px, 1.4vw, 8px); width: 100%; }
+  .grid-caption { width: auto; }
+  .cell-initial { font-size: clamp(10px, 3.8vw, 16px); }
+  .cell-name {
+    font-size: clamp(9px, 3.1vw, 13px);
+    padding: clamp(5px, 1.6vw, 8px);
+  }
+  .panel-left {
+    border-bottom: 0;
+    justify-content: center;
+    min-height: calc(100svh - var(--safe-top) - var(--mobile-title-h) - var(--mobile-drawer-tab-h) - var(--drawer-bottom-pad) - var(--mobile-credit-space));
+  }
+
+  .card-showcase {
+    min-height: calc(100svh - var(--safe-top) - var(--mobile-title-h) - var(--mobile-drawer-tab-h) - var(--drawer-bottom-pad) - var(--mobile-credit-space) - clamp(42px, 10vw, 72px));
+  }
+
+  .card-showcase.is-selected {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0;
+  }
+
+  .card-showcase.is-selected .card-scene {
+    position: relative;
+    left: auto;
+    top: auto;
+    transform: none;
+    margin-top: clamp(10px, 4svh, 34px);
+    order: 1;
+  }
+
+  .card-showcase.is-selected .selected-copy {
+    position: relative;
+    left: auto;
+    right: auto;
+    top: auto;
+    width: min(100%, 520px);
+    height: auto;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) clamp(42px, 11vw, 60px);
+    grid-template-rows: auto minmax(clamp(138px, 24svh, 220px), auto);
+    align-items: stretch;
+    column-gap: clamp(10px, 3vw, 18px);
+    row-gap: clamp(8px, 2.4vw, 14px);
+    margin-top: clamp(34px, 6svh, 58px);
+    padding-inline: clamp(2px, 1vw, 8px);
+    order: 2;
+  }
+
+  .card-showcase.is-selected .selected-copy::after {
+    content: "";
+    position: absolute;
+    left: clamp(2px, 1vw, 8px);
+    right: clamp(2px, 1vw, 8px);
+    bottom: 0;
+    border-bottom: 1px solid rgba(0,0,0,0.10);
+    pointer-events: none;
+  }
+
+  .selected-heading {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    justify-self: stretch;
+    align-self: center;
+    writing-mode: horizontal-tb;
+    text-orientation: mixed;
+    text-align: center;
+    font-size: clamp(13px, 3.7vw, 17px);
+    letter-spacing: 0.22em;
+    color: var(--muted);
+    font-weight: 700;
+    line-height: 1.25;
+    min-height: 32px;
+    padding: 7px clamp(8px, 3vw, 14px);
+    text-indent: 0.22em;
+  }
+
+  .card-showcase.is-selected .selected-copy .quote-line {
+    position: relative;
+    left: auto;
+    top: auto;
+    transform: none;
+    width: 100%;
+    min-height: 0;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-block: 1px solid rgba(0,0,0,0.10);
+    touch-action: none;
+    flex: none;
+  }
+
+  .card-showcase.is-selected .selected-copy .type-line {
+    grid-column: 2;
+    grid-row: 2;
+    align-self: start;
+    align-items: flex-start;
+    justify-content: center;
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    padding: clamp(12px, 3vw, 18px) 0 0 clamp(8px, 2.6vw, 14px);
+    border-block: 0;
+  }
+
+  .card-showcase.is-selected .selected-copy .intro-line {
+    grid-column: 1;
+    grid-row: 2;
+    justify-content: flex-end;
+    min-height: 100%;
+    padding: clamp(12px, 3vw, 18px);
+    border-top: 0;
+    border-bottom: 0;
+  }
+
+  .card-showcase.is-selected .selected-copy .quote-line .paint-grid {
+    position: static;
+    top: auto;
+    right: auto;
+    height: auto;
+    width: max-content;
+    max-width: none;
+    writing-mode: horizontal-tb;
+    text-orientation: mixed;
+    line-height: 1;
+    transform-origin: center;
+  }
+
+  .card-showcase.is-selected .selected-copy .type-line .paint-grid {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.12em;
+    writing-mode: horizontal-tb;
+    text-orientation: mixed;
+    white-space: nowrap;
+    line-height: 1.28;
+    transform-origin: center;
+  }
+
+  .card-showcase.is-selected .selected-copy .intro-line .paint-grid.is-intro-grid {
+    display: grid;
+    width: max-content;
+    max-width: none;
+    margin: 0 0 0 auto;
+    align-content: center;
+    justify-content: end;
+    justify-items: center;
+    align-items: center;
+    row-gap: 0.26em;
+    column-gap: clamp(12px, 4vw, 24px);
+  }
+
+  .card-showcase.is-selected .selected-copy .intro-line .char {
+    font-size: clamp(13px, 4.2vw, 22px);
+    letter-spacing: 0.04em;
+  }
+
+  .card-showcase.is-selected .selected-copy .intro-line.is-copy-tier-2 .char {
+    font-size: clamp(12px, 3.8vw, 20px);
+  }
+
+  .card-showcase.is-selected .selected-copy .intro-line.is-copy-tier-3 .char {
+    font-size: clamp(11px, 3.4vw, 18px);
+  }
+
+  .card-showcase.is-selected .selected-copy .intro-line.is-copy-tier-4 .char {
+    font-size: clamp(10px, 3.1vw, 16px);
+  }
+
+  .card-showcase.is-selected .selected-copy .type-line .char {
+    display: flex;
+    flex: 0 0 auto;
+    font-size: clamp(15px, 4.5vw, 22px);
+    letter-spacing: 0;
+  }
+
+  .card-showcase.is-selected .card-actions {
+    position: relative;
+    left: auto;
+    top: auto;
+    transform: none;
+    margin-top: clamp(10px, 2.5svh, 18px);
+    order: 3;
+    align-self: center;
+    flex-wrap: wrap;
+    justify-content: center;
+    row-gap: 8px;
+  }
+
+  .card-showcase.is-selected .flip-hint {
+    position: static;
+    margin-top: 0;
+    font-size: 10px;
+  }
+
+  .card-showcase .realcard-launch {
+    margin-left: 10px;
+    padding: 8px 12px;
+    font-size: 10px;
+  }
+
+  .panel-right {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 18;
+    height: calc(var(--mobile-drawer-tab-h) + var(--drawer-bottom-pad) + var(--mobile-credit-space));
+    min-height: 0;
+    max-height: none;
+    padding: 0 max(clamp(16px, 5vw, 28px), var(--safe-right)) calc(var(--drawer-bottom-pad) + var(--mobile-credit-space)) max(clamp(16px, 5vw, 28px), var(--safe-left));
+    border-left: 0;
+    border-top: 1px solid var(--line);
+    background: rgba(255,255,255,0.98);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 0;
+    overflow: hidden;
+    transform: none;
+    transition: height 0.34s var(--ease-spring), box-shadow 0.34s ease;
+  }
+
+  .panel-right.is-open {
+    height: min(76svh, 560px);
+    box-shadow: 0 -14px 34px rgba(0,0,0,0.10);
+  }
+
+  .mobile-drawer-toggle {
+    appearance: none;
+    border: 0;
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+    background: transparent;
+    color: var(--ink);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    width: 100%;
+    height: var(--mobile-drawer-tab-h);
+    font: inherit;
+    font-size: clamp(12px, 3.4vw, 15px);
+    letter-spacing: 0.22em;
+    padding: 0 2px 0 calc(0.22em + 2px);
+    text-align: left;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .panel-right.is-open .mobile-drawer-status {
+    color: var(--ink);
+  }
+
+  .panel-right.is-open .mobile-drawer-chevron {
+    transform: rotate(45deg);
+  }
+
+  .panel-right .panel-title {
+    display: none;
+    margin-top: clamp(14px, 3.8vw, 22px);
+    text-align: center;
+    width: 100%;
+    font-size: clamp(11px, 2.9vw, 14px);
+    letter-spacing: 0.42em;
+    padding-left: 0.42em;
+  }
+
+  .panel-right .grid-wrap {
+    --grid-edge-fade: clamp(18px, 5vw, 30px);
+    flex: 1 1 auto;
+    width: 100%;
+    max-height: calc(min(76svh, 560px) - var(--mobile-drawer-tab-h) - 88px);
+    min-width: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    align-items: flex-start;
+    justify-content: center;
+    overscroll-behavior-x: none;
+    padding: var(--grid-edge-fade) 0;
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      transparent 0,
+      #000 var(--grid-edge-fade),
+      #000 calc(100% - var(--grid-edge-fade)),
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      to bottom,
+      transparent 0,
+      #000 var(--grid-edge-fade),
+      #000 calc(100% - var(--grid-edge-fade)),
+      transparent 100%
+    );
+  }
+
+  .panel-right .card-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: clamp(6px, 1.8vw, 10px);
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .panel-right .grid-caption {
+    text-align: center;
+    width: 100%;
+    margin-top: clamp(10px, 3vw, 16px);
+    min-height: 1.4em;
+  }
+
+  .site-credit {
+    bottom: max(6px, calc(var(--safe-bottom) * 0.35 + 2px));
+  }
+
+  .panel-right.is-open .site-credit {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .panel-right:not(.is-open) .panel-title,
+  .panel-right:not(.is-open) .grid-wrap,
+  .panel-right:not(.is-open) .grid-caption {
+    display: none;
+    pointer-events: none;
+  }
+
+  .realcard-viewer {
+    padding:
+      max(18px, var(--safe-top))
+      max(16px, var(--safe-right))
+      max(18px, var(--safe-bottom))
+      max(16px, var(--safe-left));
+  }
+
+  .realcard-viewer__shell {
+    min-height: 100%;
+    gap: 18px;
+  }
+
+  .realcard-viewer__close {
+    padding: 11px 14px;
+    font-size: 10px;
+  }
+
+  .realcard-viewer__meta {
+    gap: 8px;
+    padding-top: 0;
+  }
+
+  .realcard-viewer__title {
+    font-size: clamp(18px, 5vw, 24px);
+    letter-spacing: 0.14em;
+  }
+
+  .realcard-viewer__hint,
+  .realcard-viewer__eyebrow {
+    font-size: 10px;
+  }
+
+  .realcard-viewer__viewport {
+    width: 100%;
+    min-height: min(62svh, calc(var(--realcard-h) + 120px));
+  }
+
+  .realcard-paper {
+    padding: 16px;
+  }
+
+  .realcard-model {
+    --realcard-front-layout-max: min(100%, 340px);
+    --realcard-front-avatar-size: 102px;
+    --realcard-front-gap: 12px;
+    --realcard-front-copy-max: clamp(154px, 56%, 228px);
+  }
+
+  .realcard-front {
+    column-gap: var(--realcard-front-gap);
+  }
+
+  .realcard-front__avatar {
+    width: 100%;
+  }
+
+  .realcard-front__copy {
+    max-width: var(--realcard-front-copy-max);
+    padding-left: 14px;
+  }
+
+  .realcard-front__name {
+    font-size: clamp(15px, 4.7vw, 22px);
+    letter-spacing: 0.18em;
+  }
+
+  .realcard-front__role,
+  .realcard-back__label,
+  .realcard-back__link-type {
+    font-size: 10px;
+  }
+
+  .realcard-front__intro,
+  .realcard-back__link-anchor,
+  .realcard-back__link-text,
+  .realcard-back__empty {
+    font-size: 11px;
+  }
+
+  .realcard-back {
+    gap: 8px;
+  }
+
+  .realcard-back__content {
+    width: 47%;
+  }
+
+  .realcard-back__image,
+  .realcard-back__fallback {
+    width: 47%;
+  }
+
+  .realcard-back__fallback {
+    font-size: clamp(12px, 3.4vw, 18px);
+  }
+}
+
+@media (max-height: 720px) {
+  .realcard-viewer__shell {
+    gap: 14px;
+  }
+
+  .realcard-viewer__meta {
+    gap: 6px;
+  }
+
+  .realcard-viewer__viewport {
+    min-height: min(60svh, calc(var(--realcard-h) + 84px));
+  }
+}
+</style>
+</head>
+<body class="is-intro-running">
+
+<div class="intro-overlay" id="introOverlay" aria-hidden="true">
+  <div class="intro-stage">
+    <div class="intro-deck">
+      <span class="intro-card intro-card-a"></span>
+      <span class="intro-card intro-card-b"></span>
+      <span class="intro-card intro-card-c"></span>
+      <span class="intro-card intro-card-d"></span>
+      <span class="intro-card intro-card-e"></span>
+    </div>
+    <div class="intro-mark" id="introMark">名片盒</div>
+    <div class="intro-hint intro-hint-desktop">滑鼠點擊名片翻頁，移動名片有 3D 效果</div>
+    <div class="intro-hint intro-hint-mobile">手指左右滑動名片翻頁，點擊名片四角有 3D 效果</div>
+  </div>
+</div>
+
+<div class="mobile-page-title" id="mobilePageTitle" aria-hidden="true">鐘聲的名片盒</div>
+
+<div class="layout">
+
+  <!-- ═══ LEFT: Quote + 3D Card ═══ -->
+  <div class="panel-left">
+    <div class="card-showcase" id="cardShowcase">
+      <div class="idle-quote" id="idleQuote" aria-label="未選取名片的台詞"></div>
+      <div class="selected-copy selected-only" id="selectedCopy">
+        <div class="selected-heading" id="selectedHeading">名片</div>
+        <div class="quote-line type-line" id="cardTypeLine" aria-label="名片類型"></div>
+        <div class="quote-line intro-line" id="cardIntroLine" aria-label="一句話自我介紹"></div>
+      </div>
+
+      <div class="card-scene selected-only" id="cardScene">
+        <div class="card-3d" id="card3d">
+
+          <!-- FRONT -->
+          <div class="card-face front">
+            <div class="face-front">
+              <div class="front-main">
+                <div class="card-avatar" id="cardAvatar">
+                  <span id="cardInitial">鐘</span>
+                </div>
+                <div class="card-info">
+                  <div class="card-name" id="cardName">鐘　聲</div>
+                  <div class="card-role" id="cardRole">文字創作者</div>
+                  <div class="card-intro" id="cardIntro">塵世中的文字創作者，性別認同是小海豹。</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- BACK -->
+          <div class="card-face back">
+            <div class="face-back">
+              <img class="back-image" id="cardBackImage" alt="" aria-hidden="true">
+              <div class="back-label">LINKS</div>
+              <div id="cardLinks"></div>
+            </div>
+          </div>
+
+        </div><!-- card-3d -->
+      </div><!-- card-scene -->
+
+      <div class="card-actions selected-only">
+        <div class="flip-hint" id="flipHintText">點擊名片可翻面</div>
+        <button class="realcard-launch" id="realCardPhysicalLaunch" type="button" hidden>查看實體名片</button>
+        <button class="realcard-launch" id="realCardLaunch" type="button" hidden>查看電子名片</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ RIGHT: Grid ═══ -->
+  <div class="panel-right" id="cardDrawer">
+    <button class="mobile-drawer-toggle" id="mobileDrawerToggle" type="button" aria-expanded="false" aria-controls="cardGrid">
+      <span id="mobileDrawerLabel">名片選單</span>
+      <span class="mobile-drawer-status" id="mobileDrawerStatus">展開</span>
+      <span class="mobile-drawer-chevron" aria-hidden="true"></span>
+    </button>
+    <div class="panel-title" id="panelTitle">鐘　聲　的　名　片　盒</div>
+    <div class="grid-wrap">
+      <div class="card-grid" id="cardGrid"></div>
+      <div class="grid-notice" id="gridNotice" aria-live="polite" role="status" hidden></div>
+    </div>
+    <!-- &#169; 2026 Kanekoe (Gouzei). All rights reserved. -->
+    <p class="site-credit" id="siteCredit"></p>
+    <div class="grid-caption" id="gridCaption">請點擊頭像</div>
+  </div>
+
+</div>
+
+<div class="realcard-viewer" id="realCardViewer" aria-hidden="true" hidden>
+  <div class="realcard-viewer__shell">
+    <button class="realcard-viewer__close" id="realCardClose" type="button">返回主介面</button>
+    <div class="realcard-viewer__meta">
+      <div class="realcard-viewer__eyebrow" id="realCardViewerEyebrow">REAL CARD / 3D VIEWER</div>
+      <div class="realcard-viewer__title" id="realCardViewerTitle">實體名片</div>
+      <div class="realcard-viewer__hint">拖曳即可自由旋轉名片</div>
+    </div>
+    <div class="realcard-viewer__stage">
+      <div class="realcard-viewer__viewport" id="realCardViewport" aria-label="名片 3D 檢視器">
+        <div class="realcard-viewer__shadow" aria-hidden="true"></div>
+        <div class="realcard-model" id="realCardModel">
+          <div class="realcard-face front">
+            <img class="realcard-face__fullimage" id="realCardFrontFullImage" alt="" hidden>
+            <div class="realcard-sheet realcard-sheet--front">
+              <div class="realcard-paper">
+                <div class="realcard-front">
+                  <div class="realcard-front__media">
+                    <div class="realcard-front__avatar">
+                      <img id="realCardAvatarImage" alt="" hidden>
+                      <span class="realcard-front__avatar-fallback" id="realCardAvatarFallback">鐘</span>
+                    </div>
+                  </div>
+                  <div class="realcard-front__copy">
+                    <div class="realcard-front__name" id="realCardNameDisplay">鐘　聲</div>
+                    <div class="realcard-front__role" id="realCardRoleDisplay">文字創作者</div>
+                    <div class="realcard-front__intro" id="realCardIntroDisplay">塵世中寫百合文的小海豹；望為讀者帶來愛的多面向，還有共鳴。</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="realcard-face back">
+            <img class="realcard-face__fullimage" id="realCardBackFullImage" alt="" hidden>
+            <div class="realcard-sheet realcard-sheet--back">
+              <div class="realcard-paper">
+                <div class="realcard-back">
+                  <img class="realcard-back__image" id="realCardBackImageDisplay" alt="" hidden>
+                  <div class="realcard-back__fallback" id="realCardBackFallback">鐘　聲</div>
+                  <div class="realcard-back__content">
+                    <div class="realcard-back__label">LINKS</div>
+                    <div class="realcard-back__links" id="realCardBackLinks"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="realcard-edge top" aria-hidden="true"></div>
+          <div class="realcard-edge bottom" aria-hidden="true"></div>
+          <div class="realcard-edge left" aria-hidden="true"></div>
+          <div class="realcard-edge right" aria-hidden="true"></div>
+        </div>
+      </div>
+    </div>
+    <p class="site-credit site-credit--viewer"></p>
+  </div>
+</div>
+
+<script>
+/* ── Data ── */
+const CARD_DATA_URL = 'cardcase-cards.json';
+const SITE_TITLE = '鐘聲的名片盒';
+const FIXED_BACK_IMAGE_OPACITY = 0.6;
+const DEFAULT_IDLE_QUOTE = '這就是我的名片盒：翻閱名片來認識鐘聲，還有其推薦作家。';
+const DEFAULT_META = {
+  ownerName: '鐘　聲',
+  boxTitle: '鐘　聲　的　名　片　盒',
+  introMark: '名片盒',
+  idleQuote: DEFAULT_IDLE_QUOTE,
+  emptyCaption: '請點擊頭像',
+  dataLoadFailedCaption: '名片資料載入失敗',
+  flipHint: '點擊名片可翻面',
+  frontHint: '點擊翻面',
+  drawerLabel: '名片選單',
+  drawerOpenText: '收合',
+  drawerCountSuffix: '張',
+  noLinksText: '（尚無連結）',
+};
+const MOBILE_FLIP_HINT = '左右滑動翻面';
+const REAL_CARD_DEFAULT_ASSETS = {
+  front: 'mycard/mycard-F.png',
+  back: 'mycard/mycard-B.png',
+};
+const REAL_CARD_BASE_ROTATION = {
+  x: -11,
+  y: -20,
+};
+const FALLBACK_CARD = {
+  id: 'kanekoe',
+  slot: 1,
+  isSelf: true,
+  image: 'Avatar/Kanekoe.png',
+  imageAlt: '鐘聲',
+  name: '鐘　聲',
+  role: '文字創作者',
+  intro: '塵世中寫百合文的小海豹；\n望為讀者帶來愛的多面向，\n還有共鳴。',
+  backImage: 'Avatar/Kanekoe_ill.png',
+  backImageOpacity: FIXED_BACK_IMAGE_OPACITY,
+  realCardFront: REAL_CARD_DEFAULT_ASSETS.front,
+  realCardBack: REAL_CARD_DEFAULT_ASSETS.back,
+  links: [
+    { type: 'Penana',  text: '@Kanekoe', url: 'https://www.penana.com/user/Kanekoe/' },
+    { type: 'CXC',     text: '@Kanekoe', url: 'https://cxc.today/zh/@Kanekoe' },
+    { type: 'Discord', text: '見字寫文', url: '#' },
+  ]
+};
+const FALLBACK_INITIALS = '友朋知情義善仁禮智信誠勇謙恆毅達道德才器'.split('');
+const FALLBACK_SAMPLE_CARDS = [
+  {
+    id: 'test-18',
+    imageAlt: '18',
+    name: '十八字測試',
+    role: '18字介紹',
+    intro: '十八字測試介紹文字剛好落在第一級呈現',
+  },
+  {
+    id: 'test-30',
+    imageAlt: '30',
+    name: '三十字測試',
+    role: '30字介紹',
+    intro: '三十字測試介紹文字用來觀察第二級字體縮放與灰階變化效果很清楚',
+  },
+  {
+    id: 'test-42',
+    imageAlt: '42',
+    name: '四十二字測試',
+    role: '42字介紹',
+    intro: '四十二字測試介紹文字用來觀察第三級字體縮放行距與灰階變化是否依然清楚安穩呈現是否穩定',
+  },
+  {
+    id: 'test-57',
+    imageAlt: '57',
+    name: '五十七字測試',
+    role: '57字介紹',
+    intro: '五十七字測試介紹文字用來觀察第四級字體縮放行距欄距灰階變化以及長句在畫面中的可讀性是否仍然清楚穩定適合閱讀比較舒服',
+  },
+];
+const FALLBACK_CARDS = [
+  FALLBACK_CARD,
+  ...Array.from({ length: 24 }, (_, i) => {
+    const sample = FALLBACK_SAMPLE_CARDS[i];
+    return {
+      id: sample?.id || `friend-${String(i + 1).padStart(2, '0')}`,
+      slot: i + 1,
+      isSelf: false,
+      image: null,
+      imageAlt: sample?.imageAlt || FALLBACK_INITIALS[i] || '？',
+      name: sample?.name || `友人 ${String(i + 1).padStart(2, '0')}`,
+      role: sample?.role || '——',
+      intro: sample?.intro || '（尚未填寫資料）',
+      backImage: null,
+      backImageOpacity: FIXED_BACK_IMAGE_OPACITY,
+      links: [],
+    };
+  }),
+];
+Object.assign(FALLBACK_CARD, {
+  imageAlt: '鐘聲',
+  name: '鐘　聲',
+  role: '文字創作者',
+  intro: '塵世中寫百合文的小海豹；\n望為讀者帶來愛的多面向，\n還有共鳴。',
+  backImage: 'Avatar/Kanekoe_ill.png',
+  backImageOpacity: FIXED_BACK_IMAGE_OPACITY,
+  realCardFront: REAL_CARD_DEFAULT_ASSETS.front,
+  realCardBack: REAL_CARD_DEFAULT_ASSETS.back,
+});
+FALLBACK_CARD.links = [
+  { type: 'HP', text: '鐘聲 個人主頁', url: 'https://gouzei-kanekoe.github.io/Kanekoe_works' },
+  { type: 'Penana', text: '作者頁面', url: 'https://www.penana.com/user/177564/%E9%90%98%E8%81%B2' },
+  { type: 'CXC', text: '【天國管理局文學部】', url: 'https://cxc.today/zh/@Kanekoe' },
+  { type: 'THREADS', text: '@gouzei_kanekoe', url: 'https://www.threads.com/@gouzei_kanekoe' },
+];
+FALLBACK_CARDS.length = 1;
+FALLBACK_CARDS[0] = FALLBACK_CARD;
+const FAILED_GRID_SLOT_COUNT = 25;
+
+let ALL_CARDS = [];
+let UI_META = { ...DEFAULT_META };
+
+/* ── State ── */
+let activeId = null;
+let flipped  = false;
+let tiltRaf  = null;
+let isTilting = false;
+let dataLoadFailed = false;
+
+// Current actual rotation values (used for combined transform)
+let tiltX = 0, tiltY = 0;
+let targetTX = 0, targetTY = 0;
+let realCardViewerOpen = false;
+let realCardViewerRaf = null;
+let realCardHideTimer = null;
+let activeRealCardMode = 'template';
+const realCardRotation = {
+  x: REAL_CARD_BASE_ROTATION.x,
+  y: REAL_CARD_BASE_ROTATION.y,
+  targetX: REAL_CARD_BASE_ROTATION.x,
+  targetY: REAL_CARD_BASE_ROTATION.y,
+  startX: 0,
+  startY: 0,
+  originX: REAL_CARD_BASE_ROTATION.x,
+  originY: REAL_CARD_BASE_ROTATION.y,
+  pointerId: null,
+  dragging: false,
+};
+
+/* ── DOM ── */
+const introOverlay = document.getElementById('introOverlay');
+const introMarkEl = document.getElementById('introMark');
+const mobilePageTitleEl = document.getElementById('mobilePageTitle');
+const showcaseEl = document.getElementById('cardShowcase');
+const idleQuoteEl = document.getElementById('idleQuote');
+const selectedHeadingEl = document.getElementById('selectedHeading');
+const typeLineEl = document.getElementById('cardTypeLine');
+const introLineEl = document.getElementById('cardIntroLine');
+const scene     = document.getElementById('cardScene');
+const card3d    = document.getElementById('card3d');
+const faceFrontEl = document.querySelector('.face-front');
+const avatarEl  = document.getElementById('cardAvatar');
+const nameEl    = document.getElementById('cardName');
+const roleEl    = document.getElementById('cardRole');
+const introTextEl = document.getElementById('cardIntro');
+const backImageEl = document.getElementById('cardBackImage');
+const linksEl   = document.getElementById('cardLinks');
+const flipHintTextEl = document.getElementById('flipHintText');
+const realCardPhysicalLaunchEl = document.getElementById('realCardPhysicalLaunch');
+const realCardLaunchEl = document.getElementById('realCardLaunch');
+const realCardViewerEl = document.getElementById('realCardViewer');
+const realCardCloseEl = document.getElementById('realCardClose');
+const realCardViewerEyebrowEl = document.getElementById('realCardViewerEyebrow');
+const realCardViewerTitleEl = document.getElementById('realCardViewerTitle');
+const realCardViewportEl = document.getElementById('realCardViewport');
+const realCardModelEl = document.getElementById('realCardModel');
+const realCardFrontFaceEl = realCardModelEl?.querySelector('.realcard-face.front') || null;
+const realCardBackFaceEl = realCardModelEl?.querySelector('.realcard-face.back') || null;
+const realCardFrontFullImageEl = document.getElementById('realCardFrontFullImage');
+const realCardBackFullImageEl = document.getElementById('realCardBackFullImage');
+const realCardAvatarImageEl = document.getElementById('realCardAvatarImage');
+const realCardAvatarFallbackEl = document.getElementById('realCardAvatarFallback');
+const realCardNameDisplayEl = document.getElementById('realCardNameDisplay');
+const realCardRoleDisplayEl = document.getElementById('realCardRoleDisplay');
+const realCardIntroDisplayEl = document.getElementById('realCardIntroDisplay');
+const realCardBackImageDisplayEl = document.getElementById('realCardBackImageDisplay');
+const realCardBackFallbackEl = document.getElementById('realCardBackFallback');
+const realCardBackLinksEl = document.getElementById('realCardBackLinks');
+const drawerEl  = document.getElementById('cardDrawer');
+const drawerToggleEl = document.getElementById('mobileDrawerToggle');
+const mobileDrawerLabelEl = document.getElementById('mobileDrawerLabel');
+const drawerStatusEl = document.getElementById('mobileDrawerStatus');
+const panelTitleEl = document.getElementById('panelTitle');
+const gridWrapEl = document.querySelector('.grid-wrap');
+const gridEl    = document.getElementById('cardGrid');
+const gridNoticeEl = document.getElementById('gridNotice');
+const captionEl = document.getElementById('gridCaption');
+const siteCreditEls = Array.from(document.querySelectorAll('.site-credit'));
+
+/* ── Quote paint effect ── */
+const SITE_CREDIT_TEXT = '\u00A9 2026 Kanekoe (Gouzei). All rights reserved.';
+const QUOTE_BASE_RGB  = [247, 247, 247];
+const QUOTE_HOVER_RGB = [196, 196, 196];
+const QUOTE_AUTO_RGBS = [
+  [247, 247, 247],
+  [232, 232, 232],
+  [214, 214, 214],
+  [238, 238, 238],
+];
+const CREDIT_BASE_RGB = [...QUOTE_AUTO_RGBS[1]];
+const CREDIT_HOVER_RGB = [...QUOTE_HOVER_RGB];
+const INTRO_COPY_LIMITS = {
+  tier1: 18,
+  tier2: 32,
+  tier3: 48,
+  max: 64,
+};
+const INTRO_COPY_TIER_CLASSES = [
+  'is-copy-tier-1',
+  'is-copy-tier-2',
+  'is-copy-tier-3',
+  'is-copy-tier-4',
+];
+const FRONT_TEXT_TIER_CLASSES = [
+  'is-front-tier-1',
+  'is-front-tier-2',
+  'is-front-tier-3',
+  'is-front-tier-4',
+];
+const REALCARD_TIER_CLASSES = [
+  'is-realcard-tier-1',
+  'is-realcard-tier-2',
+  'is-realcard-tier-3',
+  'is-realcard-tier-4',
+];
+const REALCARD_BACK_TIER_CLASSES = [
+  'is-realcard-back-tier-1',
+  'is-realcard-back-tier-2',
+  'is-realcard-back-tier-3',
+];
+const FRONT_INTRO_WRAP_LIMITS = {
+  1: 12,
+  2: 12,
+  3: 14,
+  4: 16,
+};
+const REALCARD_FRONT_WRAP_LIMITS_DESKTOP = {
+  1: 16,
+  2: 18,
+  3: 20,
+  4: 22,
+};
+const REALCARD_FRONT_WRAP_LIMITS_MOBILE = {
+  1: 12,
+  2: 12,
+  3: 14,
+  4: 16,
+};
+const REALCARD_BACK_WRAP_LIMITS = {
+  1: 16,
+  2: 14,
+  3: 12,
+};
+const INTRO_GRID_ROWS_BY_TIER = {
+  1: 5,
+  2: 6,
+  3: 7,
+  4: 9,
+};
+
+function getIntroCopyTier(visibleLength) {
+  if (visibleLength <= INTRO_COPY_LIMITS.tier1) return 1;
+  if (visibleLength <= INTRO_COPY_LIMITS.tier2) return 2;
+  if (visibleLength <= INTRO_COPY_LIMITS.tier3) return 3;
+  return 4;
+}
+
+function countVisibleChars(text) {
+  return Array.from(String(text || '')).filter(ch => ch.trim()).length;
+}
+
+function getFrontTextTier(text) {
+  return getIntroCopyTier(Math.min(countVisibleChars(text), INTRO_COPY_LIMITS.max));
+}
+
+function getFrontIntroWrapLimit(tier) {
+  return FRONT_INTRO_WRAP_LIMITS[tier] || FRONT_INTRO_WRAP_LIMITS[1];
+}
+
+function getRealCardFrontWrapLimit(tier) {
+  const wrapLimits = isMobileView()
+    ? REALCARD_FRONT_WRAP_LIMITS_MOBILE
+    : REALCARD_FRONT_WRAP_LIMITS_DESKTOP;
+  return wrapLimits[tier] || wrapLimits[1];
+}
+
+function isLatinWrapChar(ch) {
+  return /[A-Za-z0-9@#&%+._/\-:=?~]/.test(ch);
+}
+
+function tokenizeWrapLine(line) {
+  const tokens = [];
+  let buffer = '';
+
+  for (const ch of Array.from(String(line || ''))) {
+    if (isLatinWrapChar(ch)) {
+      buffer += ch;
+      continue;
+    }
+
+    if (buffer) {
+      tokens.push(buffer);
+      buffer = '';
+    }
+
+    tokens.push(ch);
+  }
+
+  if (buffer) tokens.push(buffer);
+  return tokens;
+}
+
+function countTokenVisibleChars(token) {
+  return Array.from(String(token || '')).filter(ch => ch.trim()).length;
+}
+
+function wrapLineSmart(line, maxChars) {
+  const tokens = tokenizeWrapLine(line);
+  const rows = [];
+  let current = '';
+  let currentVisible = 0;
+
+  for (const token of tokens) {
+    if (!token) continue;
+
+    if (/^\s+$/.test(token)) {
+      if (current) current += token;
+      continue;
+    }
+
+    const tokenVisible = countTokenVisibleChars(token);
+
+    if (!current) {
+      current = token;
+      currentVisible = tokenVisible;
+      continue;
+    }
+
+    if (currentVisible + tokenVisible <= maxChars) {
+      current += token;
+      currentVisible += tokenVisible;
+      continue;
+    }
+
+    rows.push(current.trimEnd());
+    current = token;
+    currentVisible = tokenVisible;
+  }
+
+  if (current) rows.push(current.trimEnd());
+  return rows.join('\n');
+}
+
+function wrapTextByChars(text, maxChars = 12) {
+  return String(text || '')
+    .replace(/\r\n?/g, '\n')
+    .split('\n')
+    .map(line => wrapLineSmart(line, maxChars))
+    .join('\n');
+}
+
+function getWrappedLineCount(text, maxChars = 12) {
+  return wrapTextByChars(text, maxChars)
+    .split('\n')
+    .filter(line => line !== '')
+    .length;
+}
+
+function setFrontTextTier(tier) {
+  if (!faceFrontEl) return;
+  faceFrontEl.classList.remove(...FRONT_TEXT_TIER_CLASSES);
+  faceFrontEl.classList.add(`is-front-tier-${tier}`);
+}
+
+function getIntroGridRows(tier, charCount) {
+  return Math.max(1, Math.min(charCount || 1, INTRO_GRID_ROWS_BY_TIER[tier] || 8));
+}
+
+function normalizeIntroCopy(text) {
+  const normalized = String(text || '')
+    .replace(/\r\n?/g, '\n')
+    .split('\n')
+    .map(line => Array.from(line).filter(ch => ch.trim()).join(''))
+    .filter(Boolean)
+    .join('\n')
+    .trim();
+
+  return normalized || '（尚未填寫一句話自我介紹）';
+}
+
+function limitIntroCopy(text) {
+  const output = [];
+  let visibleLength = 0;
+  let truncated = false;
+
+  for (const ch of Array.from(text || '')) {
+    if (ch.trim()) visibleLength += 1;
+    if (visibleLength > INTRO_COPY_LIMITS.max) {
+      truncated = true;
+      break;
+    }
+    output.push(ch);
+  }
+
+  if (truncated) {
+    while (output.length && !output[output.length - 1].trim()) output.pop();
+    output.push('…');
+  }
+
+  return {
+    chars: output,
+    visibleLength: truncated ? INTRO_COPY_LIMITS.max : visibleLength,
+  };
+}
+
+let siteCreditChars = [];
+let siteCreditRects = [];
+
+function initSiteCredits() {
+  if (!siteCreditEls.length || siteCreditChars.length) return;
+
+  siteCreditEls.forEach(container => {
+    container.textContent = '';
+    container.setAttribute('aria-label', SITE_CREDIT_TEXT);
+    Array.from(SITE_CREDIT_TEXT).forEach(ch => {
+      const span = document.createElement('span');
+      span.className = 'site-credit-char';
+      span.setAttribute('aria-hidden', 'true');
+      span.textContent = ch === ' ' ? '\u00A0' : ch;
+      container.appendChild(span);
+      siteCreditChars.push(span);
+    });
+  });
+
+  clearSiteCreditPaint();
+  cacheSiteCreditRects();
+}
+
+function cacheSiteCreditRects() {
+  if (!siteCreditChars.length) return;
+  siteCreditRects = siteCreditChars.map(el => ({
+    el,
+    rect: el.getBoundingClientRect()
+  }));
+}
+
+function clearSiteCreditPaint() {
+  siteCreditChars.forEach(el => {
+    el.style.color = `rgb(${CREDIT_BASE_RGB.join(',')})`;
+  });
+}
+
+function paintSiteCreditFromPoint(x, y) {
+  if (!siteCreditRects.length) cacheSiteCreditRects();
+
+  siteCreditRects.forEach(({ el, rect }) => {
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    const dist = Math.sqrt((x - cx) ** 2 + (y - cy) ** 2);
+    const range = Math.max(rect.width, rect.height) * 2.2;
+    const t = Math.max(0, 1 - dist / range);
+    const smooth = t * t * (3 - 2 * t);
+    const r = Math.round(CREDIT_BASE_RGB[0] + smooth * (CREDIT_HOVER_RGB[0] - CREDIT_BASE_RGB[0]));
+    const g = Math.round(CREDIT_BASE_RGB[1] + smooth * (CREDIT_HOVER_RGB[1] - CREDIT_BASE_RGB[1]));
+    const b = Math.round(CREDIT_BASE_RGB[2] + smooth * (CREDIT_HOVER_RGB[2] - CREDIT_BASE_RGB[2]));
+    el.style.color = `rgb(${r},${g},${b})`;
+  });
+}
+
+function bindSiteCreditInteractions() {
+  if (!siteCreditEls.length) return;
+
+  siteCreditEls.forEach(container => {
+    container.addEventListener('pointerenter', cacheSiteCreditRects);
+    container.addEventListener('pointermove', e => paintSiteCreditFromPoint(e.clientX, e.clientY));
+    container.addEventListener('pointerleave', clearSiteCreditPaint);
+    container.addEventListener('touchstart', e => {
+      const touch = e.touches[0];
+      if (!touch) return;
+      cacheSiteCreditRects();
+      paintSiteCreditFromPoint(touch.clientX, touch.clientY);
+    }, { passive: true });
+    container.addEventListener('touchmove', e => {
+      const touch = e.touches[0];
+      if (!touch) return;
+      paintSiteCreditFromPoint(touch.clientX, touch.clientY);
+    }, { passive: true });
+    container.addEventListener('touchend', clearSiteCreditPaint, { passive: true });
+  });
+}
+
+function makePaintText(host, mode) {
+  let charEls = [];
+  let cachedRects = [];
+  let autoPaintRaf = null;
+  let isInteracting = false;
+
+  function canAutoPaint() {
+    return mode === 'line' && host.classList.contains('intro-line');
+  }
+
+  function cacheRects() {
+    cachedRects = charEls.map(el => ({
+      el,
+      rect: el.getBoundingClientRect()
+    }));
+  }
+
+  function stopAutoPaint() {
+    if (autoPaintRaf) {
+      cancelAnimationFrame(autoPaintRaf);
+      autoPaintRaf = null;
+    }
+  }
+
+  function paintBaseColor() {
+    const [r, g, b] = QUOTE_BASE_RGB;
+    charEls.forEach(el => { el.style.color = `rgb(${r},${g},${b})`; });
+  }
+
+  function paintAutoFrame(now) {
+    if (!canAutoPaint() || isInteracting || !charEls.length) {
+      autoPaintRaf = null;
+      return;
+    }
+
+    charEls.forEach((el, index) => {
+      const wave = (Math.sin(now * 0.0011 + index * 0.42) + 1) / 2;
+      const paletteWave = (Math.sin(now * 0.00038 + index * 0.18) + 1) / 2;
+      const targetIndex = Math.min(
+        QUOTE_AUTO_RGBS.length - 1,
+        1 + Math.floor(paletteWave * (QUOTE_AUTO_RGBS.length - 1))
+      );
+      const target = QUOTE_AUTO_RGBS[targetIndex];
+      const strength = 0.2 + wave * 0.46;
+      const rgb = QUOTE_BASE_RGB.map((base, i) =>
+        Math.round(base + (target[i] - base) * strength)
+      );
+      el.style.color = `rgb(${rgb[0]},${rgb[1]},${rgb[2]})`;
+    });
+
+    autoPaintRaf = requestAnimationFrame(paintAutoFrame);
+  }
+
+  function startAutoPaint() {
+    if (!canAutoPaint() || isInteracting || autoPaintRaf) return;
+    autoPaintRaf = requestAnimationFrame(paintAutoFrame);
+  }
+
+  function clearPaint() {
+    if (canAutoPaint() && !isInteracting) {
+      startAutoPaint();
+      return;
+    }
+    paintBaseColor();
+  }
+
+  function fitLine() {
+    if (mode !== 'line') return;
+    const grid = host.firstElementChild;
+    if (!grid) return;
+    grid.style.transform = '';
+    if (host.closest('.selected-copy') && window.matchMedia('(min-width: 769px)').matches) {
+      const naturalWidth = grid.scrollWidth;
+      const naturalHeight = grid.scrollHeight;
+      const availableWidth = host.clientWidth;
+      const availableHeight = host.clientHeight;
+      const scale = Math.min(
+        1,
+        availableWidth / Math.max(naturalWidth, 1),
+        availableHeight / Math.max(naturalHeight, 1)
+      );
+      if (scale < 1) grid.style.transform = `scale(${scale})`;
+      return;
+    }
+    const naturalWidth = grid.scrollWidth;
+    const availableWidth = host.clientWidth - 2;
+    const scale = Math.max(0.68, Math.min(1, availableWidth / Math.max(naturalWidth, 1)));
+    if (scale < 1) grid.style.transform = `scaleX(${scale})`;
+  }
+
+  function paintFromPoint(x, y) {
+    if (!cachedRects.length) cacheRects();
+    stopAutoPaint();
+    const [br, bg, bb] = QUOTE_BASE_RGB;
+    cachedRects.forEach(({ el, rect }) => {
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      const dist = Math.sqrt((x - cx) ** 2 + (y - cy) ** 2);
+      const range = Math.max(rect.width, rect.height) * 2.2;
+      const t = Math.max(0, 1 - dist / range);
+      const smooth = t * t * (3 - 2 * t);
+      const r = Math.round(br + smooth * (QUOTE_HOVER_RGB[0] - br));
+      const g = Math.round(bg + smooth * (QUOTE_HOVER_RGB[1] - bg));
+      const b = Math.round(bb + smooth * (QUOTE_HOVER_RGB[2] - bb));
+      el.style.color = `rgb(${r},${g},${b})`;
+    });
+  }
+
+  function appendChar(grid, ch, index, rows, cols, shouldPlace = mode === 'block') {
+    const span = document.createElement('span');
+    span.className = 'char';
+    span.textContent = ch === ' ' ? '\u00a0' : ch;
+
+    if (shouldPlace) {
+      const colIndex = Math.floor(index / rows);
+      const rowIndex = index % rows;
+      span.style.gridColumn = (cols - colIndex);
+      span.style.gridRow = (rowIndex + 1);
+    }
+
+    grid.appendChild(span);
+  }
+
+  function appendPositionedChar(grid, ch, rowIndex, colIndex, cols) {
+    const span = document.createElement('span');
+    span.className = 'char';
+    span.textContent = ch === ' ' ? '\u00a0' : ch;
+    span.style.gridColumn = String(cols - colIndex);
+    span.style.gridRow = String(rowIndex + 1);
+    grid.appendChild(span);
+  }
+
+  function render(text) {
+    const isIntroCopy = canAutoPaint();
+    let chars = Array.from(text || '');
+    let visibleLength = chars.filter(ch => ch.trim()).length;
+    let introTier = null;
+    let introColumns = null;
+    const grid = document.createElement('div');
+    grid.className = `paint-grid is-${mode}`;
+    stopAutoPaint();
+    isInteracting = false;
+    host.classList.remove('is-long-copy', 'is-very-long-copy', ...INTRO_COPY_TIER_CLASSES);
+
+    if (isIntroCopy) {
+      const limited = limitIntroCopy(text);
+      const rows = getIntroGridRows(getIntroCopyTier(limited.visibleLength), limited.visibleLength);
+      const introLines = normalizeIntroCopy(limited.chars.join('')).split('\n');
+      introColumns = introLines.flatMap(line => {
+        const lineChars = Array.from(line);
+        const columns = [];
+        for (let i = 0; i < lineChars.length; i += rows) {
+          columns.push(lineChars.slice(i, i + rows));
+        }
+        return columns;
+      });
+      chars = introColumns.flat();
+      visibleLength = limited.visibleLength;
+      introTier = getIntroCopyTier(visibleLength);
+      host.classList.add(`is-copy-tier-${introTier}`);
+      grid.classList.add('is-intro-grid');
+    }
+
+    if (isIntroCopy) {
+      const rows = Math.max(1, ...introColumns.map(column => column.length));
+      const cols = Math.max(1, introColumns.length);
+      grid.style.gridTemplateColumns = `repeat(${cols}, minmax(1em, max-content))`;
+      grid.style.gridTemplateRows = `repeat(${rows}, minmax(1em, max-content))`;
+      introColumns.forEach((column, colIndex) => {
+        column.forEach((ch, rowIndex) => {
+          appendPositionedChar(grid, ch, rowIndex, colIndex, cols);
+        });
+      });
+    } else if (mode === 'block') {
+      const n = chars.length;
+      const cols = Math.max(2, Math.floor(Math.sqrt(n)));
+      const rows = Math.ceil(n / cols);
+      grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+      grid.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+      chars.forEach((ch, i) => appendChar(grid, ch, i, rows, cols));
+    } else {
+      chars.forEach((ch, i) => appendChar(grid, ch, i, 1, chars.length));
+    }
+
+    host.innerHTML = '';
+    host.appendChild(grid);
+    charEls = Array.from(grid.querySelectorAll('.char'));
+    cachedRects = [];
+    clearPaint();
+    requestAnimationFrame(() => {
+      fitLine();
+      cacheRects();
+    });
+  }
+
+  host.addEventListener('pointerenter', () => {
+    isInteracting = true;
+    stopAutoPaint();
+    cacheRects();
+  });
+  host.addEventListener('pointermove', e => {
+    isInteracting = true;
+    paintFromPoint(e.clientX, e.clientY);
+  });
+  host.addEventListener('pointerleave', () => {
+    isInteracting = false;
+    clearPaint();
+  });
+  host.addEventListener('touchstart', e => {
+    const t = e.touches[0]; if (!t) return;
+    isInteracting = true;
+    stopAutoPaint();
+    cacheRects(); paintFromPoint(t.clientX, t.clientY);
+  }, { passive: true });
+  host.addEventListener('touchmove', e => {
+    const t = e.touches[0]; if (!t) return;
+    isInteracting = true;
+    paintFromPoint(t.clientX, t.clientY);
+  }, { passive: true });
+  host.addEventListener('touchend', () => {
+    isInteracting = false;
+    clearPaint();
+  }, { passive: true });
+  host.addEventListener('touchcancel', () => {
+    isInteracting = false;
+    clearPaint();
+  }, { passive: true });
+
+  return { render, cacheRects, clearPaint, fitLine };
+}
+
+const idlePaint = makePaintText(idleQuoteEl, 'block');
+const typePaint = makePaintText(typeLineEl, 'line');
+const introPaint = makePaintText(introLineEl, 'line');
+
+initSiteCredits();
+bindSiteCreditInteractions();
+
+function textOr(value, fallback) {
+  return value == null || value === '' ? fallback : String(value);
+}
+
+function normalizeOpacity(value, fallback = 1) {
+  if (value == null || value === '') return fallback;
+  const raw = Number(value);
+  if (!Number.isFinite(raw)) return fallback;
+  const normalized = raw > 1 ? raw / 100 : raw;
+  return Math.min(1, Math.max(0, normalized));
+}
+
+function hasLinkContent(link) {
+  if (!link || typeof link !== 'object') return false;
+  return [link.type, link.label, link.text, link.url].some(value => value != null && String(value).trim() !== '');
+}
+
+function normalizeMeta(data) {
+  const root = data && typeof data === 'object' ? data : {};
+  const source = root.meta && typeof root.meta === 'object' ? root.meta : {};
+  return {
+    ownerName: textOr(source.ownerName ?? root.ownerName, DEFAULT_META.ownerName),
+    boxTitle: textOr(source.boxTitle ?? root.boxTitle, DEFAULT_META.boxTitle),
+    introMark: textOr(source.introMark ?? root.introMark, DEFAULT_META.introMark),
+    idleQuote: textOr(source.idleQuote ?? root.idleQuote, DEFAULT_META.idleQuote),
+    emptyCaption: textOr(source.emptyCaption ?? root.emptyCaption, DEFAULT_META.emptyCaption),
+    dataLoadFailedCaption: textOr(source.dataLoadFailedCaption ?? root.dataLoadFailedCaption, DEFAULT_META.dataLoadFailedCaption),
+    flipHint: textOr(source.flipHint ?? root.flipHint, DEFAULT_META.flipHint),
+    frontHint: textOr(source.frontHint ?? root.frontHint, DEFAULT_META.frontHint),
+    drawerLabel: textOr(source.drawerLabel ?? root.drawerLabel, DEFAULT_META.drawerLabel),
+    drawerOpenText: textOr(source.drawerOpenText ?? root.drawerOpenText, DEFAULT_META.drawerOpenText),
+    drawerCountSuffix: textOr(source.drawerCountSuffix ?? root.drawerCountSuffix, DEFAULT_META.drawerCountSuffix),
+    noLinksText: textOr(source.noLinksText ?? root.noLinksText, DEFAULT_META.noLinksText),
+  };
+}
+
+function applyMeta(meta) {
+  UI_META = { ...DEFAULT_META, ...meta };
+  document.title = SITE_TITLE;
+  if (introMarkEl) introMarkEl.textContent = UI_META.introMark;
+  if (mobilePageTitleEl) mobilePageTitleEl.textContent = UI_META.boxTitle;
+  if (panelTitleEl) panelTitleEl.textContent = UI_META.boxTitle;
+  if (gridNoticeEl) gridNoticeEl.textContent = UI_META.dataLoadFailedCaption;
+  updateFlipHintText();
+  if (mobileDrawerLabelEl) mobileDrawerLabelEl.textContent = UI_META.drawerLabel;
+}
+
+function updateFlipHintText() {
+  if (!flipHintTextEl) return;
+  flipHintTextEl.textContent = isMobileView() ? MOBILE_FLIP_HINT : UI_META.flipHint;
+}
+
+function hasRealCardAssets(card) {
+  return Boolean(String(card?.realCardFront || '').trim() && String(card?.realCardBack || '').trim());
+}
+
+function canOpenTemplateRealCard(card) {
+  return Boolean(card && (card.name || card.role || card.intro || (Array.isArray(card.links) && card.links.length)));
+}
+
+function getAvailableRealCardModes(card) {
+  const modes = [];
+  if (hasRealCardAssets(card)) modes.push('physical');
+  if (canOpenTemplateRealCard(card)) modes.push('template');
+  return modes;
+}
+
+function canOpenRealCardViewer(card) {
+  return getAvailableRealCardModes(card).length > 0;
+}
+
+function updateRealCardTrigger(card = getActiveCard()) {
+  const modes = Boolean(activeId && card && activeId === card.id)
+    ? getAvailableRealCardModes(card)
+    : [];
+  const showPhysical = modes.includes('physical');
+  const showTemplate = modes.includes('template');
+
+  if (realCardPhysicalLaunchEl) {
+    realCardPhysicalLaunchEl.hidden = !showPhysical;
+    realCardPhysicalLaunchEl.setAttribute('aria-hidden', String(!showPhysical));
+    realCardPhysicalLaunchEl.textContent = '查看實體名片';
+  }
+
+  if (realCardLaunchEl) {
+    realCardLaunchEl.hidden = !showTemplate;
+    realCardLaunchEl.setAttribute('aria-hidden', String(!showTemplate));
+    realCardLaunchEl.textContent = '查看電子名片';
+  }
+}
+
+function applyRealCardTransform(withTransition = false) {
+  if (!realCardModelEl) return;
+  realCardModelEl.style.transition = withTransition
+    ? 'transform 0.42s cubic-bezier(0.22,1,0.36,1)'
+    : 'none';
+  realCardModelEl.style.transform =
+    `rotateX(${realCardRotation.x.toFixed(3)}deg) rotateY(${realCardRotation.y.toFixed(3)}deg)`;
+}
+
+function stepRealCardTransform() {
+  realCardRotation.x += (realCardRotation.targetX - realCardRotation.x) * 0.18;
+  realCardRotation.y += (realCardRotation.targetY - realCardRotation.y) * 0.18;
+  applyRealCardTransform(false);
+
+  if (
+    Math.abs(realCardRotation.targetX - realCardRotation.x) > 0.02 ||
+    Math.abs(realCardRotation.targetY - realCardRotation.y) > 0.02
+  ) {
+    realCardViewerRaf = requestAnimationFrame(stepRealCardTransform);
+  } else {
+    realCardViewerRaf = null;
+  }
+}
+
+function queueRealCardTransform() {
+  if (!realCardViewerRaf) realCardViewerRaf = requestAnimationFrame(stepRealCardTransform);
+}
+
+function resetRealCardRotation(snap = false) {
+  realCardRotation.targetX = REAL_CARD_BASE_ROTATION.x;
+  realCardRotation.targetY = REAL_CARD_BASE_ROTATION.y;
+
+  if (snap) {
+    realCardRotation.x = REAL_CARD_BASE_ROTATION.x;
+    realCardRotation.y = REAL_CARD_BASE_ROTATION.y;
+    applyRealCardTransform(false);
+    return;
+  }
+
+  queueRealCardTransform();
+}
+
+function stopRealCardDrag() {
+  if (!realCardViewportEl) return;
+
+  if (
+    realCardRotation.pointerId != null &&
+    realCardViewportEl.hasPointerCapture?.(realCardRotation.pointerId)
+  ) {
+    try {
+      realCardViewportEl.releasePointerCapture(realCardRotation.pointerId);
+    } catch (error) {
+      // Ignore release errors when the pointer was already cancelled.
+    }
+  }
+
+  realCardRotation.dragging = false;
+  realCardRotation.pointerId = null;
+  realCardViewportEl.classList.remove('is-dragging');
+}
+
+function getRealCardMonogram(card) {
+  const fromName = String(card?.name || '').replace(/\s+/g, '');
+  const fromAlt = String(card?.imageAlt || '').replace(/\s+/g, '');
+  return Array.from(fromName)[0] || Array.from(fromAlt)[0] || '？';
+}
+
+function setRealCardTextTier(tier) {
+  if (!realCardModelEl) return;
+  realCardModelEl.classList.remove(...REALCARD_TIER_CLASSES);
+  realCardModelEl.classList.add(`is-realcard-tier-${tier}`);
+}
+
+function setRealCardBackTier(tier) {
+  if (!realCardModelEl) return;
+  realCardModelEl.classList.remove(...REALCARD_BACK_TIER_CLASSES);
+  realCardModelEl.classList.add(`is-realcard-back-tier-${tier}`);
+}
+
+function setRealCardNameLengthState(name) {
+  if (!realCardModelEl) return;
+  const visibleLength = countVisibleChars(name);
+  realCardModelEl.classList.toggle('is-realcard-name-long', visibleLength >= 6);
+  realCardModelEl.classList.toggle('is-realcard-name-very-long', visibleLength >= 10);
+}
+
+function getRealCardFrontTier(card) {
+  const introTier = getFrontTextTier(card?.intro);
+  const nameLength = countVisibleChars(card?.name);
+  const roleLength = countVisibleChars(card?.role);
+  const introLineCount = getWrappedLineCount(
+    normalizeIntroCopy(card?.intro || ''),
+    getRealCardFrontWrapLimit(introTier)
+  );
+  let tier = introTier;
+
+  if (introLineCount >= 4) tier = Math.max(tier, 3);
+  if (introLineCount >= 5) tier = Math.max(tier, 4);
+  if (nameLength >= 8 || roleLength >= 10) tier = Math.max(tier, 2);
+  if (nameLength >= 12 || roleLength >= 16) tier = Math.max(tier, 3);
+  if (nameLength >= 16 || roleLength >= 22) tier = Math.max(tier, 4);
+
+  return Math.max(1, Math.min(4, tier));
+}
+
+function getRealCardBackTier(card) {
+  const links = Array.isArray(card?.links) ? card.links : [];
+  const longestType = Math.max(0, ...links.map(link => countVisibleChars(link?.type || '')));
+  const longestText = Math.max(0, ...links.map(link => countVisibleChars(link?.text || link?.url || '')));
+  const totalLines = links.length;
+  let tier = 1;
+
+  if (totalLines >= 4 || longestType >= 7 || longestText >= 14) tier = 2;
+  if (longestType >= 10 || longestText >= 22 || (totalLines >= 4 && longestText >= 16)) tier = 3;
+
+  return Math.max(1, Math.min(3, tier));
+}
+
+function clearRealCardFullImages() {
+  if (realCardFrontFaceEl) realCardFrontFaceEl.classList.remove('is-image-mode');
+  if (realCardBackFaceEl) realCardBackFaceEl.classList.remove('is-image-mode');
+  if (realCardFrontFullImageEl) {
+    realCardFrontFullImageEl.hidden = true;
+    realCardFrontFullImageEl.removeAttribute('src');
+    realCardFrontFullImageEl.alt = '';
+  }
+  if (realCardBackFullImageEl) {
+    realCardBackFullImageEl.hidden = true;
+    realCardBackFullImageEl.removeAttribute('src');
+    realCardBackFullImageEl.alt = '';
+  }
+}
+
+function applyRealCardDisplayMode(mode) {
+  activeRealCardMode = mode === 'physical' ? 'physical' : 'template';
+  if (!realCardViewerEl) return;
+  realCardViewerEl.classList.toggle('is-portrait-mode', activeRealCardMode === 'physical');
+}
+
+function syncRealCardFullImages(card, mode = activeRealCardMode) {
+  const useImageMode = mode === 'physical' && hasRealCardAssets(card);
+
+  if (!useImageMode) {
+    clearRealCardFullImages();
+    return false;
+  }
+
+  if (realCardFrontFaceEl) realCardFrontFaceEl.classList.add('is-image-mode');
+  if (realCardBackFaceEl) realCardBackFaceEl.classList.add('is-image-mode');
+
+  if (realCardFrontFullImageEl) {
+    realCardFrontFullImageEl.src = card.realCardFront;
+    realCardFrontFullImageEl.alt = `${card.name} 名片正面`;
+    realCardFrontFullImageEl.hidden = false;
+  }
+
+  if (realCardBackFullImageEl) {
+    realCardBackFullImageEl.src = card.realCardBack;
+    realCardBackFullImageEl.alt = `${card.name} 名片背面`;
+    realCardBackFullImageEl.hidden = false;
+  }
+
+  return true;
+}
+
+function toExternalHref(url) {
+  const raw = String(url || '').trim();
+  if (!raw || raw === '#') return '#';
+  if (/^(https?:)?\/\//i.test(raw)) return raw.startsWith('//') ? `https:${raw}` : raw;
+  if (/^(mailto:|tel:)/i.test(raw)) return raw;
+  return `https://${raw.replace(/^\/+/, '')}`;
+}
+
+function syncRealCardAvatar(card) {
+  if (!realCardAvatarImageEl || !realCardAvatarFallbackEl) return;
+
+  realCardAvatarFallbackEl.textContent = getRealCardMonogram(card);
+  realCardAvatarFallbackEl.hidden = false;
+  realCardAvatarImageEl.hidden = true;
+  realCardAvatarImageEl.alt = '';
+  realCardAvatarImageEl.removeAttribute('src');
+
+  if (!card.image) return;
+
+  const nextSrc = String(card.image);
+  realCardAvatarImageEl.dataset.pendingSrc = nextSrc;
+  realCardAvatarImageEl.onload = () => {
+    if (realCardAvatarImageEl.dataset.pendingSrc !== nextSrc) return;
+    realCardAvatarImageEl.hidden = false;
+    realCardAvatarFallbackEl.hidden = true;
+  };
+  realCardAvatarImageEl.onerror = () => {
+    if (realCardAvatarImageEl.dataset.pendingSrc !== nextSrc) return;
+    realCardAvatarImageEl.hidden = true;
+    realCardAvatarImageEl.removeAttribute('src');
+    realCardAvatarFallbackEl.hidden = false;
+  };
+  realCardAvatarImageEl.src = nextSrc;
+}
+
+function syncRealCardBackArtwork(card) {
+  if (!realCardBackImageDisplayEl || !realCardBackFallbackEl) return;
+
+  const fallbackLabel = String(card?.name || card?.imageAlt || '名片')
+    .replace(/\s+/g, '\n')
+    .trim();
+  realCardBackFallbackEl.textContent = fallbackLabel || '名片';
+  realCardBackFallbackEl.hidden = false;
+  realCardBackImageDisplayEl.hidden = true;
+  realCardBackImageDisplayEl.alt = '';
+  realCardBackImageDisplayEl.removeAttribute('src');
+
+  if (!card.backImage) return;
+
+  const nextSrc = String(card.backImage);
+  realCardBackImageDisplayEl.style.opacity = String(FIXED_BACK_IMAGE_OPACITY);
+  realCardBackImageDisplayEl.dataset.pendingSrc = nextSrc;
+  realCardBackImageDisplayEl.onload = () => {
+    if (realCardBackImageDisplayEl.dataset.pendingSrc !== nextSrc) return;
+    realCardBackImageDisplayEl.hidden = false;
+    realCardBackFallbackEl.hidden = true;
+  };
+  realCardBackImageDisplayEl.onerror = () => {
+    if (realCardBackImageDisplayEl.dataset.pendingSrc !== nextSrc) return;
+    realCardBackImageDisplayEl.hidden = true;
+    realCardBackImageDisplayEl.removeAttribute('src');
+    realCardBackFallbackEl.hidden = false;
+  };
+  realCardBackImageDisplayEl.src = nextSrc;
+}
+
+function renderRealCardBackLinks(card) {
+  if (!realCardBackLinksEl) return;
+
+  realCardBackLinksEl.innerHTML = '';
+  const links = Array.isArray(card?.links) ? card.links : [];
+  const backTier = getRealCardBackTier(card);
+  const wrapLimit = REALCARD_BACK_WRAP_LIMITS[backTier] || REALCARD_BACK_WRAP_LIMITS[1];
+
+  if (!links.length) {
+    const empty = document.createElement('div');
+    empty.className = 'realcard-back__empty';
+    empty.textContent = UI_META.noLinksText;
+    realCardBackLinksEl.appendChild(empty);
+    return;
+  }
+
+  links.forEach(lk => {
+    const row = document.createElement('div');
+    row.className = 'realcard-back__link-row';
+
+    const type = document.createElement('span');
+    type.className = 'realcard-back__link-type';
+    type.textContent = lk.type || 'LINK';
+
+    const href = toExternalHref(lk.url);
+    const hasUsableHref = href !== '#';
+    const text = hasUsableHref
+      ? document.createElement('a')
+      : document.createElement('span');
+    text.className = hasUsableHref ? 'realcard-back__link-anchor' : 'realcard-back__link-text';
+    text.textContent = wrapTextByChars(lk.text || lk.url || '—', wrapLimit);
+
+    if (hasUsableHref && text instanceof HTMLAnchorElement) {
+      text.href = href;
+      text.target = '_blank';
+      text.rel = 'noopener noreferrer';
+      text.addEventListener('pointerdown', event => event.stopPropagation());
+      text.addEventListener('click', event => event.stopPropagation());
+    }
+
+    row.append(type, text);
+    realCardBackLinksEl.appendChild(row);
+  });
+}
+
+function syncRealCardViewer(card, mode = activeRealCardMode) {
+  if (!card) return;
+
+  const compactName = card.name.replace(/\s+/g, '');
+  const frontTier = getRealCardFrontTier(card);
+  const backTier = getRealCardBackTier(card);
+  const intro = wrapTextByChars(
+    normalizeIntroCopy(card.intro || '（尚未填寫資料）'),
+    getRealCardFrontWrapLimit(frontTier)
+  );
+  applyRealCardDisplayMode(mode);
+  syncRealCardFullImages(card, mode);
+
+  const viewerLabel = activeRealCardMode === 'physical' ? '實體名片' : '電子名片';
+  if (realCardViewerEyebrowEl) {
+    realCardViewerEyebrowEl.textContent = activeRealCardMode === 'physical'
+      ? 'PHYSICAL CARD / 3D VIEWER'
+      : 'DIGITAL CARD / 3D VIEWER';
+  }
+  if (realCardViewerTitleEl) {
+    realCardViewerTitleEl.textContent = `${compactName}的${viewerLabel}`;
+  }
+
+  setRealCardTextTier(frontTier);
+  setRealCardBackTier(backTier);
+  setRealCardNameLengthState(card.name);
+  syncRealCardAvatar(card);
+  syncRealCardBackArtwork(card);
+
+  if (realCardNameDisplayEl) realCardNameDisplayEl.textContent = card.name;
+  if (realCardRoleDisplayEl) realCardRoleDisplayEl.textContent = card.role;
+  if (realCardIntroDisplayEl) realCardIntroDisplayEl.textContent = intro;
+
+  renderRealCardBackLinks(card);
+}
+
+function openRealCardViewer(mode = 'template') {
+  const card = getActiveCard();
+  const availableModes = getAvailableRealCardModes(card);
+  if (!realCardViewerEl || !availableModes.length) return;
+
+  const nextMode = availableModes.includes(mode)
+    ? mode
+    : (availableModes[0] || 'template');
+
+  if (realCardHideTimer) {
+    window.clearTimeout(realCardHideTimer);
+    realCardHideTimer = null;
+  }
+
+  realCardViewerOpen = true;
+  syncRealCardViewer(card, nextMode);
+  stopRealCardDrag();
+  resetRealCardRotation(true);
+  document.body.classList.add('is-realcard-open');
+  realCardViewerEl.hidden = false;
+  realCardViewerEl.setAttribute('aria-hidden', 'false');
+
+  requestAnimationFrame(() => {
+    realCardViewerEl.classList.add('is-open');
+    realCardCloseEl?.focus({ preventScroll: true });
+  });
+}
+
+function closeRealCardViewer(immediate = false) {
+  if (!realCardViewerEl || (realCardViewerEl.hidden && !realCardViewerOpen)) return;
+
+  realCardViewerOpen = false;
+  stopRealCardDrag();
+  document.body.classList.remove('is-realcard-open');
+  realCardViewerEl.classList.remove('is-open');
+  realCardViewerEl.setAttribute('aria-hidden', 'true');
+
+  if (realCardHideTimer) {
+    window.clearTimeout(realCardHideTimer);
+    realCardHideTimer = null;
+  }
+
+  if (immediate) {
+    realCardViewerEl.hidden = true;
+    return;
+  }
+
+  realCardHideTimer = window.setTimeout(() => {
+    realCardViewerEl.hidden = true;
+    realCardHideTimer = null;
+  }, 340);
+}
+
+function handleRealCardPointerDown(event) {
+  if (!realCardViewerOpen || !realCardViewportEl) return;
+  if (typeof event.button === 'number' && event.button !== 0) return;
+  if (event.target instanceof Element && event.target.closest('a, button')) return;
+
+  realCardRotation.dragging = true;
+  realCardRotation.pointerId = event.pointerId;
+  realCardRotation.startX = event.clientX;
+  realCardRotation.startY = event.clientY;
+  realCardRotation.originX = realCardRotation.targetX;
+  realCardRotation.originY = realCardRotation.targetY;
+  realCardViewportEl.classList.add('is-dragging');
+  realCardViewportEl.setPointerCapture?.(event.pointerId);
+  event.preventDefault();
+}
+
+function handleRealCardPointerMove(event) {
+  if (!realCardRotation.dragging || event.pointerId !== realCardRotation.pointerId) return;
+
+  const dx = event.clientX - realCardRotation.startX;
+  const dy = event.clientY - realCardRotation.startY;
+  realCardRotation.targetY = realCardRotation.originY + dx * 0.32;
+  realCardRotation.targetX = Math.max(-72, Math.min(72, realCardRotation.originX - dy * 0.24));
+  queueRealCardTransform();
+}
+
+function handleRealCardPointerUp(event) {
+  if (realCardRotation.pointerId != null && event.pointerId !== realCardRotation.pointerId) return;
+  stopRealCardDrag();
+}
+
+function normalizeCard(raw, index) {
+  const source = raw && typeof raw === 'object' ? raw : {};
+  const fallbackName = `名片 ${String(index + 1).padStart(2, '0')}`;
+  const name = String(source.name || fallbackName);
+  const isSelf = Boolean(source.isSelf);
+  const image = source.image || source.avatar || source.gridImage || source.thumbnail || null;
+  const imageAlt = textOr(source.imageAlt ?? source.nameShort, Array.from(name.trim())[0] || '？');
+  const intro = textOr(source.intro ?? source.tagline, '（尚未填寫資料）');
+  const backImage = source.backImage || source.back_image || image || null;
+  const backImageOpacity = FIXED_BACK_IMAGE_OPACITY;
+  const realCardFront =
+    source.realCardFront ||
+    source.realCardFrontImage ||
+    source.modelFront ||
+    source.card3dFront ||
+    source.cardModelFront ||
+    (isSelf ? REAL_CARD_DEFAULT_ASSETS.front : null);
+  const realCardBack =
+    source.realCardBack ||
+    source.realCardBackImage ||
+    source.modelBack ||
+    source.card3dBack ||
+    source.cardModelBack ||
+    (isSelf ? REAL_CARD_DEFAULT_ASSETS.back : null);
+  const rawLinks = Array.isArray(source.links) ? source.links : [];
+
+  return {
+    id: String(source.id ?? `card-${index + 1}`),
+    slot: Number.isFinite(Number(source.slot)) ? Number(source.slot) : index + 1,
+    isSelf,
+    image,
+    imageAlt,
+    name,
+    role: String(source.role || '——'),
+    intro,
+    backImage,
+    backImageOpacity,
+    realCardFront,
+    realCardBack,
+    links: rawLinks
+      .filter(hasLinkContent)
+      .slice(0, 4)
+      .map(lk => ({
+        type: String(lk.type || lk.label || ''),
+        text: String(lk.text || lk.url || ''),
+        url: String(lk.url || '#'),
+      }))
+  };
+}
+
+function finalizeCardData(data, options = {}) {
+  const root = data && typeof data === 'object' ? data : {};
+  const cards = Array.isArray(root.cards) ? root.cards.map(normalizeCard) : [];
+  if (!cards.length) throw new Error('No cards found');
+  return {
+    meta: normalizeMeta(root),
+    cards,
+    failed: Boolean(options.failed),
+  };
+}
+
+async function loadCardData() {
+  try {
+    const response = await fetch(CARD_DATA_URL, { cache: 'no-cache' });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const data = await response.json();
+    return finalizeCardData(data);
+  } catch (error) {
+    console.warn('Cardcase data fallback:', error);
+    return {
+      meta: { ...DEFAULT_META },
+      cards: FALLBACK_CARDS.map(normalizeCard),
+      failed: true,
+    };
+  }
+}
+
+function getRandomIndex(max) {
+  if (max <= 0) return 0;
+  if (window.crypto?.getRandomValues) {
+    const value = new Uint32Array(1);
+    window.crypto.getRandomValues(value);
+    return value[0] % max;
+  }
+  return Math.floor(Math.random() * max);
+}
+
+function shuffleCardsForEntry(cards) {
+  const list = Array.isArray(cards) ? [...cards] : [];
+  if (list.length <= 2) return list;
+
+  const primaryIndex = Math.max(0, list.findIndex(card => card.isSelf));
+  const primaryCard = list[primaryIndex];
+  const otherCards = list.filter((_, index) => index !== primaryIndex);
+
+  for (let i = otherCards.length - 1; i > 0; i -= 1) {
+    const j = getRandomIndex(i + 1);
+    [otherCards[i], otherCards[j]] = [otherCards[j], otherCards[i]];
+  }
+
+  return [primaryCard, ...otherCards];
+}
+
+function oneLineIntro(card) {
+  return (card.intro || '（尚未填寫一句話自我介紹）')
+    .replace(/\s+/g, '')
+    .trim();
+}
+
+function updateQuoteLines(card) {
+  const role = card.role && card.role !== '——' ? card.role : '未分類';
+  typePaint.render(role);
+  introPaint.render(normalizeIntroCopy(card.intro));
+}
+
+/* ── Combined transform ── */
+function applyTransform(withTransition) {
+  const baseY = flipped ? 180 : 0;
+  if (withTransition) {
+    card3d.style.transition = 'transform 0.75s cubic-bezier(0.22,1,0.36,1)';
+  } else {
+    card3d.style.transition = 'none';
+  }
+  card3d.style.transform =
+    `rotateX(${tiltX.toFixed(3)}deg) rotateY(${(baseY + tiltY).toFixed(3)}deg)`;
+}
+
+/* ── Tilt animation loop ── */
+function tiltLoop() {
+  tiltX += (targetTX - tiltX) * 0.12;
+  tiltY += (targetTY - tiltY) * 0.12;
+  applyTransform(false);
+  if (Math.abs(targetTX - tiltX) > 0.01 || Math.abs(targetTY - tiltY) > 0.01) {
+    tiltRaf = requestAnimationFrame(tiltLoop);
+  } else {
+    tiltRaf = null;
+  }
+}
+
+/* ── Card flip ── */
+function flipCard(withTransition = true) {
+  flipped = !flipped;
+  clearMobileTiltTimer();
+  if (tiltRaf) { cancelAnimationFrame(tiltRaf); tiltRaf = null; }
+  tiltX = 0; tiltY = 0; targetTX = 0; targetTY = 0;
+  applyTransform(withTransition);
+}
+
+scene.addEventListener('click', e => {
+  if (isMobileView() || e.target.closest('a')) return;
+  flipCard(true);
+});
+
+/* ── Mouse tilt ── */
+scene.addEventListener('mouseenter', () => { isTilting = true; card3d.style.transition = 'none'; });
+
+scene.addEventListener('mousemove', e => {
+  if (!isTilting) return;
+  const r = scene.getBoundingClientRect();
+  targetTX = -((e.clientY - r.top)  / r.height - 0.5) * 10;
+  targetTY =  ((e.clientX - r.left) / r.width  - 0.5) * 14;
+  if (!tiltRaf) tiltRaf = requestAnimationFrame(tiltLoop);
+});
+
+scene.addEventListener('mouseleave', () => {
+  isTilting = false;
+  targetTX = 0; targetTY = 0;
+  if (tiltRaf) { cancelAnimationFrame(tiltRaf); tiltRaf = null; }
+  tiltX = 0; tiltY = 0;
+  applyTransform(true);
+});
+
+/* ── Touch flip ── */
+let touchStartX = 0;
+let touchStartY = 0;
+let mobileTiltTimer = null;
+
+function clearMobileTiltTimer() {
+  if (!mobileTiltTimer) return;
+  window.clearTimeout(mobileTiltTimer);
+  mobileTiltTimer = null;
+}
+
+function resetMobileCornerTilt() {
+  clearMobileTiltTimer();
+  targetTX = 0;
+  targetTY = 0;
+  if (!tiltRaf) tiltRaf = requestAnimationFrame(tiltLoop);
+}
+
+function startMobileCornerTilt(x, y) {
+  if (!isMobileView()) return;
+  const r = scene.getBoundingClientRect();
+  const xRatio = (x - r.left) / Math.max(r.width, 1);
+  const yRatio = (y - r.top) / Math.max(r.height, 1);
+  const isCorner =
+    (xRatio <= 0.42 || xRatio >= 0.58) &&
+    (yRatio <= 0.42 || yRatio >= 0.58);
+
+  if (!isCorner) return;
+  clearMobileTiltTimer();
+  targetTX = -(yRatio - 0.5) * 12;
+  targetTY =  (xRatio - 0.5) * 16;
+  if (!tiltRaf) tiltRaf = requestAnimationFrame(tiltLoop);
+  mobileTiltTimer = window.setTimeout(resetMobileCornerTilt, 680);
+}
+
+scene.addEventListener('touchstart', e => {
+  const t = e.touches[0];
+  if (!t) return;
+  touchStartX = t.clientX;
+  touchStartY = t.clientY;
+  if (!e.target.closest('a')) startMobileCornerTilt(t.clientX, t.clientY);
+}, { passive: true });
+scene.addEventListener('touchend', e => {
+  const t = e.changedTouches[0];
+  if (!t || !isMobileView()) return;
+  const dx = t.clientX - touchStartX;
+  const dy = t.clientY - touchStartY;
+  if (Math.abs(dx) >= 36 && Math.abs(dx) > Math.abs(dy) * 1.2) {
+    clearMobileTiltTimer();
+    flipCard(true);
+  }
+}, { passive: true });
+scene.addEventListener('touchcancel', resetMobileCornerTilt, { passive: true });
+
+function isMobileView() {
+  return window.matchMedia('(max-width: 768px)').matches;
+}
+
+function updateDrawerStatus(isOpen) {
+  if (!drawerStatusEl) return;
+  drawerStatusEl.textContent = isOpen ? UI_META.drawerOpenText : `${ALL_CARDS.length} ${UI_META.drawerCountSuffix}`;
+}
+
+function setDrawerOpen(isOpen) {
+  if (!drawerEl || !drawerToggleEl) return;
+  drawerEl.classList.toggle('is-open', isOpen);
+  drawerToggleEl.setAttribute('aria-expanded', String(isOpen));
+  updateDrawerStatus(isOpen);
+  clearSiteCreditPaint();
+  if (!isOpen) cacheSiteCreditRects();
+}
+
+function closeDrawerOnMobile() {
+  if (isMobileView()) setDrawerOpen(false);
+}
+
+if (drawerToggleEl) {
+  drawerToggleEl.addEventListener('click', () => {
+    setDrawerOpen(!drawerEl.classList.contains('is-open'));
+  });
+}
+
+if (realCardPhysicalLaunchEl) {
+  realCardPhysicalLaunchEl.addEventListener('click', () => openRealCardViewer('physical'));
+}
+
+if (realCardLaunchEl) {
+  realCardLaunchEl.addEventListener('click', () => openRealCardViewer('template'));
+}
+
+if (realCardCloseEl) {
+  realCardCloseEl.addEventListener('click', () => closeRealCardViewer());
+}
+
+if (realCardViewerEl) {
+  realCardViewerEl.addEventListener('click', event => {
+    if (event.target === realCardViewerEl) closeRealCardViewer();
+  });
+}
+
+if (realCardViewportEl) {
+  realCardViewportEl.addEventListener('pointerdown', handleRealCardPointerDown);
+  realCardViewportEl.addEventListener('pointermove', handleRealCardPointerMove);
+  realCardViewportEl.addEventListener('pointerup', handleRealCardPointerUp);
+  realCardViewportEl.addEventListener('pointercancel', handleRealCardPointerUp);
+  realCardViewportEl.addEventListener('lostpointercapture', handleRealCardPointerUp);
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Escape') return;
+  if (realCardViewerOpen) {
+    closeRealCardViewer();
+    return;
+  }
+  setDrawerOpen(false);
+});
+
+function getActiveCard() {
+  return ALL_CARDS.find(card => card.id === activeId) || null;
+}
+
+function getRestingCaption() {
+  const activeCard = getActiveCard();
+  if (activeCard) return activeCard.name;
+  return dataLoadFailed ? '' : UI_META.emptyCaption;
+}
+
+function showPreviewCaption(card) {
+  if (!captionEl || !card) return;
+  captionEl.textContent = card.name;
+}
+
+function restoreCaption() {
+  if (!captionEl) return;
+  captionEl.textContent = getRestingCaption();
+}
+
+function updateGridFailureState() {
+  if (!gridWrapEl || !gridNoticeEl) return;
+  gridWrapEl.classList.toggle('is-failed', dataLoadFailed);
+  gridNoticeEl.hidden = !dataLoadFailed;
+  gridNoticeEl.textContent = UI_META.dataLoadFailedCaption;
+}
+
+/* ── Build grid ── */
+function buildGrid() {
+  gridEl.innerHTML = '';
+  const cardsBySlot = new Map(ALL_CARDS.map(card => [Number(card.slot) || 1, card]));
+  const gridItems = dataLoadFailed
+    ? Array.from({ length: FAILED_GRID_SLOT_COUNT }, (_, index) => cardsBySlot.get(index + 1) || null)
+    : ALL_CARDS;
+
+  gridItems.forEach((card, index) => {
+    if (!card) {
+      const placeholder = document.createElement('div');
+      placeholder.className = 'grid-cell is-disabled';
+      placeholder.dataset.slot = String(index + 1);
+      placeholder.setAttribute('aria-hidden', 'true');
+      gridEl.appendChild(placeholder);
+      return;
+    }
+
+    const cell = document.createElement('div');
+    cell.className = ['grid-cell', card.isSelf ? 'is-self' : '', card.id === activeId ? 'is-active' : ''].filter(Boolean).join(' ');
+    cell.dataset.id = card.id;
+    cell.setAttribute('role', 'button');
+    cell.setAttribute('tabindex', '0');
+    cell.setAttribute('aria-label', card.name);
+    if (card.image) {
+      const img = document.createElement('img');
+      img.className = 'cell-img'; img.src = card.image; img.alt = card.name;
+      cell.appendChild(img);
+    } else {
+      const sp = document.createElement('span');
+      sp.className = 'cell-name'; sp.textContent = card.name;
+      cell.appendChild(sp);
+    }
+    cell.addEventListener('pointerenter', () => showPreviewCaption(card));
+    cell.addEventListener('focus', () => showPreviewCaption(card));
+    cell.addEventListener('pointerleave', restoreCaption);
+    cell.addEventListener('blur', restoreCaption);
+    cell.addEventListener('click', () => selectCard(card.id));
+    cell.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        selectCard(card.id);
+      }
+    });
+    gridEl.appendChild(cell);
+  });
+  updateGridFailureState();
+  updateDrawerStatus(drawerEl?.classList.contains('is-open'));
+}
+
+/* ── Select card ── */
+function selectCard(id) {
+  const card = ALL_CARDS.find(c => c.id === String(id));
+  if (!card) return;
+  if (realCardViewerOpen) closeRealCardViewer(true);
+
+  if (activeId === card.id) {
+    clearSelection();
+    closeDrawerOnMobile();
+    return;
+  }
+
+  activeId = card.id;
+  flipped = false;
+  clearMobileTiltTimer();
+  tiltX = 0; tiltY = 0; targetTX = 0; targetTY = 0;
+  applyTransform(true);
+  loadCardContent(card);
+  updateQuoteLines(card);
+  showcaseEl.classList.add('is-selected');
+  requestAnimationFrame(() => {
+    typePaint.cacheRects();
+    introPaint.cacheRects();
+  });
+  document.querySelectorAll('.grid-cell').forEach(el =>
+    el.classList.toggle('is-active', el.dataset.id === card.id));
+  captionEl.textContent = card.name;
+  closeDrawerOnMobile();
+}
+
+function clearSelection() {
+  closeRealCardViewer(true);
+  activeId = null;
+  flipped = false;
+  clearMobileTiltTimer();
+  tiltX = 0; tiltY = 0; targetTX = 0; targetTY = 0;
+  applyTransform(true);
+  showcaseEl.classList.remove('is-selected');
+  document.querySelectorAll('.grid-cell').forEach(el => el.classList.remove('is-active'));
+  updateRealCardTrigger();
+  restoreCaption();
+}
+
+function loadCardContent(card) {
+  const frontTier = getFrontTextTier(card.intro);
+  selectedHeadingEl.textContent = card.name.replace(/\s+/g, '');
+  setFrontTextTier(frontTier);
+  nameEl.textContent    = card.name;
+  roleEl.textContent    = card.role;
+  introTextEl.textContent = wrapTextByChars(card.intro, getFrontIntroWrapLimit(frontTier));
+
+  avatarEl.innerHTML = '';
+  if (card.image) {
+    const img = document.createElement('img');
+    img.src = card.image; img.alt = card.name;
+    avatarEl.appendChild(img);
+  } else {
+    const sp = document.createElement('span');
+    sp.textContent = card.imageAlt;
+    avatarEl.appendChild(sp);
+  }
+
+  if (backImageEl) {
+    if (card.backImage) {
+      backImageEl.src = card.backImage;
+      backImageEl.alt = card.name;
+      backImageEl.style.opacity = String(FIXED_BACK_IMAGE_OPACITY);
+      backImageEl.style.display = 'block';
+    } else {
+      backImageEl.removeAttribute('src');
+      backImageEl.alt = '';
+      backImageEl.style.display = 'none';
+    }
+  }
+
+  linksEl.innerHTML = '';
+  const links = Array.isArray(card.links) ? card.links : [];
+  if (!links.length) {
+    const d = document.createElement('div');
+    d.className = 'no-links'; d.textContent = UI_META.noLinksText;
+    linksEl.appendChild(d);
+  } else {
+    links.forEach(lk => {
+      const a = document.createElement('a');
+      a.className = 'card-link';
+      a.href = lk.url || '#';
+      if (lk.url && lk.url !== '#') { a.target = '_blank'; a.rel = 'noopener noreferrer'; }
+      a.addEventListener('click', e => e.stopPropagation());
+      const label = document.createElement('span');
+      label.className = 'link-label';
+      label.textContent = lk.type;
+      const text = document.createElement('span');
+      text.textContent = lk.text;
+      a.append(label, text);
+      const row = document.createElement('div');
+      row.className = 'card-link-row';
+      row.appendChild(a);
+      linksEl.appendChild(row);
+    });
+  }
+
+  updateRealCardTrigger(card);
+}
+
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('selectstart', e => e.preventDefault());
+document.addEventListener('dragstart', e => {
+  if (e.target instanceof HTMLImageElement) e.preventDefault();
+});
+
+function finishIntro() {
+  document.body.classList.remove('is-intro-running');
+  document.body.classList.add('is-intro-ready');
+  if (introOverlay) introOverlay.setAttribute('aria-hidden', 'true');
+}
+
+function runIntro() {
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  window.setTimeout(finishIntro, reducedMotion ? 1800 : 3000);
+}
+
+/* ── Init ── */
+function applyCardDataSet(data) {
+  dataLoadFailed = Boolean(data.failed);
+  closeRealCardViewer(true);
+  activeId = null;
+  flipped = false;
+  clearMobileTiltTimer();
+  tiltX = 0;
+  tiltY = 0;
+  targetTX = 0;
+  targetTY = 0;
+  applyTransform(false);
+  showcaseEl.classList.remove('is-selected');
+  applyMeta(data.meta);
+  ALL_CARDS = shuffleCardsForEntry(data.cards);
+  idlePaint.render(UI_META.idleQuote);
+  buildGrid();
+  loadCardContent(ALL_CARDS[0] || FALLBACK_CARD);
+  updateRealCardTrigger();
+  restoreCaption();
+  setDrawerOpen(false);
+}
+
+async function initCardcase() {
+  const data = await loadCardData();
+  applyCardDataSet(data);
+  runIntro();
+}
+
+initCardcase();
+window.addEventListener('resize', () => {
+  updateFlipHintText();
+  typePaint.fitLine();
+  introPaint.fitLine();
+  idlePaint.cacheRects();
+  typePaint.cacheRects();
+  introPaint.cacheRects();
+  cacheSiteCreditRects();
+  clearSiteCreditPaint();
+});
+</script>
+</body>
+</html>

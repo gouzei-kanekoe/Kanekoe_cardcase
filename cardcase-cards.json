@@ -1,0 +1,1003 @@
+{
+  "version": 1,
+  "meta": {
+    "ownerName": "鐘　聲",
+    "boxTitle": "鐘　聲　的　名　片　盒",
+    "introMark": "名片盒",
+    "idleQuote": "這就是我的名片盒：翻閱名片來認識鐘聲，還有其推薦作家。",
+    "emptyCaption": "請點擊頭像",
+    "dataLoadFailedCaption": "名片資料載入失敗",
+    "flipHint": "點擊名片可翻面",
+    "frontHint": "點擊翻面",
+    "drawerLabel": "名片選單",
+    "drawerOpenText": "收合",
+    "drawerCountSuffix": "張",
+    "noLinksText": "（尚無連結）"
+  },
+  "cards": [
+    {
+      "id": "kanekoe",
+      "slot": 1,
+      "isSelf": true,
+      "image": "Avatar/Kanekoe.png",
+      "imageAlt": "鐘聲",
+      "name": "鐘　聲",
+      "role": "文字創作者",
+      "intro": "塵世中寫百合文的小海豹；\n望為讀者帶來愛的多面向，\n還有共鳴。",
+      "backImage": "Avatar/Kanekoe_ill.png",
+      "realCardFront": "mycard/mycard-F.png",
+      "realCardBack": "mycard/mycard-B.png",
+      "links": [
+        {
+          "type": "HP",
+          "text": "個人主頁",
+          "url": "https://gouzei-kanekoe.github.io/Kanekoe_works"
+        },
+        {
+          "type": "Penana",
+          "text": "作者頁面",
+          "url": "https://www.penana.com/user/177564/%E9%90%98%E8%81%B2"
+        },
+        {
+          "type": "CXC",
+          "text": "【天國管理局文學部】",
+          "url": "https://cxc.today/zh/@Kanekoe"
+        },
+        {
+          "type": "Threads",
+          "text": "@gouzei_kanekoe",
+          "url": "https://www.threads.com/@gouzei_kanekoe"
+        }
+      ]
+    },
+    {
+      "id": "card-moaaiv6dcyj",
+      "slot": 2,
+      "isSelf": false,
+      "image": "Avatar/Fay.png",
+      "imageAlt": "四郎",
+      "name": "四　郎",
+      "role": "文字創作者",
+      "intro": "於殘雪處留下青春，\n凝結光輝之人。",
+      "backImage": "Avatar/Fay_ill.png",
+      "realCardFront": null,
+      "realCardBack": null,
+      "links": [
+        {
+          "type": "HP",
+          "text": "個人主頁",
+          "url": "https://www.kwokyingfai.com/"
+        },
+        {
+          "type": "IG",
+          "text": "@doctor_fai",
+          "url": "https://www.instagram.com/doctor_fai/"
+        },
+        {
+          "type": "Penana",
+          "text": "作者頁面",
+          "url": "https://www.penana.com/user/98865/%E9%83%AD%E5%87%9D%E8%BC%9D/stream"
+        }
+      ]
+    },
+    {
+      "id": "card-moaaiw1fovf",
+      "slot": 3,
+      "isSelf": false,
+      "image": "Avatar/Nanami.png",
+      "imageAlt": "七海",
+      "name": "七海NANAMI",
+      "role": "圖文創作者",
+      "intro": "偶爾寫文、偶爾畫圖；每天都想看男人交配。",
+      "backImage": "Avatar/Nanami_ill.png",
+      "realCardFront": null,
+      "realCardBack": null,
+      "links": [
+        {
+          "type": "HP",
+          "text": "點擊進入",
+          "url": "https://linktr.ee/nanamiao"
+        },
+        {
+          "type": "Penana",
+          "text": "作者頁面",
+          "url": "https://www.penana.com/user/286182/nanami%E6%B5%B7/stream"
+        },
+        {
+          "type": "CXC",
+          "text": "七海海ㄉ小倉庫",
+          "url": "https://cxc.today/zh/@nanami777"
+        }
+      ]
+    },
+    {
+      "id": "card-moaaiwak13a",
+      "slot": 4,
+      "isSelf": false,
+      "image": "Avatar/Shiba.png",
+      "imageAlt": "柴巴達",
+      "name": "柴巴達",
+      "role": "圖文創作者",
+      "intro": "住斯巴達的柴犬，喜歡寫不正常人類、瘋女人、戰爭與愛情。",
+      "backImage": "Avatar/Shiba_ill.png",
+      "realCardFront": null,
+      "realCardBack": null,
+      "links": [
+        {
+          "type": "Penana",
+          "text": "作者頁面",
+          "url": "https://www.penana.com/user/264356/%E6%9F%B4%E5%B7%B4%E9%81%94-%E1%90%A7-%CF%89-%E1%90%A7"
+        },
+        {
+          "type": "IG",
+          "text": "@shibaruta",
+          "url": "https://www.instagram.com/shibaruta/"
+        },
+        {
+          "type": "Threads",
+          "text": "@shibaruta",
+          "url": "https://www.threads.com/@shibaruta"
+        },
+        {
+          "type": "Discord",
+          "text": "交流伺服器",
+          "url": "discord.gg/R3jEuscs3K"
+        }
+      ]
+    },
+    {
+      "id": "card-moaaiwm8hhj",
+      "slot": 5,
+      "isSelf": false,
+      "image": "Avatar/ota.png",
+      "imageAlt": "Ota",
+      "name": "Ota",
+      "role": "文字創作者",
+      "intro": "目前正在寫能讓自己開心的百合小說\n希望也能帶給大家開心，\n所以分享在這裡",
+      "backImage": "Avatar/ota_ill.png",
+      "realCardFront": null,
+      "realCardBack": null,
+      "links": [
+        {
+          "type": "HP",
+          "text": "個人主頁",
+          "url": "https://portaly.cc/Bioreta?utm_source=threads&utm_medium=social&utm_content=link_in_bio"
+        },
+        {
+          "type": "CXC",
+          "text": "塔塔會所",
+          "url": "https://cxc.today/zh/@otarewr/work"
+        },
+        {
+          "type": "PENANA",
+          "text": "作者主頁",
+          "url": "#"
+        }
+      ]
+    },
+    {
+      "id": "card-moaaiws3x1u",
+      "slot": 6,
+      "isSelf": false,
+      "image": "Avatar/Catchdream.png",
+      "imageAlt": "捕夢",
+      "name": "捕夢捉月",
+      "role": "文字創作者",
+      "intro": "捕捉夢境，捉住文字，\n想嘗試各種題材的BG創作者！",
+      "backImage": null,
+      "realCardFront": null,
+      "realCardBack": null,
+      "links": [
+        {
+          "type": "HP",
+          "text": "個人主頁",
+          "url": "https://linkgoods.com/catchdreamandmoon66"
+        },
+        {
+          "type": "Penana",
+          "text": "作者頁面",
+          "url": "https://www.penana.com/user/91191/%E6%8D%95%E5%A4%A2%E6%8D%89%E6%9C%88"
+        },
+        {
+          "type": "CXC",
+          "text": "捕夢捉月--幻想情慾館",
+          "url": "https://cxc.today/zh/@catchdreamandmoon66/work"
+        }
+      ]
+    },
+    {
+      "id": "card-moaaiwwoblc",
+      "slot": 7,
+      "isSelf": false,
+      "image": "Avatar/AJ.png",
+      "imageAlt": "AJ",
+      "name": "AJ （魚兒）",
+      "role": "文字創作者",
+      "intro": "一名超級業餘作者，\n現在最愛寫極短篇小說",
+      "backImage": null,
+      "realCardFront": null,
+      "realCardBack": null,
+      "links": [
+        {
+          "type": "HP",
+          "text": "個人主頁",
+          "url": "https://linktr.ee/chinjen2004"
+        }
+      ]
+    },
+    {
+      "id": "card-moaaix22v0n",
+      "slot": 8,
+      "isSelf": false,
+      "image": "Avatar/miega.png",
+      "imageAlt": "橘柚",
+      "name": "橘　柚",
+      "role": "蕉園駐站作家",
+      "intro": "喜歡寫BL、仙俠、武俠、玄幻及BG。\n因為寫文速度慢，所以更新也較慢， 但絕不會斷更！",
+      "backImage": null,
+      "realCardFront": null,
+      "realCardBack": null,
+      "links": [
+        {
+          "type": "HP",
+          "text": "個人主頁",
+          "url": "https://portaly.cc/meiga?utm_source=threads&utm_medium=social&utm_content=link_in_bio"
+        },
+        {
+          "type": "PENANA",
+          "text": "作者頁面",
+          "url": "https://www.penana.com/user/132973/%E6%A9%98%E6%9F%9A/stream"
+        },
+        {
+          "type": "CXC",
+          "text": "橘柚的古耽、仙俠玄幻世界",
+          "url": "https://cxc.today/zh/@miega/work"
+        }
+      ]
+    },
+    {
+      "id": "card-moaaix738g6",
+      "slot": 9,
+      "isSelf": false,
+      "image": "Avatar/Anna.Png",
+      "imageAlt": "安娜",
+      "name": "安　娜",
+      "role": "圖文創作者",
+      "intro": "最近開始嘗試小說創作，目前沉浸於觀察自己角色間的互動。 ",
+      "backImage": null,
+      "realCardFront": null,
+      "realCardBack": null,
+      "links": [
+        {
+          "type": "HP",
+          "text": "個人主頁",
+          "url": "https://linktr.ee/annafictionworld"
+        },
+        {
+          "type": "Penana",
+          "text": "作者頁面",
+          "url": "https://www.penana.com/user/295587/anna-liu/stream"
+        },
+        {
+          "type": "Nurtale",
+          "text": "作者頁面",
+          "url": "https://www.neurtale.com/user/352?tab=showcase"
+        }
+      ]
+    },
+    {
+      "id": "card-moaaixcaqyk",
+      "slot": 10,
+      "isSelf": false,
+      "image": "Avatar/Shui.png",
+      "imageAlt": "微水",
+      "name": "微　水",
+      "role": "文字創作者",
+      "intro": "業餘耽美寫手\n主要創作耽美BL小說\n作品有青粥小菜，也有紅燒燉肉",
+      "backImage": "Avatar/Shui_ill.png",
+      "realCardFront": null,
+      "realCardBack": null,
+      "links": [
+        {
+          "type": "HP",
+          "text": "個人主頁",
+          "url": "https://portaly.cc/watery"
+        },
+        {
+          "type": "Penana",
+          "text": "作者頁面",
+          "url": "https://penana.com/user/169112/%E5%BE%AE%E6%B0%B4/stream"
+        },
+        {
+          "type": "CXC",
+          "text": "白寫工作室",
+          "url": "https://cxc.today/zh/@Shui/work"
+        }
+      ]
+    },
+    {
+      "id": "card-mobo6x5808d",
+      "slot": 11,
+      "isSelf": false,
+      "image": "Avatar/bang.png",
+      "imageAlt": "BANG",
+      "name": "BANG 無虐",
+      "role": "文字創作者",
+      "intro": "三月出生的雙魚，喜歡寫點自己想寫的東西。\n思考結構跟一般人不同，是個以愛為食的怪物。",
+      "backImage": null,
+      "realCardFront": null,
+      "realCardBack": null,
+      "links": []
+    },
+    {
+      "id": "card-mobofu9phrm",
+      "slot": 12,
+      "isSelf": false,
+      "image": "Avatar/Haru.png",
+      "imageAlt": "新",
+      "name": "晴來透",
+      "role": "文字創作者",
+      "intro": "如晴日到來，光影澄透。\n一位喜歡在文字裡尋找光的人。\n寫青春、寫傷痕，也寫那些不敢說出口的心事。",
+      "backImage": null,
+      "realCardFront": null,
+      "realCardBack": null,
+      "links": [
+        {
+          "type": "HP",
+          "text": "個人主頁",
+          "url": "https://linktr.ee/harukutou"
+        },
+        {
+          "type": "Penana",
+          "text": "作者頁面",
+          "url": "https://www.penana.com/user/286349/%E6%99%B4%E4%BE%86%E9%80%8F/stream"
+        },
+        {
+          "type": "CXC",
+          "text": "晴來透",
+          "url": "https://cxc.today/zh/@harukutou/work"
+        },
+        {
+          "type": "Threads",
+          "text": "@haruku_tou",
+          "url": "https://www.threads.com/@haruku_tou"
+        }
+      ]
+    },
+    {
+      "id": "card-mobot8c1tuy",
+      "slot": 13,
+      "isSelf": false,
+      "image": "Avatar/satining.png",
+      "imageAlt": "新",
+      "name": "雪　緞",
+      "role": "文字創作者",
+      "intro": "陳年GL寫手，含原創及同人百合作品。",
+      "backImage": "Avatar/satining_ill.png",
+      "realCardFront": null,
+      "realCardBack": null,
+      "links": [
+        {
+          "type": "HP",
+          "text": "個人主頁",
+          "url": "https://linktr.ee/blossoming.faded?utm_source=threads&utm_medium=social&utm_content=link_in_bio"
+        },
+        {
+          "type": "PENANA",
+          "text": "作者頁面",
+          "url": "https://www.penana.com/user/241879/satining/portfolio"
+        },
+        {
+          "type": "IG",
+          "text": "@blossoming.faded",
+          "url": "https://www.instagram.com/blossoming.faded/"
+        }
+      ]
+    },
+    {
+      "id": "card-mobp0ivppcf",
+      "slot": 14,
+      "isSelf": false,
+      "image": "Avatar/Smileflower.png",
+      "imageAlt": "Smile",
+      "name": "Smile Flower",
+      "role": "遊戲開發者",
+      "intro": "獨立遊戲開發中~ 喜歡玩文字向/溫馨的遊戲\n往全職開發者的目標緩慢前進中。",
+      "backImage": null,
+      "realCardFront": null,
+      "realCardBack": null,
+      "links": [
+        {
+          "type": "HP",
+          "text": "個人主頁",
+          "url": "https://en.yorubox.eu/smileflower/"
+        },
+        {
+          "type": "Threads",
+          "text": "@wsmileflowerw",
+          "url": "https://www.threads.com/@wsmileflowerw"
+        }
+      ]
+    },
+    {
+      "id": "card-mobq0jw40rz",
+      "slot": 15,
+      "isSelf": false,
+      "image": "Avatar/Seikai.png",
+      "imageAlt": "世界",
+      "name": "世界連結處",
+      "role": "小說創作者",
+      "intro": "設定廚型創作者。\n對戲群經營/小說撰寫/設定集創作/單頁式網頁設計",
+      "backImage": null,
+      "realCardFront": null,
+      "realCardBack": null,
+      "links": [
+        {
+          "type": "HP",
+          "text": "個人主頁",
+          "url": "https://zhengmingwei.my.canva.site/worldlink0811"
+        },
+        {
+          "type": "Penana",
+          "text": "作者頁面",
+          "url": "https://www.penana.com/user/312576/%E4%B8%96%E7%95%8C%E9%80%A3%E7%B5%90%E8%99%95"
+        },
+        {
+          "type": "Threads",
+          "text": "@worldlink0811",
+          "url": "https://www.threads.com/@worldlink0811"
+        }
+      ]
+    },
+    {
+      "id": "card-mobq8kqdfs2",
+      "slot": 16,
+      "isSelf": false,
+      "image": "Avatar/Bluebird.png",
+      "imageAlt": "鶄",
+      "name": "鶄",
+      "role": "文字創作者",
+      "intro": "一隻每日努力寫文和找鼠圖的倉鼠。\n目前連載劇情成長系故事《今日的我，依然為你拾筆寫字》\n和電影/書本心得。",
+      "backImage": null,
+      "realCardFront": null,
+      "realCardBack": null,
+      "links": [
+        {
+          "type": "Threads",
+          "text": "@gs_bluebird",
+          "url": "https://www.threads.com/@gs_bluebird"
+        },
+        {
+          "type": "Penana",
+          "text": "作者頁面",
+          "url": "https://www.penana.com/user/93091/%E9%B6%84/stream"
+        }
+      ]
+    },
+    {
+      "id": "card-mocwm7hkd9q",
+      "slot": 17,
+      "isSelf": false,
+      "image": "Avatar/milly2.png",
+      "imageAlt": "米粒",
+      "name": "米粒露一手",
+      "role": "故事創作人",
+      "intro": "寫幻想小說，也寫戀愛和現實主題，主要出沒在 Penana",
+      "backImage": "Avatar/milly.png",
+      "realCardFront": null,
+      "realCardBack": null,
+      "links": [
+        {
+          "type": "HP",
+          "text": "個人主頁",
+          "url": "https://portaly.cc/millygamestream"
+        },
+        {
+          "type": "Penana",
+          "text": "作者頁面",
+          "url": "https://www.penana.com/user/235506/%E7%B1%B3%E7%B2%92%E9%9C%B2%E4%B8%80%E6%89%8B"
+        },
+        {
+          "type": "Threads",
+          "text": "@millygamestream",
+          "url": "https://www.threads.com/@millygamestream"
+        },
+        {
+          "type": "Youtube",
+          "text": "實況與遊戲攻略影片",
+          "url": "https://www.youtube.com/@millygamestream"
+        }
+      ]
+    },
+    {
+      "id": "card-mocx593c688",
+      "slot": 18,
+      "isSelf": false,
+      "image": "Avatar/airen.jpg",
+      "imageAlt": "藹仁",
+      "name": "藹　仁",
+      "role": "文字創作者",
+      "intro": "這裡是藹仁，目前在多平台上連載小説，\n願各位每天都能笑迎每個晨曦與星光。",
+      "backImage": null,
+      "realCardFront": null,
+      "realCardBack": null,
+      "links": [
+        {
+          "type": "角角者",
+          "text": "作者頁面",
+          "url": "https://www.kadokado.com.tw/user/207474?utm_source=kado_ios"
+        },
+        {
+          "type": "CXC",
+          "text": "藹仁",
+          "url": "https://cxc.today/zh/@gameaddict"
+        },
+        {
+          "type": "Threads",
+          "text": "@airen_20020202",
+          "url": "https://www.threads.com/@airen_20020202"
+        }
+      ]
+    },
+    {
+      "id": "card-mocx59au4bu",
+      "slot": 19,
+      "isSelf": false,
+      "image": "Avatar/Lopood.jpg",
+      "imageAlt": "兀郎洛普",
+      "name": "兀郎洛普",
+      "role": "文字創作者",
+      "intro": "一名喜愛歐美翻譯文學的文字創作者，\n寫作黑暗奇幻史詩《旗官》系列。",
+      "backImage": null,
+      "realCardFront": null,
+      "realCardBack": null,
+      "links": [
+        {
+          "type": "HP",
+          "text": "個人主頁",
+          "url": "https://portaly.cc/lopood"
+        },
+        {
+          "type": "Penana",
+          "text": "作者頁面",
+          "url": "https://www.penana.com/user/104959/%CF%80%E9%83%8E"
+        },
+        {
+          "type": "角角者",
+          "text": "旗官首部曲：失心者",
+          "url": "https://www.kadokado.com.tw/book/55432?utm_source=kado_website&utm_medium=book_link"
+        }
+      ]
+    },
+    {
+      "id": "card-mocxm9b3p5l",
+      "slot": 20,
+      "isSelf": false,
+      "image": "Avatar/hiyoricheb.jpg",
+      "imageAlt": "旬玉水",
+      "name": "旬玉水",
+      "role": "文字創作者",
+      "intro": "BL/GL文寫手，不寫文的時候是個遊戲廢人。\n喜歡驚喜，也喜歡給讀者驚喜。\n最有名的作品是《網遊之犯賤沒藥醫》。",
+      "backImage": null,
+      "realCardFront": null,
+      "realCardBack": null,
+      "links": [
+        {
+          "type": "CXC",
+          "text": "沒有節操的世界",
+          "url": "https://cxc.today/zh/@hiyoririyohi/"
+        },
+        {
+          "type": "Threads",
+          "text": "@hiyoricheb2025",
+          "url": "https://www.threads.com/@hiyoricheb2025"
+        },
+        {
+          "type": "噗浪",
+          "text": "hiyoririyohi",
+          "url": "https://www.plurk.com/hiyoririyohi"
+        }
+      ]
+    },
+    {
+      "id": "card-mocxpnlifp9",
+      "slot": 21,
+      "isSelf": false,
+      "image": "Avatar/chanlapjeng.png",
+      "imageAlt": "陳立正",
+      "name": "陳立正",
+      "role": "蕉園駐站作家",
+      "intro": "正在旅途上，傾聽旅人們底語之間的故事；一開首是興趣使然，直到現在卻依然在追著夢的某個人；喜歡讀到令自己動容的故事，後來希望寫出使人動容的故事。",
+      "backImage": null,
+      "realCardFront": null,
+      "realCardBack": null,
+      "links": [
+        {
+          "type": "HP",
+          "text": "個人主頁",
+          "url": "https://linktr.ee/chanlapjeng"
+        },
+        {
+          "type": "Penana",
+          "text": "作者頁面",
+          "url": "https://www.penana.com/user/123061/%E9%99%B3%E7%AB%8B%E6%AD%A3"
+        },
+        {
+          "type": "IG",
+          "text": "@chanlapjeng",
+          "url": "https://www.instagram.com/chanlapjeng/"
+        },
+        {
+          "type": "Threads",
+          "text": "@chanlapjeng",
+          "url": "https://www.threads.com/@chanlapjeng"
+        }
+      ]
+    },
+    {
+      "id": "card-moeps97nwno",
+      "slot": 22,
+      "isSelf": false,
+      "image": "Avatar/amys.png",
+      "imageAlt": "艾米莉",
+      "name": "艾米莉",
+      "role": "圖文創作者",
+      "intro": "文繪雙修的治癒系作者，擅長奇幻與鬼故事。\nUDN簽約作家，準備出版三本作品，正作影視化/遊戲化等媒合。",
+      "backImage": "Avatar/amys_ill.png",
+      "realCardFront": null,
+      "realCardBack": null,
+      "links": [
+        {
+          "type": "Penana",
+          "text": "作者頁面",
+          "url": "https://www.penana.com/user/122171/%E8%89%BE%E7%B1%B3%E8%8E%89/stream"
+        },
+        {
+          "type": "CXC",
+          "text": "艾美莉的圖文世界",
+          "url": "https://cxc.today/zh/@amys230708"
+        },
+        {
+          "type": "角角者",
+          "text": "作者頁面",
+          "url": "https://www.kadokado.com.tw/user/26086"
+        },
+        {
+          "type": "Threads",
+          "text": "@amys_ublog",
+          "url": "https://www.threads.com/@amys_ublog"
+        }
+      ]
+    },
+    {
+      "id": "card-moepsa9bt4c",
+      "slot": 23,
+      "isSelf": false,
+      "image": "Avatar/yeye.jpg",
+      "imageAlt": "熊兒",
+      "name": "熊　兒",
+      "role": "文字創作者",
+      "intro": "迷糊的愛情小說家，喜歡無厘頭的事物與窩在同溫層",
+      "backImage": null,
+      "realCardFront": null,
+      "realCardBack": null,
+      "links": [
+        {
+          "type": "Penana",
+          "text": "作者頁面",
+          "url": "https://l.threads.com/?u=https%3A%2F%2Fm.penana.com%2Fuser%2F240522%2F%25E7%2586%258A%25E5%2585%2592%2Fstream&e=AT7rZMHQNuFVDR0zzOtehz8AossLbvtYgA-7Q2GqpIRjrxncwf--1rKUmTAtT83U8krQFppbKmoVdmAbwUkw-O3BTN1UAvoC9eoyWJz5PWrgfbaL7anDkjfPbYzqfpzQ_xY2Gtw"
+        },
+        {
+          "type": "Threads",
+          "text": "@the_worldinmyeye",
+          "url": "https://www.threads.com/@the_worldinmyeye"
+        },
+        {
+          "type": "CXC",
+          "text": "熊兒，今天星期五",
+          "url": "https://cxc.today/zh/@theworldinmyeye/work"
+        }
+      ]
+    },
+    {
+      "id": "card-moeq0ywvuek",
+      "slot": 24,
+      "isSelf": false,
+      "image": "Avatar/STAR.PNG",
+      "imageAlt": "星河代日落",
+      "name": "星河代日落",
+      "role": "文字創作者",
+      "intro": "星河代替日落編寫故事\n主打BL古風小說，也有寫現代校園文",
+      "backImage": null,
+      "realCardFront": null,
+      "realCardBack": null,
+      "links": [
+        {
+          "type": "Penana",
+          "text": "作者頁面",
+          "url": "https://www.penana.com/user/277345/%E6%98%9F%E6%B2%B3%E4%BB%A3%E6%97%A5%E8%90%BD/stream"
+        },
+        {
+          "type": "CXC",
+          "text": "星落小天地",
+          "url": "https://cxc.today/zh/@jonie_0225/work"
+        },
+        {
+          "type": "Threads",
+          "text": "@xl112593",
+          "url": "https://www.threads.com/@xl112593"
+        },
+        {
+          "type": "Discord",
+          "text": "@xinghedairluo",
+          "url": "https://discord.com/invite/75tby6nP"
+        }
+      ]
+    },
+    {
+      "id": "card-moeq9dypv5y",
+      "slot": 25,
+      "isSelf": false,
+      "image": "Avatar/candy.png",
+      "imageAlt": "老薑糖",
+      "name": "老薑糖",
+      "role": "文字創作者",
+      "intro": "致力於成為戀愛腦的作家。創作時內心想的色慾、厭世、發瘋，還有酒精跟鹽酥雞。",
+      "backImage": null,
+      "realCardFront": null,
+      "realCardBack": null,
+      "links": [
+        {
+          "type": "Penana",
+          "text": "作者頁面",
+          "url": "https://www.penana.com/user/245986/%E8%80%81%E8%96%91%E7%B3%96"
+        },
+        {
+          "type": "角角者",
+          "text": "作者頁面",
+          "url": "https://www.kadokado.com.twuser/217208"
+        },
+        {
+          "type": "Threads",
+          "text": "@l.j.candy",
+          "url": "https://www.threads.com/@l.j.candy"
+        }
+      ]
+    },
+    {
+      "id": "card-moeqkcv3yg7",
+      "slot": 26,
+      "isSelf": false,
+      "image": "Avatar/ruoyang.jpg",
+      "imageAlt": "若央",
+      "name": "若　央",
+      "role": "文字創作者",
+      "intro": "BL、BG都寫的飆車大王，走音系翻唱Cover，燒肉、鮮奶茶愛好者。\n代表作為《愛的所有物》。",
+      "backImage": "Avatar/ruoyang_ill.png",
+      "realCardFront": null,
+      "realCardBack": null,
+      "links": [
+        {
+          "type": "HP",
+          "text": "官方網站",
+          "url": "https://ruoyangofficial.my.canva.site/phone/"
+        },
+        {
+          "type": "CxC",
+          "text": "若央好想吃燒肉",
+          "url": "https://cxc.today/zh/@Ruoyang/work"
+        },
+        {
+          "type": "Penana",
+          "text": "作者頁面",
+          "url": "https://www.penana.com/user/105824"
+        },
+        {
+          "type": "YouTube",
+          "text": "若央",
+          "url": "https://www.youtube.com/@RRRuoyang"
+        }
+      ]
+    },
+    {
+      "id": "card-moeqsh1hk5t",
+      "slot": 27,
+      "isSelf": false,
+      "image": "Avatar/bunny.jpg",
+      "imageAlt": "凝雨",
+      "name": "凝　雨",
+      "role": "文字創作者",
+      "intro": "來自香港的佛系作者，時間到了自然會更文。\n目前專注於散文評論，以及黑暗奇幻和諷刺小說的創作。",
+      "backImage": null,
+      "realCardFront": null,
+      "realCardBack": null,
+      "links": [
+        {
+          "type": "Penana",
+          "text": "作者頁面",
+          "url": "https://www.penana.com/user/107672/%E5%87%9D%E9%9B%A8/stream"
+        },
+        {
+          "type": "方格子",
+          "text": "凝雨創作小屋",
+          "url": "vocus.cc/user/@bunny_fox_330"
+        },
+        {
+          "type": "Threads",
+          "text": "@bunny_fox_forever",
+          "url": "https://www.threads.net/@bunny_fox_forever"
+        },
+        {
+          "type": "FB",
+          "text": "作者帳號",
+          "url": "https://www.facebook.com/ning.yu.358529?mibextid=D4KYlr"
+        }
+      ]
+    },
+    {
+      "id": "card-moer11nc8q9",
+      "slot": 28,
+      "isSelf": false,
+      "image": "Avatar/Purplejiu.jpg",
+      "imageAlt": "紫玖島",
+      "name": "紫玖島",
+      "role": "文字創作者",
+      "intro": "一手寫高甜色色BL、一手寫懸疑驚悚刑偵類型小說的紫布丁！",
+      "backImage": null,
+      "realCardFront": null,
+      "realCardBack": null,
+      "links": [
+        {
+          "type": "HP",
+          "text": "歡迎登陸布丁島",
+          "url": "https://portaly.cc/purplejiu_island"
+        },
+        {
+          "type": "Penana",
+          "text": "紫布丁住蕉園",
+          "url": "https://www.penana.com/user/131648"
+        },
+        {
+          "type": "角角者",
+          "text": "紫玖闖角角",
+          "url": "https://www.kadokado.com.tw/user/229758"
+        },
+        {
+          "type": "CXC",
+          "text": "阿玖小市集",
+          "url": "https://cxc.today/zh/@purpleisland0923"
+        }
+      ]
+    },
+    {
+      "id": "card-moiv7165ck8",
+      "slot": 29,
+      "isSelf": false,
+      "image": "Avatar/xsjjpjs.png",
+      "imageAlt": "鍵戰",
+      "name": "新世紀鍵盤戰士",
+      "role": "文字創作者",
+      "intro": "自封為蕉園首席義務校對員。\n喜歡幻想，相信平均一天三百字，總可以寫完筆下故事的連登仔",
+      "backImage": null,
+      "realCardFront": null,
+      "realCardBack": null,
+      "links": [
+        {
+          "type": "Penana",
+          "text": "作者主頁",
+          "url": "https://www.penana.com/user/101167"
+        },
+        {
+          "type": "Penana",
+          "text": "《杏壇中學眾生相》",
+          "url": "https://www.penana.com/story/169919/%E6%A0%A1%E5%9C%92-%E6%97%A5%E5%B8%B8-%E6%9D%8F%E5%A3%87%E4%B8%AD%E5%AD%B8%E7%9C%BE%E7%94%9F%E7%9B%B8/"
+        },
+        {
+          "type": "Threads",
+          "text": "@newcentury_kbf",
+          "url": "https://www.threads.com/@newcentury_kbf"
+        }
+      ]
+    },
+    {
+      "id": "card-moivae63q84",
+      "slot": 30,
+      "isSelf": false,
+      "image": "Avatar/Eastfiredrice.png",
+      "imageAlt": "東炒飯",
+      "name": "東炒飯",
+      "role": "蕉園駐站作家",
+      "intro": "人生就是\n友情、努力、勝利與糖份\n然後炒在一起。\n即將過期的廢青\n努力寫作中。",
+      "backImage": null,
+      "realCardFront": null,
+      "realCardBack": null,
+      "links": [
+        {
+          "type": "Penana",
+          "text": "作者主頁",
+          "url": "https://www.penana.com/user/208568/%E6%9D%B1%E7%82%92%E9%A3%AF/stream"
+        },
+        {
+          "type": "Threads",
+          "text": "@eastfiredrice",
+          "url": "https://www.threads.com/@eastfiredrice"
+        },
+        {
+          "type": "IG",
+          "text": "@eastfiredrice",
+          "url": "https://instagram.com/eastfiredrice"
+        }
+      ]
+    },
+    {
+      "id": "card-moivoje4rw8",
+      "slot": 31,
+      "isSelf": false,
+      "image": "Avatar/cynhuahua.jpg",
+      "imageAlt": "花花",
+      "name": "Cyn花花",
+      "role": "文字創作者",
+      "intro": "喜歡歷史故事，喜歡浪漫幻想。\n喜歡在那些隻言片語裡懷揣他們的夢想與人生。",
+      "backImage": "Avatar/cynhuahua_ILL.png",
+      "realCardFront": null,
+      "realCardBack": null,
+      "links": [
+        {
+          "type": "HP",
+          "text": "個人主頁",
+          "url": "https://portaly.cc/cynhuahua"
+        },
+        {
+          "type": "Penana",
+          "text": "作者頁面",
+          "url": "https://www.penana.com/user/266168/%E6%9C%9D%E8%8A%B1%E5%A4%95%E6%8B%BE/stream"
+        },
+        {
+          "type": "Threads",
+          "text": "@cynhuahua",
+          "url": "https://www.threads.com/@cynhuahua"
+        },
+        {
+          "type": "IG",
+          "text": "@cynhuahua",
+          "url": "https://instagram.com@cynhuahua"
+        }
+      ]
+    },
+    {
+      "id": "card-moivwvps9vo",
+      "slot": 32,
+      "isSelf": false,
+      "image": "Avatar/adabanipal.jpg",
+      "imageAlt": "謊花",
+      "name": "謊　花",
+      "role": "文字創作者",
+      "intro": "原創／委託／雜談。\n佛系文手，網站叫做花花巴尼拔圖書館。",
+      "backImage": null,
+      "realCardFront": null,
+      "realCardBack": null,
+      "links": [
+        {
+          "type": "HP",
+          "text": "個人主頁",
+          "url": "https://adabanipal.com/about"
+        },
+        {
+          "type": "Penana",
+          "text": "作者頁面",
+          "url": "https://www.penana.com/user/55208/%E8%AC%8A%E8%8A%B1/stream"
+        },
+        {
+          "type": "Threads",
+          "text": "@adabanipal.library",
+          "url": "https://www.threads.com/@adabanipal.library"
+        },
+        {
+          "type": "Plurk",
+          "text": "adabana00121",
+          "url": "https://www.plurk.com/adabana00121"
+        }
+      ]
+    }
+  ]
+}
