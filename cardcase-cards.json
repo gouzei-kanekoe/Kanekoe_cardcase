@@ -31,7 +31,7 @@
         {
           "type": "HP",
           "text": "個人主頁",
-          "url": "https://gouzei-kanekoe.github.io/Kanekoe_works"
+          "url": "https://kanekoe.work/"
         },
         {
           "type": "Penana",
@@ -996,6 +996,71 @@
           "type": "Plurk",
           "text": "adabana00121",
           "url": "https://www.plurk.com/adabana00121"
+        }
+      ]
+    },
+    {
+      "id": "card-mp2pfmp1ers",
+      "slot": 33,
+      "isSelf": false,
+      "image": "Avatar/redkoiyan.jpg",
+      "imageAlt": "戀嬿紅唇",
+      "name": "戀嬿紅唇",
+      "role": "文字創作者",
+      "intro": "以新詩定義青春，溫柔是我，倔強是我。\n極端落下的筆觸——還是我。",
+      "backImage": null,
+      "realCardFront": null,
+      "realCardBack": null,
+      "links": [
+        {
+          "type": "Penana",
+          "text": "作者頁面",
+          "url": "https://www.penana.com/user/219617"
+        },
+        {
+          "type": "IG",
+          "text": "@redkoiyan",
+          "url": "https://www.instagram.com/redkoiyan"
+        },
+        {
+          "type": "Threads",
+          "text": "@redkoiyan",
+          "url": "https://www.threads.com/@redkoiyan"
+        },
+        {
+          "type": "作品連結",
+          "text": "《青春絮語》",
+          "url": "https://www.penana.com/story/160540/%E9%9D%92%E6%98%A5%E7%B5%AE%E8%AA%9E"
+        }
+      ]
+    },
+    {
+      "id": "card-mp2pi5cfu6z",
+      "slot": 34,
+      "isSelf": false,
+      "image": "Avatar/CZY.png",
+      "imageAlt": "新",
+      "name": "C.Z.Y",
+      "role": "文字創作者",
+      "intro": "什麼都寫什麼都不奇怪的C.Z.Y\n從情慾、黑暗到奇幻、福瑞都有涉及，只怕讀者吃不飽，不怕爆肝的量產作者",
+      "backImage": null,
+      "realCardFront": null,
+      "realCardBack": null,
+      "links": [
+        {
+          "type": "角角者",
+          "text": "作者頁面",
+          "url": "https://www.kadokado.com.tw/user/216459"
+        },
+        {
+          "type": "CXC",
+          "text": "CZY腦洞深淵",
+          "url": "https://cxc.today/zh/@czy_0119/work"
+        },
+        {
+          "type": "Penana",
+          "text": "作者頁面",
+          "url": "https://www.penana.com/user/311995"
         }
       ]
     }
