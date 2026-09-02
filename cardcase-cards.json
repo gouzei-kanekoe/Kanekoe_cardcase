@@ -25,8 +25,7 @@
       "role": "文字創作者",
       "intro": "塵世中寫百合文的小海豹；\n望為讀者帶來愛的多面向，\n還有共鳴。",
       "backImage": "Avatar/Kanekoe_ill.png",
-      "realCardFront": "mycard/mycard-F.png",
-      "realCardBack": "mycard/mycard-B.png",
+      "backImageOpacity": 1,
       "links": [
         {
           "type": "HP",
@@ -60,8 +59,7 @@
       "role": "文字創作者",
       "intro": "於殘雪處留下青春，\n凝結光輝之人。",
       "backImage": "Avatar/Fay_ill.png",
-      "realCardFront": null,
-      "realCardBack": null,
+      "backImageOpacity": 1,
       "links": [
         {
           "type": "HP",
@@ -90,8 +88,7 @@
       "role": "圖文創作者",
       "intro": "偶爾寫文、偶爾畫圖；每天都想看男人交配。",
       "backImage": "Avatar/Nanami_ill.png",
-      "realCardFront": null,
-      "realCardBack": null,
+      "backImageOpacity": 1,
       "links": [
         {
           "type": "HP",
@@ -120,8 +117,7 @@
       "role": "圖文創作者",
       "intro": "住斯巴達的柴犬，喜歡寫不正常人類、瘋女人、戰爭與愛情。",
       "backImage": "Avatar/Shiba_ill.png",
-      "realCardFront": null,
-      "realCardBack": null,
+      "backImageOpacity": 1,
       "links": [
         {
           "type": "Penana",
@@ -155,8 +151,7 @@
       "role": "文字創作者",
       "intro": "目前正在寫能讓自己開心的百合小說\n希望也能帶給大家開心，\n所以分享在這裡",
       "backImage": "Avatar/ota_ill.png",
-      "realCardFront": null,
-      "realCardBack": null,
+      "backImageOpacity": 1,
       "links": [
         {
           "type": "HP",
@@ -185,8 +180,7 @@
       "role": "文字創作者",
       "intro": "捕捉夢境，捉住文字，\n想嘗試各種題材的BG創作者！",
       "backImage": null,
-      "realCardFront": null,
-      "realCardBack": null,
+      "backImageOpacity": 1,
       "links": [
         {
           "type": "HP",
@@ -215,8 +209,7 @@
       "role": "文字創作者",
       "intro": "一名超級業餘作者，\n現在最愛寫極短篇小說",
       "backImage": null,
-      "realCardFront": null,
-      "realCardBack": null,
+      "backImageOpacity": 1,
       "links": [
         {
           "type": "HP",
@@ -235,8 +228,7 @@
       "role": "蕉園駐站作家",
       "intro": "喜歡寫BL、仙俠、武俠、玄幻及BG。\n因為寫文速度慢，所以更新也較慢， 但絕不會斷更！",
       "backImage": null,
-      "realCardFront": null,
-      "realCardBack": null,
+      "backImageOpacity": 1,
       "links": [
         {
           "type": "HP",
@@ -265,8 +257,7 @@
       "role": "圖文創作者",
       "intro": "最近開始嘗試小說創作，目前沉浸於觀察自己角色間的互動。 ",
       "backImage": null,
-      "realCardFront": null,
-      "realCardBack": null,
+      "backImageOpacity": 1,
       "links": [
         {
           "type": "HP",
@@ -295,8 +286,7 @@
       "role": "文字創作者",
       "intro": "業餘耽美寫手\n主要創作耽美BL小說\n作品有青粥小菜，也有紅燒燉肉",
       "backImage": "Avatar/Shui_ill.png",
-      "realCardFront": null,
-      "realCardBack": null,
+      "backImageOpacity": 1,
       "links": [
         {
           "type": "HP",
@@ -325,8 +315,7 @@
       "role": "文字創作者",
       "intro": "三月出生的雙魚，喜歡寫點自己想寫的東西。\n思考結構跟一般人不同，是個以愛為食的怪物。",
       "backImage": null,
-      "realCardFront": null,
-      "realCardBack": null,
+      "backImageOpacity": 1,
       "links": []
     },
     {
@@ -339,8 +328,7 @@
       "role": "文字創作者",
       "intro": "如晴日到來，光影澄透。\n一位喜歡在文字裡尋找光的人。\n寫青春、寫傷痕，也寫那些不敢說出口的心事。",
       "backImage": null,
-      "realCardFront": null,
-      "realCardBack": null,
+      "backImageOpacity": 1,
       "links": [
         {
           "type": "HP",
@@ -374,8 +362,7 @@
       "role": "文字創作者",
       "intro": "陳年GL寫手，含原創及同人百合作品。",
       "backImage": "Avatar/satining_ill.png",
-      "realCardFront": null,
-      "realCardBack": null,
+      "backImageOpacity": 1,
       "links": [
         {
           "type": "HP",
@@ -404,8 +391,7 @@
       "role": "遊戲開發者",
       "intro": "獨立遊戲開發中~ 喜歡玩文字向/溫馨的遊戲\n往全職開發者的目標緩慢前進中。",
       "backImage": null,
-      "realCardFront": null,
-      "realCardBack": null,
+      "backImageOpacity": 1,
       "links": [
         {
           "type": "HP",
@@ -429,8 +415,7 @@
       "role": "小說創作者",
       "intro": "設定廚型創作者。\n對戲群經營/小說撰寫/設定集創作/單頁式網頁設計",
       "backImage": null,
-      "realCardFront": null,
-      "realCardBack": null,
+      "backImageOpacity": 1,
       "links": [
         {
           "type": "HP",
@@ -459,8 +444,7 @@
       "role": "文字創作者",
       "intro": "一隻每日努力寫文和找鼠圖的倉鼠。\n目前連載劇情成長系故事《今日的我，依然為你拾筆寫字》\n和電影/書本心得。",
       "backImage": null,
-      "realCardFront": null,
-      "realCardBack": null,
+      "backImageOpacity": 1,
       "links": [
         {
           "type": "Threads",
@@ -484,8 +468,7 @@
       "role": "故事創作人",
       "intro": "寫幻想小說，也寫戀愛和現實主題，主要出沒在 Penana",
       "backImage": "Avatar/milly.png",
-      "realCardFront": null,
-      "realCardBack": null,
+      "backImageOpacity": 1,
       "links": [
         {
           "type": "HP",
@@ -519,8 +502,7 @@
       "role": "文字創作者",
       "intro": "這裡是藹仁，目前在多平台上連載小説，\n願各位每天都能笑迎每個晨曦與星光。",
       "backImage": null,
-      "realCardFront": null,
-      "realCardBack": null,
+      "backImageOpacity": 1,
       "links": [
         {
           "type": "角角者",
@@ -549,8 +531,7 @@
       "role": "文字創作者",
       "intro": "一名喜愛歐美翻譯文學的文字創作者，\n寫作黑暗奇幻史詩《旗官》系列。",
       "backImage": null,
-      "realCardFront": null,
-      "realCardBack": null,
+      "backImageOpacity": 1,
       "links": [
         {
           "type": "HP",
@@ -579,8 +560,7 @@
       "role": "文字創作者",
       "intro": "BL/GL文寫手，不寫文的時候是個遊戲廢人。\n喜歡驚喜，也喜歡給讀者驚喜。\n最有名的作品是《網遊之犯賤沒藥醫》。",
       "backImage": null,
-      "realCardFront": null,
-      "realCardBack": null,
+      "backImageOpacity": 1,
       "links": [
         {
           "type": "CXC",
@@ -609,8 +589,7 @@
       "role": "蕉園駐站作家",
       "intro": "正在旅途上，傾聽旅人們底語之間的故事；一開首是興趣使然，直到現在卻依然在追著夢的某個人；喜歡讀到令自己動容的故事，後來希望寫出使人動容的故事。",
       "backImage": null,
-      "realCardFront": null,
-      "realCardBack": null,
+      "backImageOpacity": 1,
       "links": [
         {
           "type": "HP",
@@ -644,8 +623,7 @@
       "role": "圖文創作者",
       "intro": "文繪雙修的治癒系作者，擅長奇幻與鬼故事。\nUDN簽約作家，準備出版三本作品，正作影視化/遊戲化等媒合。",
       "backImage": "Avatar/amys_ill.png",
-      "realCardFront": null,
-      "realCardBack": null,
+      "backImageOpacity": 1,
       "links": [
         {
           "type": "Penana",
@@ -679,8 +657,7 @@
       "role": "文字創作者",
       "intro": "迷糊的愛情小說家，喜歡無厘頭的事物與窩在同溫層",
       "backImage": null,
-      "realCardFront": null,
-      "realCardBack": null,
+      "backImageOpacity": 1,
       "links": [
         {
           "type": "Penana",
@@ -709,8 +686,7 @@
       "role": "文字創作者",
       "intro": "星河代替日落編寫故事\n主打BL古風小說，也有寫現代校園文",
       "backImage": null,
-      "realCardFront": null,
-      "realCardBack": null,
+      "backImageOpacity": 1,
       "links": [
         {
           "type": "Penana",
@@ -728,9 +704,9 @@
           "url": "https://www.threads.com/@xl112593"
         },
         {
-          "type": "Discord",
-          "text": "@xinghedairluo",
-          "url": "https://discord.com/invite/75tby6nP"
+          "type": "HP",
+          "text": "個人頁面",
+          "url": "https://portaly.cc/xl112593"
         }
       ]
     },
@@ -744,8 +720,7 @@
       "role": "文字創作者",
       "intro": "致力於成為戀愛腦的作家。創作時內心想的色慾、厭世、發瘋，還有酒精跟鹽酥雞。",
       "backImage": null,
-      "realCardFront": null,
-      "realCardBack": null,
+      "backImageOpacity": 1,
       "links": [
         {
           "type": "Penana",
@@ -774,8 +749,7 @@
       "role": "文字創作者",
       "intro": "BL、BG都寫的飆車大王，走音系翻唱Cover，燒肉、鮮奶茶愛好者。\n代表作為《愛的所有物》。",
       "backImage": "Avatar/ruoyang_ill.png",
-      "realCardFront": null,
-      "realCardBack": null,
+      "backImageOpacity": 1,
       "links": [
         {
           "type": "HP",
@@ -809,8 +783,7 @@
       "role": "文字創作者",
       "intro": "來自香港的佛系作者，時間到了自然會更文。\n目前專注於散文評論，以及黑暗奇幻和諷刺小說的創作。",
       "backImage": null,
-      "realCardFront": null,
-      "realCardBack": null,
+      "backImageOpacity": 1,
       "links": [
         {
           "type": "Penana",
@@ -844,8 +817,7 @@
       "role": "文字創作者",
       "intro": "一手寫高甜色色BL、一手寫懸疑驚悚刑偵類型小說的紫布丁！",
       "backImage": null,
-      "realCardFront": null,
-      "realCardBack": null,
+      "backImageOpacity": 1,
       "links": [
         {
           "type": "HP",
@@ -879,8 +851,7 @@
       "role": "文字創作者",
       "intro": "自封為蕉園首席義務校對員。\n喜歡幻想，相信平均一天三百字，總可以寫完筆下故事的連登仔",
       "backImage": null,
-      "realCardFront": null,
-      "realCardBack": null,
+      "backImageOpacity": 1,
       "links": [
         {
           "type": "Penana",
@@ -909,8 +880,7 @@
       "role": "蕉園駐站作家",
       "intro": "人生就是\n友情、努力、勝利與糖份\n然後炒在一起。\n即將過期的廢青\n努力寫作中。",
       "backImage": null,
-      "realCardFront": null,
-      "realCardBack": null,
+      "backImageOpacity": 1,
       "links": [
         {
           "type": "Penana",
@@ -939,8 +909,7 @@
       "role": "文字創作者",
       "intro": "喜歡歷史故事，喜歡浪漫幻想。\n喜歡在那些隻言片語裡懷揣他們的夢想與人生。",
       "backImage": "Avatar/cynhuahua_ILL.png",
-      "realCardFront": null,
-      "realCardBack": null,
+      "backImageOpacity": 1,
       "links": [
         {
           "type": "HP",
@@ -974,8 +943,7 @@
       "role": "文字創作者",
       "intro": "原創／委託／雜談。\n佛系文手，網站叫做花花巴尼拔圖書館。",
       "backImage": null,
-      "realCardFront": null,
-      "realCardBack": null,
+      "backImageOpacity": 1,
       "links": [
         {
           "type": "HP",
@@ -1009,8 +977,7 @@
       "role": "文字創作者",
       "intro": "以新詩定義青春，溫柔是我，倔強是我。\n極端落下的筆觸——還是我。",
       "backImage": null,
-      "realCardFront": null,
-      "realCardBack": null,
+      "backImageOpacity": 1,
       "links": [
         {
           "type": "Penana",
@@ -1044,8 +1011,7 @@
       "role": "文字創作者",
       "intro": "什麼都寫什麼都不奇怪的C.Z.Y\n從情慾、黑暗到奇幻、福瑞都有涉及，只怕讀者吃不飽，不怕爆肝的量產作者",
       "backImage": null,
-      "realCardFront": null,
-      "realCardBack": null,
+      "backImageOpacity": 1,
       "links": [
         {
           "type": "角角者",
@@ -1061,6 +1027,35 @@
           "type": "Penana",
           "text": "作者頁面",
           "url": "https://www.penana.com/user/311995"
+        }
+      ]
+    },
+    {
+      "id": "card-mtkb4tyqrbc",
+      "slot": 35,
+      "isSelf": false,
+      "image": null,
+      "imageAlt": "洛",
+      "name": "洛洛ka",
+      "role": "文字創作者",
+      "intro": "主打作品是日本戀愛懸疑輕小說《我和我的天使女兒》。會日文，目前在小説家になろう和penana上面連載。目標是作品動畫化。",
+      "backImage": null,
+      "backImageOpacity": 1,
+      "links": [
+        {
+          "type": "PENANA",
+          "text": "洛洛卡個人檔案",
+          "url": "https://www.penana.com/user/233732/%E6%B4%9B%E6%B4%9Bka/stream"
+        },
+        {
+          "type": "PENANA",
+          "text": "《我和我的天使女兒》）故事連結",
+          "url": "https://www.penana.com/story/180736/%E6%88%91%E5%92%8C%E6%88%91%E7%9A%84%E5%A4%A9%E4%BD%BF%E5%A5%B3%E5%85%92/"
+        },
+        {
+          "type": "日文作品",
+          "text": "小説家になろう頁面",
+          "url": "https://ncode.syosetu.com/n9315mq/"
         }
       ]
     }
